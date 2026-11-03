@@ -8,7 +8,7 @@ Deadline: 2026-11-15
 
 ## Gate status
 - G1 repository audit: **APPROVED** (2026-11-03 11:59)
-- G2 research definitions: **WAITING (G2 Final Review Complete; Awaiting Approval)**
+- G2 research definitions: **WAITING (G2 Final Review Complete at commit `87f4a25`; Awaiting Approval)**
 - G3 frozen-test run: NOT STARTED
 
 ## Completed
