@@ -70,3 +70,4 @@ $$\beta = \arctan\left(\frac{l_r}{L} \tan(\delta)\right)$$
 3. **Completion vs Collision Trade-Off (Finding F3 Correlation)**:
    - When risk ahead exceeds thresholds, candidate speeds with $s_{\text{ratio}} = 0.0$ are selected to minimize risk integral $\int R(t) dt$.
    - Because the risk field penalty dominates over progress reward, the vehicle frequently stops permanently, leading to $0.0\%$ collisions but $0.0\%$ goal completion on test runs.
+

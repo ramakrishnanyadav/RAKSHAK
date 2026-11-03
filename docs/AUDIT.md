@@ -157,3 +157,4 @@ flowchart TD
 **Phase 0 Audit is complete.**  
 In accordance with standing rules and execution package instructions:
 > **The agent must stop at G1 and wait for your explicit approval before proceeding to Phase 1 or the Demo Fallback Track.**
+
