@@ -761,6 +761,7 @@ export const ReplayView: React.FC = () => {
             selectedAgentId={selectedAgentId}
             onSelectAgent={setSelectedAgentId}
             layers={layers}
+            onToggleLayer={(key) => setLayers((prev) => ({ ...prev, [key]: !prev[key] }))}
             highContrast={isHighContrast}
           />
         </div>

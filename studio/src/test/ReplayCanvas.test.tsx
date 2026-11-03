@@ -246,4 +246,42 @@ describe('ReplayCanvas Visual & Determinism Verification', () => {
     const canvas = container.querySelector('canvas');
     expect(canvas).not.toBeNull();
   });
+
+  it('renders visual interpretation legend with correct elements and allows toggling', () => {
+    const onToggleLayer = vi.fn();
+    const { getByText, getByLabelText } = render(
+      <ReplayCanvas
+        runLog={mockRunLog}
+        currentFrameIndex={0}
+        selectedAgentId={null}
+        onSelectAgent={() => {}}
+        layers={allLayersOn}
+        onToggleLayer={onToggleLayer}
+      />
+    );
+
+    // Check legend title and items
+    expect(getByText('Map Legend')).not.toBeNull();
+    expect(getByText('Self-Driving Car')).not.toBeNull();
+    expect(getByText('Planned Route')).not.toBeNull();
+    expect(getByText('Moving Traffic')).not.toBeNull();
+    expect(getByText('Safety Margins')).not.toBeNull();
+    expect(getByText('Hazard Risk Area')).not.toBeNull();
+    expect(getByText('Road Edge / Shoulder')).not.toBeNull();
+
+    // Toggle layer by clicking a legend item
+    const trafficItem = getByLabelText('Toggle Moving Traffic visibility');
+    fireEvent.click(trafficItem);
+    expect(onToggleLayer).toHaveBeenCalledWith('tracks');
+
+    // Test collapse / expand
+    const collapseBtn = getByLabelText('Collapse map legend');
+    fireEvent.click(collapseBtn);
+    expect(collapseBtn.getAttribute('aria-expanded')).toBe('false');
+
+    // Expand again
+    const expandBtn = getByLabelText('Expand map legend');
+    fireEvent.click(expandBtn);
+    expect(expandBtn.getAttribute('aria-expanded')).toBe('true');
+  });
 });

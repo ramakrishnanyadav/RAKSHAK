@@ -1,11 +1,11 @@
 /**
  * High-Performance Accessible 2D Simulation Replay Canvas.
- * Renders top-down world, dynamic agents, conformal uncertainty cones,
+ * Renders top-down world, dynamic traffic agents, conformal uncertainty cones,
  * calibrated risk field (with hatched patterns, never color alone), and ego trajectory.
- * Maintains 30+ FPS with 60+ dynamic agents using optimized 2D canvas paths.
+ * Features an integrated visual interpretation legend and layer visibility controls.
  */
 
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { RunLog, Frame, AgentTrack } from '../types/apath_log';
 
 export interface CanvasLayerState {
@@ -22,7 +22,9 @@ interface ReplayCanvasProps {
   selectedAgentId: string | null;
   onSelectAgent: (agentId: string | null) => void;
   layers: CanvasLayerState;
+  onToggleLayer?: (layerKey: keyof CanvasLayerState) => void;
   highContrast?: boolean;
+  showLegend?: boolean;
 }
 
 export const ReplayCanvas: React.FC<ReplayCanvasProps> = ({
@@ -31,9 +33,12 @@ export const ReplayCanvas: React.FC<ReplayCanvasProps> = ({
   selectedAgentId,
   onSelectAgent,
   layers,
+  onToggleLayer,
   highContrast = false,
+  showLegend = true,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isLegendOpen, setIsLegendOpen] = useState(true);
 
   // Cached transform helper for mouse click hit testing
   const transformRef = useRef<{
@@ -91,10 +96,10 @@ export const ReplayCanvas: React.FC<ReplayCanvasProps> = ({
 
     const mathPi = Math.PI;
 
-    // 1. LAYER: World Boundaries & Driveable Free Space (Non-lane based G2)
+    // 1. LAYER: World Boundaries & Free Space (Non-lane based G2)
     if (layers.world && runLog.world) {
       ctx.lineWidth = 3;
-      ctx.strokeStyle = highContrast ? '#ffffff' : '#334155';
+      ctx.strokeStyle = highContrast ? '#ffffff' : '#475569';
       ctx.setLineDash([]);
 
       runLog.world.road_boundaries.forEach((boundary) => {
@@ -109,7 +114,7 @@ export const ReplayCanvas: React.FC<ReplayCanvasProps> = ({
         ctx.stroke();
       });
 
-      // Spatial orientation grid
+      // Spatial orientation grid (10m grid lines)
       ctx.strokeStyle = highContrast ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.03)';
       ctx.lineWidth = 1;
       const gridSize = 10 * scale;
@@ -299,7 +304,7 @@ export const ReplayCanvas: React.FC<ReplayCanvasProps> = ({
         ctx.lineWidth = isSelected ? 3 : 1;
         ctx.stroke();
 
-        // Heading arrow
+        // Heading arrow (front direction indicator)
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
         ctx.moveTo(w / 2 + 3, 0);
@@ -330,7 +335,7 @@ export const ReplayCanvas: React.FC<ReplayCanvasProps> = ({
       });
     }
 
-    // 6. Draw Ego Vehicle
+    // 6. Draw Ego Vehicle (Self-Driving Car)
     const egoCanvasX = toCanvasX(frame.ego.x);
     const egoCanvasY = toCanvasY(frame.ego.y);
     const egoW = frame.ego.length * scale;
@@ -346,9 +351,11 @@ export const ReplayCanvas: React.FC<ReplayCanvasProps> = ({
     ctx.lineWidth = 2;
     ctx.stroke();
 
+    // Windshield
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(egoW * 0.05, -egoH * 0.38, egoW * 0.25, egoH * 0.76);
 
+    // Headlights
     ctx.fillStyle = '#fef08a';
     ctx.fillRect(egoW / 2 - 1, -egoH / 2 + 2, 2, 3);
     ctx.fillRect(egoW / 2 - 1, egoH / 2 - 5, 2, 3);
@@ -433,6 +440,292 @@ export const ReplayCanvas: React.FC<ReplayCanvasProps> = ({
         tabIndex={0}
         aria-label="Simulation canvas. Click to select agent. Use keyboard shortcuts Space to play, arrow keys to step."
       />
+
+      {/* On-Canvas Visual Interpretation Legend */}
+      {showLegend && (
+        <div
+          role="region"
+          aria-label="Simulation visual legend"
+          style={{
+            position: 'absolute',
+            bottom: '12px',
+            left: '12px',
+            zIndex: 10,
+            maxWidth: isLegendOpen ? '380px' : 'auto',
+            background: highContrast ? 'rgba(0, 0, 0, 0.94)' : 'rgba(11, 15, 25, 0.88)',
+            border: '1px solid var(--border-default)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: 'var(--radius-sm)',
+            padding: isLegendOpen ? '0.65rem 0.85rem' : '0.35rem 0.6rem',
+            color: '#ffffff',
+            fontSize: '0.75rem',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+            transition: 'all 0.15s ease',
+            userSelect: 'none',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '0.75rem',
+              marginBottom: isLegendOpen ? '0.5rem' : '0',
+            }}
+          >
+            <span
+              style={{
+                fontWeight: 700,
+                fontSize: '0.75rem',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              Map Legend
+            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLegendOpen(!isLegendOpen);
+              }}
+              aria-expanded={isLegendOpen}
+              aria-label={isLegendOpen ? 'Collapse map legend' : 'Expand map legend'}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--accent-primary)',
+                cursor: 'pointer',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                padding: '2px 4px',
+              }}
+            >
+              {isLegendOpen ? 'Hide' : 'Show Legend'}
+            </button>
+          </div>
+
+          {isLegendOpen && (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '0.45rem 0.85rem',
+                lineHeight: 1.25,
+              }}
+            >
+              {/* 1. Self-Driving Vehicle */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                }}
+                title="The autonomous ego car being tested"
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '14px',
+                    height: '10px',
+                    background: '#0284c7',
+                    border: '1.5px solid #38bdf8',
+                    borderRadius: '1px',
+                    flexShrink: 0,
+                  }}
+                  aria-hidden="true"
+                />
+                <span style={{ fontWeight: 600 }}>Self-Driving Car</span>
+              </div>
+
+              {/* 2. Planned Driving Route (Interactive Layer Toggle) */}
+              <div
+                role={onToggleLayer ? 'button' : undefined}
+                tabIndex={onToggleLayer ? 0 : undefined}
+                aria-label={onToggleLayer ? 'Toggle Planned Route visibility' : undefined}
+                onClick={() => onToggleLayer && onToggleLayer('plan')}
+                onKeyDown={(e) => {
+                  if (onToggleLayer && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onToggleLayer('plan');
+                  }
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  cursor: onToggleLayer ? 'pointer' : 'default',
+                  opacity: layers.plan ? 1 : 0.4,
+                }}
+                title={onToggleLayer ? 'Click to toggle Planned Route visibility' : 'Car planned driving trajectory'}
+              >
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    width: '14px',
+                    height: '10px',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                  aria-hidden="true"
+                >
+                  <span style={{ width: '14px', height: '3px', background: '#10b981', borderRadius: '1px' }} />
+                </span>
+                <span>Planned Route</span>
+              </div>
+
+              {/* 3. Moving Road Users (Interactive Layer Toggle) */}
+              <div
+                role={onToggleLayer ? 'button' : undefined}
+                tabIndex={onToggleLayer ? 0 : undefined}
+                aria-label={onToggleLayer ? 'Toggle Moving Traffic visibility' : undefined}
+                onClick={() => onToggleLayer && onToggleLayer('tracks')}
+                onKeyDown={(e) => {
+                  if (onToggleLayer && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onToggleLayer('tracks');
+                  }
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  cursor: onToggleLayer ? 'pointer' : 'default',
+                  opacity: layers.tracks ? 1 : 0.4,
+                }}
+                title={onToggleLayer ? 'Click to toggle Moving Traffic visibility' : 'Cattle, rickshaws, pedestrians, trucks'}
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '14px',
+                    height: '10px',
+                    background: '#f59e0b',
+                    border: '1px solid #ffffff',
+                    borderRadius: '1px',
+                    flexShrink: 0,
+                  }}
+                  aria-hidden="true"
+                />
+                <span>Moving Traffic</span>
+              </div>
+
+              {/* 4. Safety Margins (Interactive Layer Toggle) */}
+              <div
+                role={onToggleLayer ? 'button' : undefined}
+                tabIndex={onToggleLayer ? 0 : undefined}
+                aria-label={onToggleLayer ? 'Toggle Safety Margins visibility' : undefined}
+                onClick={() => onToggleLayer && onToggleLayer('predictions')}
+                onKeyDown={(e) => {
+                  if (onToggleLayer && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onToggleLayer('predictions');
+                  }
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  cursor: onToggleLayer ? 'pointer' : 'default',
+                  opacity: layers.predictions ? 1 : 0.4,
+                }}
+                title={onToggleLayer ? 'Click to toggle Safety Margins visibility' : 'Conformal uncertainty buffer (95% coverage)'}
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: '1.5px dashed #38bdf8',
+                    background: 'rgba(56, 189, 248, 0.15)',
+                    flexShrink: 0,
+                  }}
+                  aria-hidden="true"
+                />
+                <span>Safety Margins</span>
+              </div>
+
+              {/* 5. Collision Risk Area (Interactive Layer Toggle) */}
+              <div
+                role={onToggleLayer ? 'button' : undefined}
+                tabIndex={onToggleLayer ? 0 : undefined}
+                aria-label={onToggleLayer ? 'Toggle Hazard Risk Area visibility' : undefined}
+                onClick={() => onToggleLayer && onToggleLayer('risk')}
+                onKeyDown={(e) => {
+                  if (onToggleLayer && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onToggleLayer('risk');
+                  }
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  cursor: onToggleLayer ? 'pointer' : 'default',
+                  opacity: layers.risk ? 1 : 0.4,
+                }}
+                title={onToggleLayer ? 'Click to toggle Collision Risk visibility' : 'Continuous danger field halo'}
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    background: 'rgba(239, 68, 68, 0.4)',
+                    border: '1px solid #ef4444',
+                    backgroundImage:
+                      'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(239, 68, 68, 0.8) 2px, rgba(239, 68, 68, 0.8) 4px)',
+                    flexShrink: 0,
+                  }}
+                  aria-hidden="true"
+                />
+                <span>Hazard Risk Area</span>
+              </div>
+
+              {/* 6. Road Boundaries (Interactive Layer Toggle) */}
+              <div
+                role={onToggleLayer ? 'button' : undefined}
+                tabIndex={onToggleLayer ? 0 : undefined}
+                aria-label={onToggleLayer ? 'Toggle Road Edge / Shoulder visibility' : undefined}
+                onClick={() => onToggleLayer && onToggleLayer('world')}
+                onKeyDown={(e) => {
+                  if (onToggleLayer && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    onToggleLayer('world');
+                  }
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  cursor: onToggleLayer ? 'pointer' : 'default',
+                  opacity: layers.world ? 1 : 0.4,
+                }}
+                title={onToggleLayer ? 'Click to toggle Road Boundaries visibility' : 'Physical road edges and dirt shoulders'}
+              >
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    width: '14px',
+                    height: '10px',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                  aria-hidden="true"
+                >
+                  <span style={{ width: '14px', height: '2.5px', background: '#64748b', borderRadius: '1px' }} />
+                </span>
+                <span>Road Edge / Shoulder</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
