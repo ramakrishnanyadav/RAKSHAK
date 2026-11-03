@@ -14,7 +14,7 @@ export const NotFound: React.FC = () => {
 
   const directLinks = [
     { to: '/app', label: 'Studio Dashboard', desc: 'Overview of runs, research metrics, and active simulations', icon: <Home size={18} /> },
-    { to: '/app/scenarios', label: 'Benchmark Scenarios', desc: 'Browse 6 unstructured Indian road scenarios', icon: <Map size={18} /> },
+    { to: '/app/scenarios', label: 'Benchmark Scenarios', desc: 'Browse 5 canonical Indian road scenarios', icon: <Map size={18} /> },
     { to: '/app/runs', label: 'Replay Viewer', desc: '2D top-down canvas simulation with conformal cones', icon: <PlayCircle size={18} /> },
     { to: '/app/benchmark', label: 'Ablation Benchmarks', desc: 'Statistical comparison with 95% bootstrap CIs', icon: <BarChart3 size={18} /> },
     { to: '/app/failures', label: 'Failure Explorer', desc: 'Attribution analysis across perception, prediction & replan', icon: <AlertTriangle size={18} /> },

@@ -1,105 +1,125 @@
 /**
- * Scenarios Catalog Page (Route: /app/scenarios).
- * Displays the 6 benchmark scenarios for unstructured Indian roads (SIH2026),
- * split filtering (Train, Val, Test), and navigation to scenario detail.
+ * Canonical Scenarios Catalog Page (Route: /app/scenarios).
+ * Displays the 5 canonical benchmark scenarios from engine/scenarios/registry.py
+ * for intelligent path planning and collision avoidance on unstructured Indian roads.
  */
 
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { MapPin, Navigation, Compass, AlertCircle, Play, Eye, ArrowRight, Filter } from 'lucide-react';
+import { Play, Eye, Compass, ShieldAlert, Sparkles, MapPin, AlertTriangle } from 'lucide-react';
 import { useI18n } from '../context/I18nContext';
 
 export interface ScenarioDefinition {
   id: string;
   name: string;
   description: string;
+  environment: string;
+  trafficChallenge: string;
+  evaluates: string;
   speed: string;
   distance: string;
   split: 'train' | 'val' | 'test';
   agentMix: string[];
-  keyChallenge: string;
   roadWidth: string;
   curvature: string;
   defaultRunId: string;
 }
 
+/**
+ * Historical legacy scenario ID compatibility mapping.
+ * Maps legacy IDs to canonical engine scenario IDs to preserve bookmark
+ * and historical run replay compatibility without altering underlying data.
+ */
+export const LEGACY_SCENARIO_COMPATIBILITY_MAP: Record<string, string> = {
+  'SCENARIO_1_UNSTRUCTURED_ROUNDABOUT': 'SCENARIO_1_VILLAGE_ROAD',
+  'SCENARIO_2_WRONG_WAY_AUTO': 'SCENARIO_2_URBAN_INTERSECTION',
+  'SCENARIO_3_MONSOON_POTHOLE': 'SCENARIO_3_HIGHWAY_MERGE',
+  'SCENARIO_4_MIXED_CROWD': 'SCENARIO_4_DENSE_MARKET',
+  'SCENARIO_6_BRAKING_TRUCK': 'SCENARIO_5_CATTLE_CROSSING',
+};
+
+/**
+ * Exactly five canonical scenarios from engine/scenarios/registry.py:
+ * 1. SCENARIO_1_VILLAGE_ROAD
+ * 2. SCENARIO_2_URBAN_INTERSECTION
+ * 3. SCENARIO_3_HIGHWAY_MERGE
+ * 4. SCENARIO_4_DENSE_MARKET
+ * 5. SCENARIO_5_CATTLE_CROSSING
+ */
 export const BENCHMARK_SCENARIOS: ScenarioDefinition[] = [
   {
-    id: 'SCENARIO_1_UNSTRUCTURED_ROUNDABOUT',
-    name: '1. Unstructured Multi-Modal Roundabout',
-    description: 'Chaotic circular intersection without lane discipline, with crisscrossing auto-rickshaws, two-wheelers, and pedestrians entering radially.',
+    id: 'SCENARIO_1_VILLAGE_ROAD',
+    name: '1. Unmarked Village Road',
+    description: 'Narrow unmarked rural asphalt road with potholes, unpaved dirt shoulders, and an oncoming heavy commercial vehicle.',
+    environment: 'Narrow rural roadway without painted lane markings (6.4m – 7.6m width) with unpaved earthen shoulders.',
+    trafficChallenge: 'Negotiating safe passage past an oncoming heavy vehicle while avoiding road surface potholes.',
+    evaluates: 'Continuous non-lane-bound path planning, dynamic speed regulation, and safe shoulder clearance.',
     speed: '25 km/h (7.0 m/s)',
-    distance: '75 meters',
+    distance: '80 meters',
     split: 'train',
-    roadWidth: '12.0m outer diameter',
-    curvature: 'κ = 0.08 m⁻¹',
-    agentMix: ['Auto-Rickshaw (Cross)', 'Two-Wheeler (Swerving)', 'Pedestrian'],
-    keyChallenge: 'Multi-hypothesis intent estimation to anticipate opportunistic gap-filling without right-of-way assumptions.',
+    roadWidth: '6.4 – 7.6 m',
+    curvature: 'κ ≤ 0.08 m⁻¹',
+    agentMix: ['Heavy Commercial Vehicle', 'Two-Wheeler'],
     defaultRunId: 'run_scenario_1_village_road_p3_tune_s1000',
   },
   {
-    id: 'SCENARIO_2_WRONG_WAY_AUTO',
-    name: '2. Wrong-Way Auto-Rickshaw Encounter',
-    description: 'High-speed rural corridor where an oncoming auto-rickshaw drives against traffic to avoid a flooded road section.',
-    speed: '35 km/h (9.7 m/s)',
-    distance: '90 meters',
-    split: 'val',
-    roadWidth: '7.5m (unmarked)',
-    curvature: 'κ = 0.01 m⁻¹',
-    agentMix: ['Wrong-way Auto', 'Bicycle on shoulder'],
-    keyChallenge: 'Emergency corridor shift into unpaved shoulder without loss of lateral stability or yaw divergence.',
+    id: 'SCENARIO_2_URBAN_INTERSECTION',
+    name: '2. Busy Unsignalized Urban Intersection',
+    description: 'Complex junction without traffic signals, featuring cross-cutting auto-rickshaws and swarming two-wheelers.',
+    environment: 'Multi-directional urban intersection without traffic lights or marked lane corridors.',
+    trafficChallenge: 'Cross-cutting auto-rickshaws and swarming two-wheelers merging unpredictably from multiple directions.',
+    evaluates: 'Multi-agent motion prediction, dynamic gap acceptance, and collision-free crossing without signal guidance.',
+    speed: '25 km/h (7.0 m/s)',
+    distance: '75 meters',
+    split: 'train',
+    roadWidth: '14.0 m intersection zone',
+    curvature: 'κ ≤ 0.05 m⁻¹',
+    agentMix: ['Auto-Rickshaws (Cross-cutting)', 'Swarming Two-Wheelers'],
     defaultRunId: 'run_scenario_2_urban_intersection_p3_tune_s1000',
   },
   {
-    id: 'SCENARIO_3_MONSOON_POTHOLE',
-    name: '3. Monsoon Flooded Pothole Swerve',
-    description: 'Waterlogged single-lane road with a deep submerged pothole forcing vehicle to perform a continuous G2 clothoid swerve.',
-    speed: '30 km/h (8.3 m/s)',
-    distance: '85 meters',
-    split: 'test',
-    roadWidth: '6.5m (pothole depth 18cm)',
-    curvature: 'κ = 0.04 m⁻¹',
-    agentMix: ['Pothole Hazard', 'Oncoming Two-Wheeler'],
-    keyChallenge: 'Static cost field ridge avoidance coupled with dynamic oncoming agent clearance.',
+    id: 'SCENARIO_3_HIGHWAY_MERGE',
+    name: '3. Highway Merge with Slow Vehicles',
+    description: 'Fast-moving arterial corridor with slow auto-rickshaws entering from unpaved ramps at acute angles.',
+    environment: 'High-speed dual-carriageway corridor with unpaved access ramps entering at acute angles.',
+    trafficChallenge: 'Severe speed differential between cruising traffic and slow vehicles entering without acceleration lanes.',
+    evaluates: 'Long-horizon trajectory forecasting, smooth speed adjustments, and proactive braking to prevent rear-end collisions.',
+    speed: '40 km/h (11.0 m/s)',
+    distance: '100 meters',
+    split: 'val',
+    roadWidth: '10.5 m dual carriageway',
+    curvature: 'κ ≤ 0.02 m⁻¹',
+    agentMix: ['Merging Auto-Rickshaw', 'High-Speed Traffic'],
     defaultRunId: 'run_scenario_3_highway_merge_p3_tune_s1000',
   },
   {
-    id: 'SCENARIO_4_MIXED_CROWD',
-    name: '4. Dense Market Street with Mixed Crowd',
-    description: 'High-density market lane with pedestrian clusters, fruit carts, and sudden emergence from behind stationary parked autos.',
-    speed: '20 km/h (5.5 m/s)',
-    distance: '70 meters',
-    split: 'train',
-    roadWidth: '5.5m (constricted)',
-    curvature: 'κ = 0.02 m⁻¹',
-    agentMix: ['Fruit Handcart', 'Pedestrians', 'Parked Auto'],
-    keyChallenge: 'Severe sensor occlusion handling and Minimal-Risk Manoeuvre (MRM) fallback.',
+    id: 'SCENARIO_4_DENSE_MARKET',
+    name: '4. Dense Market with Occluded Emergence',
+    description: 'Vendor stalls and parked vehicles with sudden pedestrian stepping out from behind visual occlusion.',
+    environment: 'Constricted market street (5.5m – 6.0m width) with roadside vendor stalls and parked auto-rickshaws.',
+    trafficChallenge: 'Pedestrians and handcarts stepping out suddenly into the driveable path from blind spots.',
+    evaluates: 'Occlusion-aware crawling speed, safety margin maintenance, and immediate emergency safe stop (MRM).',
+    speed: '22 km/h (6.0 m/s)',
+    distance: '75 meters',
+    split: 'val',
+    roadWidth: '5.5 – 6.0 m (constricted)',
+    curvature: 'κ ≤ 0.03 m⁻¹',
+    agentMix: ['Pedestrians (Sudden emergence)', 'Handcarts', 'Stationary Stalls'],
     defaultRunId: 'run_scenario_4_dense_market_p3_tune_s1000',
   },
   {
     id: 'SCENARIO_5_CATTLE_CROSSING',
-    name: '5. Flagship Sudden Cattle Crossing',
-    description: 'Slow-moving cattle herd stepping onto the highway and stopping erratically mid-lane in front of the vehicle.',
-    speed: '28 km/h (7.8 m/s)',
+    name: '5. Sudden Cattle Crossing',
+    description: 'Livestock entering the roadway and halting mid-lane, requiring non-lane lateral avoidance or safe braking.',
+    environment: 'Rural transit roadway (8.0m width) with dirt shoulders and unstructured animal crossings.',
+    trafficChallenge: 'Cattle wandering onto the road and halting unpredictably across the vehicle travel corridor.',
+    evaluates: 'Uncertainty prediction envelopes, stationary obstacle persistence handling, and safe lateral detour navigation.',
+    speed: '27 km/h (7.5 m/s)',
     distance: '80 meters',
     split: 'test',
-    roadWidth: '8.0m with dirt shoulder',
-    curvature: 'κ = 0.00 m⁻¹',
-    agentMix: ['Cattle Herd (Bovine)', 'Two-Wheeler overtaking'],
-    keyChallenge: 'Calibrated conformal uncertainty envelopes predicting multi-directional cattle trajectory hesitation.',
-    defaultRunId: 'run_scenario_5_cattle_crossing_p3_tune_s1000',
-  },
-  {
-    id: 'SCENARIO_6_BRAKING_TRUCK',
-    name: '6. Overloaded Truck Emergency Braking',
-    description: 'Heavily overloaded commercial vehicle suddenly decelerates due to axle failure with defective brake lamps.',
-    speed: '40 km/h (11.1 m/s)',
-    distance: '100 meters',
-    split: 'val',
-    roadWidth: '9.0m dual carriageway',
-    curvature: 'κ = 0.01 m⁻¹',
-    agentMix: ['Overloaded Truck', 'Overtaking Sedan'],
-    keyChallenge: 'High-speed negative acceleration prediction requiring sub-50ms replan trigger.',
+    roadWidth: '8.0 m with dirt shoulder',
+    curvature: 'κ ≤ 0.01 m⁻¹',
+    agentMix: ['Cattle (Bovine)', 'Overtaking Two-Wheeler'],
     defaultRunId: 'run_scenario_5_cattle_crossing_p3_tune_s1000',
   },
 ];
@@ -122,7 +142,7 @@ export const Scenarios: React.FC = () => {
             {t('nav_scenarios')}
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
-            Curated unstructured Indian road scenarios featuring heterogeneous road users, unpaved shoulders, and zero lane markings.
+            Canonical simulation environments representing real-world challenges on Indian roads without painted lanes.
           </p>
         </div>
 
@@ -185,6 +205,7 @@ export const Scenarios: React.FC = () => {
               flexDirection: 'column',
               justifyContent: 'space-between',
               border: '1px solid var(--border-default)',
+              gap: '1rem',
             }}
           >
             <div>
@@ -226,28 +247,54 @@ export const Scenarios: React.FC = () => {
                 {sc.description}
               </p>
 
+              {/* 3 Core Communications: Environment, Main Challenge, Evaluates */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.45rem',
+                  fontSize: '0.8rem',
+                  background: 'var(--bg-surface-elevated)',
+                  padding: '0.75rem',
+                  borderRadius: 'var(--radius-sm)',
+                  marginBottom: '0.75rem',
+                  border: '1px solid var(--border-subtle)',
+                }}
+              >
+                <div>
+                  <strong style={{ color: 'var(--text-primary)' }}>Environment:</strong>{' '}
+                  <span style={{ color: 'var(--text-secondary)' }}>{sc.environment}</span>
+                </div>
+                <div>
+                  <strong style={{ color: 'var(--text-primary)' }}>Traffic Challenge:</strong>{' '}
+                  <span style={{ color: 'var(--text-secondary)' }}>{sc.trafficChallenge}</span>
+                </div>
+                <div>
+                  <strong style={{ color: 'var(--text-primary)' }}>Evaluates:</strong>{' '}
+                  <span style={{ color: 'var(--text-secondary)' }}>{sc.evaluates}</span>
+                </div>
+              </div>
+
+              {/* Physical Parameters Summary */}
               <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
-                  gap: '0.5rem',
-                  fontSize: '0.8rem',
+                  gap: '0.4rem',
+                  fontSize: '0.75rem',
                   color: 'var(--text-secondary)',
-                  background: 'var(--bg-surface-elevated)',
-                  padding: '0.6rem',
-                  borderRadius: 'var(--radius-sm)',
                   marginBottom: '0.75rem',
                 }}
               >
                 <div>Speed: <strong style={{ color: 'var(--text-primary)' }}>{sc.speed}</strong></div>
                 <div>Distance: <strong style={{ color: 'var(--text-primary)' }}>{sc.distance}</strong></div>
-                <div>Width: <strong style={{ color: 'var(--text-primary)' }}>{sc.roadWidth}</strong></div>
+                <div>Road Width: <strong style={{ color: 'var(--text-primary)' }}>{sc.roadWidth}</strong></div>
                 <div>Curvature: <strong style={{ color: 'var(--text-primary)' }}>{sc.curvature}</strong></div>
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
+              <div>
                 <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                  Agents:
+                  Road Users:
                 </span>{' '}
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
                   {sc.agentMix.join(', ')}

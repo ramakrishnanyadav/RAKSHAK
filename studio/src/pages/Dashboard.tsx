@@ -279,7 +279,7 @@ export const Dashboard: React.FC = () => {
             {totalRuns}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-            Across 6 Indian scenarios
+            Across 5 canonical Indian road scenarios
           </div>
         </div>
 

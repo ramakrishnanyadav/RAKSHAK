@@ -1,13 +1,13 @@
 /**
- * Scenario Detail Page (Route: /app/scenarios/:id).
- * Discloses full simulation geometry, curvature distribution, agent spawn rules,
- * seed variation parameters, and direct simulation launch trigger.
+ * Canonical Scenario Detail Page (Route: /app/scenarios/:id).
+ * Discloses simulation geometry, road parameters, dynamic agent spawn specifications,
+ * and direct launch triggers for canonical Indian road scenarios.
  */
 
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { BENCHMARK_SCENARIOS } from './Scenarios';
-import { ArrowLeft, Play, Settings, ShieldCheck, MapPin, Layers, PlusCircle } from 'lucide-react';
+import { BENCHMARK_SCENARIOS, LEGACY_SCENARIO_COMPATIBILITY_MAP } from './Scenarios';
+import { ArrowLeft, Play, Settings, ShieldCheck, MapPin, Layers, PlusCircle, AlertCircle } from 'lucide-react';
 import { AccessibleTable, ColumnDef } from '../components/AccessibleTable';
 
 interface ParamRow {
@@ -22,23 +22,67 @@ export const ScenarioDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const scenario = BENCHMARK_SCENARIOS.find((s) => s.id === id) || BENCHMARK_SCENARIOS[0];
+  // Resolve canonical scenario ID through compatibility mapping if historical ID is passed
+  const canonicalId = (id && LEGACY_SCENARIO_COMPATIBILITY_MAP[id]) || id;
+  const scenario = BENCHMARK_SCENARIOS.find((s) => s.id === canonicalId) || BENCHMARK_SCENARIOS[0];
 
+  // Specific canonical parameter configuration from engine/scenarios/registry.py
   const parameterRows: ParamRow[] = [
-    { name: 'road_curvature_max', type: 'float', defaultVal: '0.08 m⁻¹', range: '[0.0, 0.15]', description: 'Maximum road curvature for G2 clothoid corridor' },
-    { name: 'shoulder_width_unpaved', type: 'float', defaultVal: '1.8 m', range: '[0.5, 3.0]', description: 'Driveable unpaved dirt shoulder width' },
-    { name: 'traffic_density_agents', type: 'int', defaultVal: '14', range: '[4, 60]', description: 'Number of simultaneous dynamic traffic actors' },
-    { name: 'conformal_coverage_alpha', type: 'float', defaultVal: '0.05', range: '[0.01, 0.10]', description: 'Miscoverage rate guaranteeing 95% safety bound' },
-    { name: 'pothole_depth_meters', type: 'float', defaultVal: '0.18 m', range: '[0.05, 0.30]', description: 'Depth of road defect obstacle triggering risk gradient' },
-    { name: 'random_seed', type: 'int', defaultVal: '1000', range: '[1000, 9999]', description: 'Monte Carlo seed for stochastic agent behavior' },
+    {
+      name: 'target_distance_m',
+      type: 'float',
+      defaultVal: scenario.distance,
+      range: '75.0 – 100.0 m',
+      description: 'Total longitudinal road corridor length to reach scenario goal',
+    },
+    {
+      name: 'nominal_speed_m_s',
+      type: 'float',
+      defaultVal: scenario.speed,
+      range: '6.0 – 11.0 m/s',
+      description: 'Cruising reference speed for the autonomous vehicle',
+    },
+    {
+      name: 'road_width_m',
+      type: 'float',
+      defaultVal: scenario.roadWidth,
+      range: '5.5 – 14.0 m',
+      description: 'Total driveable surface width including unpaved dirt shoulders',
+    },
+    {
+      name: 'curvature_max',
+      type: 'float',
+      defaultVal: scenario.curvature,
+      range: '0.01 – 0.08 m⁻¹',
+      description: 'Maximum roadway centerline curvature constraint',
+    },
+    {
+      name: 'traffic_actors',
+      type: 'list',
+      defaultVal: scenario.agentMix.join(', '),
+      range: '1 – 6 heterogeneous actors',
+      description: 'Simultaneous dynamic actors present in the simulation environment',
+    },
+    {
+      name: 'seed_split',
+      type: 'string',
+      defaultVal: scenario.split.toUpperCase(),
+      range: 'tune (1000–1009), val (2000–2009), test (3000–3029)',
+      description: 'Designated evaluation split under the research governance protocol',
+    },
   ];
 
   const columns: ColumnDef<ParamRow>[] = [
-    { key: 'name', header: 'Parameter', sortable: true, render: (r) => <code style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>{r.name}</code> },
+    {
+      key: 'name',
+      header: 'Parameter',
+      sortable: true,
+      render: (r) => <code style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>{r.name}</code>,
+    },
     { key: 'type', header: 'Type' },
     { key: 'defaultVal', header: 'Nominal Value' },
-    { key: 'range', header: 'Allowed Range' },
-    { key: 'description', header: 'Physical Description' },
+    { key: 'range', header: 'Operating Range' },
+    { key: 'description', header: 'Operational Description' },
   ];
 
   return (
@@ -111,14 +155,41 @@ export const ScenarioDetail: React.FC = () => {
         </div>
       </div>
 
-      {/* Description & Physical Specs */}
+      {/* Description & Operational Dimensions */}
       <div className="glass-panel" style={{ padding: '1.5rem' }}>
         <h2 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-          Scenario Architecture & Operational Environment
+          Scenario Overview & Challenge Dimensions
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
           {scenario.description}
         </p>
+
+        {/* 3 Core Dimensions: Environment, Traffic Challenge, Evaluates */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.65rem',
+            background: 'var(--bg-surface-elevated)',
+            padding: '1rem',
+            borderRadius: 'var(--radius-sm)',
+            border: '1px solid var(--border-subtle)',
+            marginBottom: '1.25rem',
+          }}
+        >
+          <div>
+            <strong style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>Environment:</strong>{' '}
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{scenario.environment}</span>
+          </div>
+          <div>
+            <strong style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>Main Traffic Challenge:</strong>{' '}
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{scenario.trafficChallenge}</span>
+          </div>
+          <div>
+            <strong style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>What The Simulator Evaluates:</strong>{' '}
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{scenario.evaluates}</span>
+          </div>
+        </div>
 
         <div
           style={{
@@ -163,7 +234,7 @@ export const ScenarioDetail: React.FC = () => {
           Configurable Parameters & Randomization Bounds
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1rem' }}>
-          These parameters control the stochastic scenario generation across training and test seeds.
+          Authoritative parameter bounds from the simulation engine governing stochastic agent behaviors.
         </p>
 
         <AccessibleTable

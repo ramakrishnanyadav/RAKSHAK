@@ -9,13 +9,14 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAnnouncer } from '../components/LiveAnnouncer';
-import { BENCHMARK_SCENARIOS } from './Scenarios';
+import { BENCHMARK_SCENARIOS, LEGACY_SCENARIO_COMPATIBILITY_MAP } from './Scenarios';
 import { PlayCircle, Cpu, Sliders, CheckCircle2, AlertCircle, RefreshCw, Zap } from 'lucide-react';
 import { apiClient } from '../api/client';
 
 export const NewRun: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const initialScenario = searchParams.get('scenario') || 'SCENARIO_5_CATTLE_CROSSING';
+  const rawScenario = searchParams.get('scenario') || 'SCENARIO_5_CATTLE_CROSSING';
+  const initialScenario = LEGACY_SCENARIO_COMPATIBILITY_MAP[rawScenario] || rawScenario;
 
   const navigate = useNavigate();
   const { announce } = useAnnouncer();
