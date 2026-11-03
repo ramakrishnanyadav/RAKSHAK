@@ -1,0 +1,29 @@
+{
+  "co_simulation_protocol": "RoadRunner Scenario gRPC / MATLAB Co-Simulation",
+  "version": "1.0",
+  "coordinate_system": {
+    "roadrunner_frame": "ISO 8855 (X Forward, Y Left, Z Up)",
+    "apath_log_frame": "2D Cartesian (X Forward along corridor, Y Lateral Left)",
+    "transformation": "Direct planar mapping: x_apath = x_rr, y_apath = y_rr, yaw_apath = yaw_rr"
+  },
+  "signal_mapping": {
+    "ego_actor": {
+      "pose": "Simulation3D.Actor.Pose",
+      "velocity": "Simulation3D.Actor.Velocity",
+      "steering": "Simulink.VehicleDynamics.SteerAngle",
+      "acceleration": "Simulink.VehicleDynamics.LongitudinalAccel"
+    },
+    "dynamic_actors": {
+      "actor_list": "RoadRunner.Scenario.ActorRuntimeList",
+      "classification_map": {
+        "AutoRickshaw_01": "auto_rickshaw",
+        "Motorcycle_01": "two_wheeler",
+        "Pedestrian_Indian_01": "pedestrian",
+        "Cow_01": "cattle",
+        "HeavyTruck_Tata": "truck",
+        "Handcart_Vendor": "handcart"
+      }
+    }
+  },
+  "update_rate_hz": 10
+}

@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://adaptive-path.org/schemas/apath-log-v1.json",
+  "title": "apath-log v1 Schema",
+  "description": "Deterministic, engine-agnostic log format for simulation runs on unstructured Indian roads.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "timestamp_iso",
+    "config_hash",
+    "engine",
+    "scenario",
+    "planner",
+    "world",
+    "frames",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "apath-log/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[a-z0-9_]+$"
+    },
+    "timestamp_iso": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "config_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 digest of normalized scenario + planner configuration parameters"
+    },
+    "git_commit": {
+      "type": "string"
+    },
+    "engine": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["python_reference", "matlab_roadrunner", "recorded_dataset"]
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "required": ["id", "name", "split", "seed"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "SCENARIO_1_VILLAGE_ROAD",
+            "SCENARIO_2_URBAN_INTERSECTION",
+            "SCENARIO_3_HIGHWAY_MERGE",
+            "SCENARIO_4_DENSE_MARKET",
+            "SCENARIO_5_CATTLE_CROSSING"
+          ]
+        },
+        "name": { "type": "string" },
+        "split": { "type": "string", "enum": ["tune", "validate", "frozen_test"] },
+        "seed": { "type": "integer" },
+        "params": { "type": "object" }
+      }
+    },
+    "planner": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "enum": ["B0", "B1", "B2", "P1", "P2", "P3"] },
+        "name": { "type": "string" },
+        "config": { "type": "object" }
+      }
+    },
+    "world": {
+      "type": "object",
+      "required": ["bounds", "road_boundaries", "static_obstacles"],
+      "properties": {
+        "bounds": {
+          "type": "object",
+          "required": ["x_min", "x_max", "y_min", "y_max"],
+          "properties": {
+            "x_min": { "type": "number" },
+            "x_max": { "type": "number" },
+            "y_min": { "type": "number" },
+            "y_max": { "type": "number" }
+          }
+        },
+        "road_boundaries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["side", "points"],
+            "properties": {
+              "side": { "type": "string", "enum": ["left", "right", "island"] },
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": { "type": "number" },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
+            }
+          }
+        },
+        "static_obstacles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "kind", "x", "y", "length", "width"],
+            "properties": {
+              "id": { "type": "string" },
+              "kind": { "type": "string", "enum": ["stall", "pothole", "barrier", "parked_vehicle", "divider"] },
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "length": { "type": "number" },
+              "width": { "type": "number" },
+              "yaw": { "type": "number", "default": 0.0 }
+            }
+          }
+        }
+      }
+    },
+    "frames": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "t", "ego", "agents", "risk_field", "planner_output", "decision_trace"],
+        "properties": {
+          "step": { "type": "integer", "minimum": 0 },
+          "t": { "type": "number", "minimum": 0.0 },
+          "ego": {
+            "type": "object",
+            "required": ["x", "y", "yaw", "v", "steering", "acceleration", "active_state"],
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "yaw": { "type": "number" },
+              "v": { "type": "number", "minimum": 0.0 },
+              "steering": { "type": "number" },
+              "acceleration": { "type": "number" },
+              "jerk": { "type": "number" },
+              "length": { "type": "number", "default": 4.2 },
+              "width": { "type": "number", "default": 1.8 },
+              "active_state": {
+                "type": "string",
+                "enum": ["FOLLOW", "SLOW", "YIELD", "STOP", "BYPASS", "EMERGENCY_BRAKE"]
+              }
+            }
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "class_name", "x", "y", "yaw", "v_x", "v_y", "length", "width"],
+              "properties": {
+                "id": { "type": "string" },
+                "class_name": {
+                  "type": "string",
+                  "enum": ["auto_rickshaw", "two_wheeler", "pedestrian", "cattle", "car", "truck", "handcart"]
+                },
+                "x": { "type": "number" },
+                "y": { "type": "number" },
+                "yaw": { "type": "number" },
+                "v_x": { "type": "number" },
+                "v_y": { "type": "number" },
+                "length": { "type": "number" },
+                "width": { "type": "number" },
+                "is_occluded": { "type": "boolean", "default": false },
+                "prediction_hypotheses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["weight", "intent", "trajectory"],
+                    "properties": {
+                      "weight": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+                      "intent": { "type": "string" },
+                      "trajectory": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": ["x", "y", "t_rel"],
+                          "properties": {
+                            "x": { "type": "number" },
+                            "y": { "type": "number" },
+                            "t_rel": { "type": "number" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "conformal_envelope": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["t_rel", "radius_m", "coverage_p"],
+                    "properties": {
+                      "t_rel": { "type": "number" },
+                      "radius_m": { "type": "number" },
+                      "coverage_p": { "type": "number", "const": 0.95 }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "risk_field": {
+            "type": "object",
+            "required": ["max_risk", "ego_risk", "risk_level"],
+            "properties": {
+              "max_risk": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+              "ego_risk": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+              "critical_agent_id": { "type": ["string", "null"] },
+              "risk_level": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] }
+            }
+          },
+          "planner_output": {
+            "type": "object",
+            "required": ["replan_triggered", "cost_breakdown", "latency_ms"],
+            "properties": {
+              "replan_triggered": { "type": "boolean" },
+              "trigger_reason": {
+                "type": ["string", "null"],
+                "enum": ["PERIODIC", "RISK_THRESHOLD_EXCEEDED", "CONFORMAL_VIOLATION", "OCCLUDED_EMERGENCE", "PATH_BLOCKED", "MANUAL", null]
+              },
+              "cost_breakdown": {
+                "type": "object",
+                "properties": {
+                  "collision_cost": { "type": "number" },
+                  "progress_cost": { "type": "number" },
+                  "smoothness_cost": { "type": "number" },
+                  "risk_field_cost": { "type": "number" },
+                  "total_cost": { "type": "number" }
+                }
+              },
+              "latency_ms": { "type": "number" },
+              "planned_trajectory": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "x": { "type": "number" },
+                    "y": { "type": "number" },
+                    "v": { "type": "number" }
+                  }
+                }
+              }
+            }
+          },
+          "decision_trace": { "type": "string" }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "duration_s",
+        "completed_goal",
+        "collision_occurred",
+        "near_miss_count",
+        "min_clearance_m",
+        "mean_speed_m_s",
+        "max_jerk_m_s3",
+        "mean_jerk_m_s3",
+        "replan_count",
+        "p95_latency_ms"
+      ],
+      "properties": {
+        "duration_s": { "type": "number" },
+        "completed_goal": { "type": "boolean" },
+        "collision_occurred": { "type": "boolean" },
+        "near_miss_count": { "type": "integer" },
+        "min_clearance_m": { "type": "number" },
+        "mean_speed_m_s": { "type": "number" },
+        "max_jerk_m_s3": { "type": "number" },
+        "mean_jerk_m_s3": { "type": "number" },
+        "replan_count": { "type": "integer" },
+        "p95_latency_ms": { "type": "number" },
+        "failure_tag": {
+          "type": ["string", "null"],
+          "enum": ["PERCEPTION", "PREDICTION", "RISK", "PLANNING", "DYNAMICS", "NONE", null]
+        }
+      }
+    }
+  }
+}

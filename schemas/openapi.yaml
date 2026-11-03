@@ -1,0 +1,2476 @@
+openapi: 3.1.0
+info:
+  title: ADAPTIVE-PATH Studio API
+  description: Research & simulation platform for risk-aware predictive path planning
+    on unstructured Indian roads.
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      tags:
+      - observability
+      summary: Health Liveness
+      description: 'Liveness probe: verifies API process is alive and responsive.'
+      operationId: health_liveness_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+  /health/ready:
+    get:
+      tags:
+      - observability
+      summary: Health Readiness
+      description: 'Readiness probe: validates database connectivity and storage write
+        access.'
+      operationId: health_readiness_health_ready_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+  /metrics:
+    get:
+      tags:
+      - observability
+      summary: Get Metrics
+      description: Prometheus-compatible and JSON operational metrics.
+      operationId: get_metrics_metrics_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/auth/register:
+    post:
+      tags:
+      - auth
+      summary: Register User
+      description: Register a new user account with Argon2id password hashing.
+      operationId: register_user_api_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/login:
+    post:
+      tags:
+      - auth
+      summary: Login
+      description: 'Authenticate user, enforce lockout backoff, issue rotating refresh
+        token in cookie,
+
+        and return short-lived JWT access token with CSRF token.'
+      operationId: login_api_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/refresh:
+    post:
+      tags:
+      - auth
+      summary: Refresh Token
+      description: 'Rotate refresh token: invalidate old refresh token, issue a new
+        one,
+
+        and detect token family reuse attacks.'
+      operationId: refresh_token_api_auth_refresh_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /api/auth/logout:
+    post:
+      tags:
+      - auth
+      summary: Logout
+      description: Revoke current session and clear auth cookies.
+      operationId: logout_api_auth_logout_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/auth/guest:
+    post:
+      tags:
+      - auth
+      summary: Guest Access
+      description: Provide guest token for unauthenticated exploration of shipped
+        benchmarks and runs.
+      operationId: guest_access_api_auth_guest_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /api/auth/me:
+    get:
+      tags:
+      - auth
+      summary: Get Me
+      description: Return profile for currently authenticated user.
+      operationId: get_me_api_auth_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+      security:
+      - HTTPBearer: []
+  /api/auth/verify-email:
+    post:
+      tags:
+      - auth
+      summary: Verify Email
+      description: Validate verification token and activate email status.
+      operationId: verify_email_api_auth_verify_email_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyEmailRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/forgot-password:
+    post:
+      tags:
+      - auth
+      summary: Forgot Password
+      description: Initiate password reset flow by issuing one-time reset token.
+      operationId: forgot_password_api_auth_forgot_password_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/reset-password:
+    post:
+      tags:
+      - auth
+      summary: Reset Password
+      description: Reset password using secure token and revoke existing sessions.
+      operationId: reset_password_api_auth_reset_password_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/sessions:
+    get:
+      tags:
+      - auth
+      summary: List Active Sessions
+      description: List active unrevoked sessions for the current user.
+      operationId: list_active_sessions_api_auth_sessions_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SessionSummary'
+                type: array
+                title: Response List Active Sessions Api Auth Sessions Get
+      security:
+      - HTTPBearer: []
+  /api/auth/sessions/{session_id}:
+    delete:
+      tags:
+      - auth
+      summary: Revoke Session
+      description: Revoke a specific active session.
+      operationId: revoke_session_api_auth_sessions__session_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/sessions/revoke-all:
+    post:
+      tags:
+      - auth
+      summary: Revoke All Other Sessions
+      description: Revoke all active sessions for current user except the current
+        session.
+      operationId: revoke_all_other_sessions_api_auth_sessions_revoke_all_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+  /api/auth/account:
+    delete:
+      tags:
+      - auth
+      summary: Delete Account
+      description: Permanently delete account after password verification.
+      operationId: delete_account_api_auth_account_delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteAccountRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/auth/oauth/google:
+    get:
+      tags:
+      - auth
+      summary: Google Oauth Login
+      description: Returns Google OAuth authorization URL (or mock URL if unconfigured).
+      operationId: google_oauth_login_api_auth_oauth_google_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/auth/oauth/google/callback:
+    get:
+      tags:
+      - auth
+      summary: Google Oauth Callback
+      description: Handle Google OAuth authorization callback code.
+      operationId: google_oauth_callback_api_auth_oauth_google_callback_get
+      parameters:
+      - name: code
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Code
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/runs:
+    post:
+      tags:
+      - runs
+      summary: Launch Run
+      description: Enqueue a simulation run with idempotency checking and quota limits.
+      operationId: launch_run_api_runs_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Idempotency-Key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunLaunchRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Launch Run Api Runs Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - runs
+      summary: List Runs
+      description: 'List runs matching filters with pagination.
+
+        Guest users automatically only see shipped baseline runs.'
+      operationId: list_runs_api_runs_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scenario Id
+      - name: planner_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Planner Id
+      - name: split
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Split
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: shipped_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Shipped Only
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/runs/batch:
+    post:
+      tags:
+      - runs
+      summary: Launch Batch
+      description: Enqueue a batch parameter sweep across scenarios, planners, and
+        seeds.
+      operationId: launch_batch_api_runs_batch_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchLaunchRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Launch Batch Api Runs Batch Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/runs/{run_id}:
+    get:
+      tags:
+      - runs
+      summary: Get Run
+      description: Retrieve run record summary with ownership enforcement.
+      operationId: get_run_api_runs__run_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunSummaryResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/runs/{run_id}/cancel:
+    post:
+      tags:
+      - runs
+      summary: Cancel Run
+      description: Cooperatively cancel a queued or running simulation run.
+      operationId: cancel_run_api_runs__run_id__cancel_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/runs/{run_id}/retry:
+    post:
+      tags:
+      - runs
+      summary: Retry Run
+      description: Retry a failed or cancelled simulation run.
+      operationId: retry_run_api_runs__run_id__retry_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/runs/{run_id}/stream:
+    get:
+      tags:
+      - runs
+      summary: Stream Run
+      description: Real-time Server-Sent Events (SSE) telemetry stream.
+      operationId: stream_run_api_runs__run_id__stream_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/runs/{run_id}/log:
+    get:
+      tags:
+      - logs
+      summary: Get Run Log Stream
+      description: 'Retrieve run log with full support for HTTP Range (byte serving)
+        requests (RFC 7233).
+
+        Allows clients/browsers to stream arbitrary slices of huge simulation traces.'
+      operationId: get_run_log_stream_api_runs__run_id__log_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Run Id
+      - name: Range
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Range
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/runs/{run_id}/manifest:
+    get:
+      tags:
+      - logs
+      summary: Get Run Manifest
+      description: 'Fetch lightweight run manifest (metadata, road network geometry,
+        metrics summary)
+
+        without transferring large frame lists.'
+      operationId: get_run_manifest_api_runs__run_id__manifest_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunManifestResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/runs/{run_id}/frames:
+    get:
+      tags:
+      - logs
+      summary: Get Run Frames Chunk
+      description: Stream a chunked temporal window of simulation frames with pagination.
+      operationId: get_run_frames_chunk_api_runs__run_id__frames_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Run Id
+      - name: start_time
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: 0.0
+          description: Start time in seconds
+          default: 0.0
+          title: Start Time
+        description: Start time in seconds
+      - name: end_time
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: 0.0
+          description: End time in seconds
+          default: 5.0
+          title: End Time
+        description: End time in seconds
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          description: Maximum frames to return
+          default: 100
+          title: Limit
+        description: Maximum frames to return
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          description: Offset within temporal slice
+          default: 0
+          title: Offset
+        description: Offset within temporal slice
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FramesChunkResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/scenarios:
+    get:
+      tags:
+      - scenarios
+      summary: List Scenarios
+      description: List standard catalog scenarios and custom authoring variants.
+      operationId: list_scenarios_api_scenarios_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: include_variants
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+          title: Include Variants
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScenarioDetailResponse'
+                title: Response List Scenarios Api Scenarios Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/scenarios/{scenario_id}:
+    get:
+      tags:
+      - scenarios
+      summary: Get Scenario
+      description: Retrieve detailed scenario metadata and split configurations.
+      operationId: get_scenario_api_scenarios__scenario_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Scenario Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioDetailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/scenarios/variants:
+    post:
+      tags:
+      - scenarios
+      summary: Create Scenario Variant
+      description: Create a new scenario variant (designer / admin only).
+      operationId: create_scenario_variant_api_scenarios_variants_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScenarioVariantCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioDetailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/benchmarks/summary:
+    get:
+      tags:
+      - benchmarks
+      summary: Get Benchmarks
+      description: Computes ablation benchmark tables with 95% bootstrap confidence
+        intervals.
+      operationId: get_benchmarks_api_benchmarks_summary_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scenario Id
+      - name: split
+        in: query
+        required: false
+        schema:
+          type: string
+          default: tune
+          title: Split
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScenarioBenchmarkSummary'
+                title: Response Get Benchmarks Api Benchmarks Summary Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/benchmarks:
+    get:
+      tags:
+      - benchmarks
+      summary: Get Benchmarks
+      description: Computes ablation benchmark tables with 95% bootstrap confidence
+        intervals.
+      operationId: get_benchmarks_api_benchmarks_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scenario Id
+      - name: split
+        in: query
+        required: false
+        schema:
+          type: string
+          default: tune
+          title: Split
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScenarioBenchmarkSummary'
+                title: Response Get Benchmarks Api Benchmarks Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/benchmarks/compare:
+    get:
+      tags:
+      - benchmarks
+      summary: Compare Planners
+      description: Pairwise statistical comparison between baseline and proposed candidate
+        planners.
+      operationId: compare_planners_api_benchmarks_compare_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          type: string
+          default: SCENARIO_5_CATTLE_CROSSING
+          title: Scenario Id
+      - name: split
+        in: query
+        required: false
+        schema:
+          type: string
+          default: tune
+          title: Split
+      - name: baseline
+        in: query
+        required: false
+        schema:
+          type: string
+          default: B1
+          title: Baseline
+      - name: candidate
+        in: query
+        required: false
+        schema:
+          type: string
+          default: P3
+          title: Candidate
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkCompareResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/benchmark/api/benchmarks/summary:
+    get:
+      tags:
+      - benchmarks-alias
+      - benchmarks
+      summary: Get Benchmarks
+      description: Computes ablation benchmark tables with 95% bootstrap confidence
+        intervals.
+      operationId: get_benchmarks_api_benchmark_api_benchmarks_summary_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scenario Id
+      - name: split
+        in: query
+        required: false
+        schema:
+          type: string
+          default: tune
+          title: Split
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScenarioBenchmarkSummary'
+                title: Response Get Benchmarks Api Benchmark Api Benchmarks Summary
+                  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/benchmark/api/benchmarks:
+    get:
+      tags:
+      - benchmarks-alias
+      - benchmarks
+      summary: Get Benchmarks
+      description: Computes ablation benchmark tables with 95% bootstrap confidence
+        intervals.
+      operationId: get_benchmarks_api_benchmark_api_benchmarks_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scenario Id
+      - name: split
+        in: query
+        required: false
+        schema:
+          type: string
+          default: tune
+          title: Split
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScenarioBenchmarkSummary'
+                title: Response Get Benchmarks Api Benchmark Api Benchmarks Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/benchmark/api/benchmarks/compare:
+    get:
+      tags:
+      - benchmarks-alias
+      - benchmarks
+      summary: Compare Planners
+      description: Pairwise statistical comparison between baseline and proposed candidate
+        planners.
+      operationId: compare_planners_api_benchmark_api_benchmarks_compare_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          type: string
+          default: SCENARIO_5_CATTLE_CROSSING
+          title: Scenario Id
+      - name: split
+        in: query
+        required: false
+        schema:
+          type: string
+          default: tune
+          title: Split
+      - name: baseline
+        in: query
+        required: false
+        schema:
+          type: string
+          default: B1
+          title: Baseline
+      - name: candidate
+        in: query
+        required: false
+        schema:
+          type: string
+          default: P3
+          title: Candidate
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkCompareResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/failures:
+    get:
+      tags:
+      - failures
+      summary: List Failures
+      description: Filters runs that suffered collisions or clearance breaches (<
+        0.6m) with module attribution.
+      operationId: list_failures_api_failures_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scenario Id
+      - name: planner_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Planner Id
+      - name: tag
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tag
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/reports:
+    get:
+      tags:
+      - reports
+      summary: List Reports
+      description: List generated evaluation reports.
+      operationId: list_reports_api_reports_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ReportResponse'
+                type: array
+                title: Response List Reports Api Reports Get
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - reports
+      summary: Generate Report
+      description: Generate a formal research benchmark and safety synthesis report.
+      operationId: generate_report_api_reports_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/reports/{report_id}:
+    get:
+      tags:
+      - reports
+      summary: Get Report
+      description: Retrieve full evaluation report document.
+      operationId: get_report_api_reports__report_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: report_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Report Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/settings/me:
+    get:
+      tags:
+      - settings
+      summary: Get User Settings
+      description: Retrieve personal UI and planner preferences.
+      operationId: get_user_settings_api_settings_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsResponse'
+      security:
+      - HTTPBearer: []
+    put:
+      tags:
+      - settings
+      summary: Update User Settings
+      description: Update personal UI preferences.
+      operationId: update_user_settings_api_settings_me_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSettingsUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/admin/users:
+    get:
+      tags:
+      - admin
+      summary: List System Users
+      description: List registered users with roles and quota allocations (no N+1
+        queries via joinedload).
+      operationId: list_system_users_api_admin_users_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 200
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminUserListItem'
+                title: Response List System Users Api Admin Users Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/users/{user_id}/role:
+    put:
+      tags:
+      - admin
+      summary: Update User Role
+      description: Change role assignment for a user.
+      operationId: update_user_role_api_admin_users__user_id__role_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserRoleUpdateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/users/{user_id}/quota:
+    put:
+      tags:
+      - admin
+      summary: Update User Quota
+      description: Update execution quotas for a user.
+      operationId: update_user_quota_api_admin_users__user_id__quota_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserQuotaUpdateRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/audit-logs:
+    get:
+      tags:
+      - admin
+      summary: Get Audit Trail
+      description: Query system-wide security and operations audit log.
+      operationId: get_audit_trail_api_admin_audit_logs_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: action
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Action
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 500
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: Offset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLogEntryResponse'
+                title: Response Get Audit Trail Api Admin Audit Logs Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/system-stats:
+    get:
+      tags:
+      - admin
+      summary: Get System Stats
+      description: Retrieve operational health, worker depth, and usage statistics.
+      operationId: get_system_stats_api_admin_system_stats_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatsResponse'
+      security:
+      - HTTPBearer: []
+components:
+  schemas:
+    AdminUserListItem:
+      properties:
+        id:
+          type: string
+          title: Id
+        email:
+          type: string
+          title: Email
+        role:
+          type: string
+          title: Role
+        is_active:
+          type: boolean
+          title: Is Active
+        is_verified:
+          type: boolean
+          title: Is Verified
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        quota:
+          anyOf:
+          - $ref: '#/components/schemas/QuotaInfo'
+          - type: 'null'
+      type: object
+      required:
+      - id
+      - email
+      - role
+      - is_active
+      - is_verified
+      - created_at
+      title: AdminUserListItem
+    AdminUserQuotaUpdateRequest:
+      properties:
+        max_concurrent_runs:
+          type: integer
+          maximum: 20.0
+          minimum: 1.0
+          title: Max Concurrent Runs
+        daily_run_limit:
+          type: integer
+          maximum: 1000.0
+          minimum: 1.0
+          title: Daily Run Limit
+      type: object
+      required:
+      - max_concurrent_runs
+      - daily_run_limit
+      title: AdminUserQuotaUpdateRequest
+    AdminUserRoleUpdateRequest:
+      properties:
+        role:
+          type: string
+          enum:
+          - guest
+          - researcher
+          - designer
+          - admin
+          title: Role
+      type: object
+      required:
+      - role
+      title: AdminUserRoleUpdateRequest
+    AuditLogEntryResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        user_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Id
+        action:
+          type: string
+          title: Action
+        resource_type:
+          type: string
+          title: Resource Type
+        resource_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resource Id
+        details:
+          additionalProperties: true
+          type: object
+          title: Details
+        ip_address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ip Address
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+      type: object
+      required:
+      - id
+      - user_id
+      - action
+      - resource_type
+      - resource_id
+      - details
+      - ip_address
+      - timestamp
+      title: AuditLogEntryResponse
+    BatchLaunchRequest:
+      properties:
+        scenario_ids:
+          items:
+            type: string
+          type: array
+          title: Scenario Ids
+        planner_ids:
+          items:
+            type: string
+          type: array
+          title: Planner Ids
+        split:
+          type: string
+          enum:
+          - tune
+          - validate
+          - frozen_test
+          title: Split
+          default: tune
+        seeds:
+          anyOf:
+          - items:
+              type: integer
+            type: array
+          - type: 'null'
+          title: Seeds
+        engine_adapter:
+          type: string
+          enum:
+          - python
+          - matlab
+          title: Engine Adapter
+          default: python
+      type: object
+      title: BatchLaunchRequest
+    BenchmarkCompareResponse:
+      properties:
+        baseline_planner:
+          type: string
+          title: Baseline Planner
+        candidate_planner:
+          type: string
+          title: Candidate Planner
+        scenario_id:
+          type: string
+          title: Scenario Id
+        split:
+          type: string
+          title: Split
+        collision_rate_diff_pct:
+          type: number
+          title: Collision Rate Diff Pct
+        clearance_improvement_m:
+          type: number
+          title: Clearance Improvement M
+        jerk_reduction_pct:
+          type: number
+          title: Jerk Reduction Pct
+        p95_latency_ratio:
+          type: number
+          title: P95 Latency Ratio
+      type: object
+      required:
+      - baseline_planner
+      - candidate_planner
+      - scenario_id
+      - split
+      - collision_rate_diff_pct
+      - clearance_improvement_m
+      - jerk_reduction_pct
+      - p95_latency_ratio
+      title: BenchmarkCompareResponse
+    DeleteAccountRequest:
+      properties:
+        password:
+          type: string
+          title: Password
+          description: Confirm password to delete account
+      type: object
+      required:
+      - password
+      title: DeleteAccountRequest
+    ForgotPasswordRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+      type: object
+      required:
+      - email
+      title: ForgotPasswordRequest
+    FramesChunkResponse:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+        start_time:
+          type: number
+          title: Start Time
+        end_time:
+          type: number
+          title: End Time
+        frame_count:
+          type: integer
+          title: Frame Count
+        frames:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Frames
+      type: object
+      required:
+      - run_id
+      - start_time
+      - end_time
+      - frame_count
+      - frames
+      title: FramesChunkResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HealthCheckResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        service:
+          type: string
+          title: Service
+        version:
+          type: string
+          title: Version
+        engine_contract:
+          type: string
+          title: Engine Contract
+      type: object
+      required:
+      - status
+      - service
+      - version
+      - engine_contract
+      title: HealthCheckResponse
+    MetricConfidenceInterval:
+      properties:
+        mean:
+          type: number
+          title: Mean
+        ci_lower:
+          type: number
+          title: Ci Lower
+        ci_upper:
+          type: number
+          title: Ci Upper
+      type: object
+      required:
+      - mean
+      - ci_lower
+      - ci_upper
+      title: MetricConfidenceInterval
+    PlannerBenchmarkRow:
+      properties:
+        planner_id:
+          type: string
+          title: Planner Id
+        planner_name:
+          type: string
+          title: Planner Name
+        run_count:
+          type: integer
+          title: Run Count
+        collision_rate:
+          $ref: '#/components/schemas/MetricConfidenceInterval'
+        min_clearance:
+          $ref: '#/components/schemas/MetricConfidenceInterval'
+        mean_jerk:
+          $ref: '#/components/schemas/MetricConfidenceInterval'
+        p95_latency_ms:
+          $ref: '#/components/schemas/MetricConfidenceInterval'
+        mean_speed:
+          $ref: '#/components/schemas/MetricConfidenceInterval'
+      type: object
+      required:
+      - planner_id
+      - planner_name
+      - run_count
+      - collision_rate
+      - min_clearance
+      - mean_jerk
+      - p95_latency_ms
+      - mean_speed
+      title: PlannerBenchmarkRow
+    QuotaInfo:
+      properties:
+        max_concurrent_runs:
+          type: integer
+          title: Max Concurrent Runs
+        daily_run_limit:
+          type: integer
+          title: Daily Run Limit
+        runs_today:
+          type: integer
+          title: Runs Today
+      type: object
+      required:
+      - max_concurrent_runs
+      - daily_run_limit
+      - runs_today
+      title: QuotaInfo
+    ReadinessResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        database_connected:
+          type: boolean
+          title: Database Connected
+        storage_writable:
+          type: boolean
+          title: Storage Writable
+        worker_ready:
+          type: boolean
+          title: Worker Ready
+      type: object
+      required:
+      - status
+      - database_connected
+      - storage_writable
+      - worker_ready
+      title: ReadinessResponse
+    ReportCreateRequest:
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          title: Title
+        scenario_ids:
+          items:
+            type: string
+          type: array
+          title: Scenario Ids
+        planner_ids:
+          items:
+            type: string
+          type: array
+          title: Planner Ids
+      type: object
+      required:
+      - title
+      - scenario_ids
+      - planner_ids
+      title: ReportCreateRequest
+    ReportResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        author_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Id
+        scenario_ids:
+          items:
+            type: string
+          type: array
+          title: Scenario Ids
+        planner_ids:
+          items:
+            type: string
+          type: array
+          title: Planner Ids
+        summary_markdown:
+          type: string
+          title: Summary Markdown
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - title
+      - author_id
+      - scenario_ids
+      - planner_ids
+      - summary_markdown
+      - created_at
+      title: ReportResponse
+    ResetPasswordRequest:
+      properties:
+        token:
+          type: string
+          title: Token
+          description: Password reset token
+        new_password:
+          type: string
+          minLength: 8
+          title: New Password
+      type: object
+      required:
+      - token
+      - new_password
+      title: ResetPasswordRequest
+    RunLaunchRequest:
+      properties:
+        scenario_id:
+          type: string
+          title: Scenario Id
+          description: Target scenario, e.g. SCENARIO_5_CATTLE_CROSSING
+        planner_id:
+          type: string
+          enum:
+          - B0
+          - B1
+          - B2
+          - P1
+          - P2
+          - P3
+          title: Planner Id
+          description: Planner to evaluate
+        split:
+          type: string
+          enum:
+          - tune
+          - validate
+          - frozen_test
+          title: Split
+          description: Dataset split
+          default: tune
+        seed:
+          type: integer
+          title: Seed
+          description: Seed for deterministic generation
+          default: 1000
+        engine_adapter:
+          type: string
+          enum:
+          - python
+          - matlab
+          title: Engine Adapter
+          description: Execution engine
+          default: python
+        custom_params:
+          additionalProperties: true
+          type: object
+          title: Custom Params
+          description: Custom parameter overrides
+        idempotency_key:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Idempotency Key
+          description: Optional client idempotency key
+      type: object
+      required:
+      - scenario_id
+      - planner_id
+      title: RunLaunchRequest
+    RunListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/RunSummaryResponse'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        limit:
+          type: integer
+          title: Limit
+        offset:
+          type: integer
+          title: Offset
+      type: object
+      required:
+      - items
+      - total
+      - limit
+      - offset
+      title: RunListResponse
+    RunManifestResponse:
+      properties:
+        schema_version:
+          type: string
+          title: Schema Version
+        run_id:
+          type: string
+          title: Run Id
+        timestamp_iso:
+          type: string
+          title: Timestamp Iso
+        config_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Config Hash
+        engine:
+          additionalProperties: true
+          type: object
+          title: Engine
+        scenario:
+          additionalProperties: true
+          type: object
+          title: Scenario
+        planner:
+          additionalProperties: true
+          type: object
+          title: Planner
+        world:
+          additionalProperties: true
+          type: object
+          title: World
+        metrics:
+          additionalProperties: true
+          type: object
+          title: Metrics
+        total_frames:
+          type: integer
+          title: Total Frames
+      type: object
+      required:
+      - schema_version
+      - run_id
+      - timestamp_iso
+      - config_hash
+      - engine
+      - scenario
+      - planner
+      - world
+      - metrics
+      - total_frames
+      title: RunManifestResponse
+    RunSummaryResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        scenario_id:
+          type: string
+          title: Scenario Id
+        planner_id:
+          type: string
+          title: Planner Id
+        split:
+          type: string
+          title: Split
+        seed:
+          type: integer
+          title: Seed
+        engine_adapter:
+          type: string
+          title: Engine Adapter
+        status:
+          type: string
+          title: Status
+        config_hash:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Config Hash
+        is_shipped:
+          type: boolean
+          title: Is Shipped
+        owner_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Owner Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        duration_s:
+          type: number
+          title: Duration S
+        completed_goal:
+          type: boolean
+          title: Completed Goal
+        collision_occurred:
+          type: boolean
+          title: Collision Occurred
+        min_clearance_m:
+          type: number
+          title: Min Clearance M
+        mean_speed_m_s:
+          type: number
+          title: Mean Speed M S
+        max_jerk_m_s3:
+          type: number
+          title: Max Jerk M S3
+        replan_count:
+          type: integer
+          title: Replan Count
+        p95_latency_ms:
+          type: number
+          title: P95 Latency Ms
+        failure_tag:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Failure Tag
+      type: object
+      required:
+      - id
+      - scenario_id
+      - planner_id
+      - split
+      - seed
+      - engine_adapter
+      - status
+      - config_hash
+      - is_shipped
+      - owner_id
+      - created_at
+      - duration_s
+      - completed_goal
+      - collision_occurred
+      - min_clearance_m
+      - mean_speed_m_s
+      - max_jerk_m_s3
+      - replan_count
+      - p95_latency_ms
+      - failure_tag
+      title: RunSummaryResponse
+    ScenarioBenchmarkSummary:
+      properties:
+        scenario_id:
+          type: string
+          title: Scenario Id
+        scenario_name:
+          type: string
+          title: Scenario Name
+        split:
+          type: string
+          title: Split
+        planners:
+          items:
+            $ref: '#/components/schemas/PlannerBenchmarkRow'
+          type: array
+          title: Planners
+      type: object
+      required:
+      - scenario_id
+      - scenario_name
+      - split
+      - planners
+      title: ScenarioBenchmarkSummary
+    ScenarioDetailResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          title: Description
+        target_distance_m:
+          type: number
+          title: Target Distance M
+        timeout_s:
+          type: number
+          title: Timeout S
+        nominal_speed_m_s:
+          type: number
+          title: Nominal Speed M S
+        splits:
+          additionalProperties:
+            items:
+              type: integer
+            type: array
+          type: object
+          title: Splits
+        is_variant:
+          type: boolean
+          title: Is Variant
+          default: false
+        base_scenario_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Base Scenario Id
+      type: object
+      required:
+      - id
+      - name
+      - description
+      - target_distance_m
+      - timeout_s
+      - nominal_speed_m_s
+      - splits
+      title: ScenarioDetailResponse
+    ScenarioVariantCreateRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 128
+          title: Name
+        description:
+          type: string
+          maxLength: 512
+          title: Description
+        base_scenario_id:
+          type: string
+          title: Base Scenario Id
+        config_overrides:
+          additionalProperties: true
+          type: object
+          title: Config Overrides
+      type: object
+      required:
+      - name
+      - description
+      - base_scenario_id
+      title: ScenarioVariantCreateRequest
+    SessionSummary:
+      properties:
+        id:
+          type: string
+          title: Id
+        user_agent:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Agent
+        ip_address:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ip Address
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+      type: object
+      required:
+      - id
+      - user_agent
+      - ip_address
+      - created_at
+      - expires_at
+      title: SessionSummary
+    SystemStatsResponse:
+      properties:
+        environment:
+          type: string
+          title: Environment
+        active_worker_threads:
+          type: integer
+          title: Active Worker Threads
+        total_runs_recorded:
+          type: integer
+          title: Total Runs Recorded
+        completed_runs:
+          type: integer
+          title: Completed Runs
+        failed_runs:
+          type: integer
+          title: Failed Runs
+        cancelled_runs:
+          type: integer
+          title: Cancelled Runs
+        total_registered_users:
+          type: integer
+          title: Total Registered Users
+      type: object
+      required:
+      - environment
+      - active_worker_threads
+      - total_runs_recorded
+      - completed_runs
+      - failed_runs
+      - cancelled_runs
+      - total_registered_users
+      title: SystemStatsResponse
+    TokenResponse:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        token_type:
+          type: string
+          title: Token Type
+          default: Bearer
+        expires_in_minutes:
+          type: integer
+          title: Expires In Minutes
+        csrf_token:
+          type: string
+          title: Csrf Token
+        user:
+          $ref: '#/components/schemas/UserProfile'
+      type: object
+      required:
+      - access_token
+      - expires_in_minutes
+      - csrf_token
+      - user
+      title: TokenResponse
+    UserLoginRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+      - email
+      - password
+      title: UserLoginRequest
+    UserProfile:
+      properties:
+        id:
+          type: string
+          title: Id
+        email:
+          type: string
+          format: email
+          title: Email
+        role:
+          type: string
+          enum:
+          - guest
+          - researcher
+          - designer
+          - admin
+          title: Role
+        is_active:
+          type: boolean
+          title: Is Active
+        is_verified:
+          type: boolean
+          title: Is Verified
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - email
+      - role
+      - is_active
+      - is_verified
+      - created_at
+      title: UserProfile
+    UserRegisterRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+          description: User email address
+        password:
+          type: string
+          minLength: 8
+          title: Password
+          description: Password with minimum 8 characters
+        role:
+          type: string
+          enum:
+          - researcher
+          - designer
+          - admin
+          title: Role
+          description: Desired user role
+          default: researcher
+      type: object
+      required:
+      - email
+      - password
+      title: UserRegisterRequest
+    UserSettingsResponse:
+      properties:
+        preferences:
+          additionalProperties: true
+          type: object
+          title: Preferences
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - preferences
+      - updated_at
+      title: UserSettingsResponse
+    UserSettingsUpdateRequest:
+      properties:
+        preferences:
+          additionalProperties: true
+          type: object
+          title: Preferences
+      type: object
+      required:
+      - preferences
+      title: UserSettingsUpdateRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    VerifyEmailRequest:
+      properties:
+        token:
+          type: string
+          title: Token
+          description: Email verification token
+      type: object
+      required:
+      - token
+      title: VerifyEmailRequest
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

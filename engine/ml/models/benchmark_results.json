@@ -1,0 +1,181 @@
+{
+  "ablations": {
+    "track_a_physics": {
+      "minADE": 0.414,
+      "minADE_std": 0.346,
+      "minFDE": 0.958,
+      "minFDE_std": 0.924,
+      "miss_rate_pct": 13.12,
+      "mean_NLL": 1.545,
+      "empirical_coverage_pct": 79.06,
+      "count": 320,
+      "fsr": {
+        "total_cases": 320,
+        "ground_truth_high_risk": 314,
+        "false_safe_count": 181,
+        "true_positive_count": 133,
+        "false_alarm_count": 0,
+        "true_safe_count": 6,
+        "false_safe_rate": 0.5764,
+        "false_safe_pct": 57.64,
+        "recall_pct": 42.36
+      }
+    },
+    "track_a_physics_calibrated": {
+      "minADE": 0.414,
+      "minADE_std": 0.346,
+      "minFDE": 0.958,
+      "minFDE_std": 0.924,
+      "miss_rate_pct": 13.12,
+      "mean_NLL": 2.832,
+      "empirical_coverage_pct": 100.0,
+      "count": 320,
+      "fsr": {
+        "total_cases": 320,
+        "ground_truth_high_risk": 314,
+        "false_safe_count": 172,
+        "true_positive_count": 142,
+        "false_alarm_count": 0,
+        "true_safe_count": 6,
+        "false_safe_rate": 0.5478,
+        "false_safe_pct": 54.78,
+        "recall_pct": 45.22
+      }
+    },
+    "track_b_learned": {
+      "minADE": 0.466,
+      "minADE_std": 0.315,
+      "minFDE": 0.978,
+      "minFDE_std": 0.737,
+      "miss_rate_pct": 7.81,
+      "mean_NLL": 1.139,
+      "empirical_coverage_pct": 84.06,
+      "count": 320,
+      "fsr": {
+        "total_cases": 320,
+        "ground_truth_high_risk": 314,
+        "false_safe_count": 176,
+        "true_positive_count": 138,
+        "false_alarm_count": 0,
+        "true_safe_count": 6,
+        "false_safe_rate": 0.5605,
+        "false_safe_pct": 56.05,
+        "recall_pct": 43.95
+      }
+    },
+    "track_b_learned_calibrated": {
+      "minADE": 0.466,
+      "minADE_std": 0.315,
+      "minFDE": 0.978,
+      "minFDE_std": 0.737,
+      "miss_rate_pct": 7.81,
+      "mean_NLL": 2.551,
+      "empirical_coverage_pct": 99.69,
+      "count": 320,
+      "fsr": {
+        "total_cases": 320,
+        "ground_truth_high_risk": 314,
+        "false_safe_count": 106,
+        "true_positive_count": 208,
+        "false_alarm_count": 0,
+        "true_safe_count": 6,
+        "false_safe_rate": 0.3376,
+        "false_safe_pct": 33.76,
+        "recall_pct": 66.24
+      }
+    }
+  },
+  "bootstrap_confidence_intervals": {
+    "minADE_track_a_95_CI": [
+      0.3773,
+      0.4512
+    ],
+    "minADE_track_b_95_CI": [
+      0.4311,
+      0.5007
+    ],
+    "delta_minADE_95_CI": [
+      0.0137,
+      0.0931
+    ],
+    "mean_delta_ade": 0.0519
+  },
+  "decision_rule": {
+    "ade_statistically_superior": false,
+    "fsr_superior_or_equal": true,
+    "promoted_to_p2_p3_ml": false,
+    "verdict": "REJECT / KEEP TRACK A: Track B does NOT statistically beat Track A with 95% confidence intervals. Retaining Track A in P2-ML and P3-ML."
+  },
+  "parity": {
+    "onnx_available": true,
+    "parity_passed": true,
+    "max_err_futures": 3.814697265625e-06,
+    "max_err_weights": 1.4901161193847656e-07,
+    "max_err_cov": 4.76837158203125e-07,
+    "tolerance": 0.0001,
+    "vectors_json_path": "engine/ml/models/matlab_parity_vectors.json"
+  },
+  "latency_60_agents": {
+    "num_agents": 60,
+    "iterations": 40,
+    "track_b_latency_ms": {
+      "mean": 2.79,
+      "p95": 3.89,
+      "max": 4.37,
+      "constraint_met_under_20ms": true
+    },
+    "track_a_latency_ms": {
+      "mean": 60.64,
+      "p95": 80.07
+    }
+  },
+  "perception_map": {
+    "mAP_50": 0.8067,
+    "mAP_50_95": 0.5545,
+    "mean_recall": 0.8275,
+    "per_class": {
+      "auto_rickshaw": {
+        "mAP50": 0.824,
+        "mAP50_95": 0.586,
+        "recall": 0.841
+      },
+      "two_wheeler": {
+        "mAP50": 0.865,
+        "mAP50_95": 0.612,
+        "recall": 0.88
+      },
+      "pedestrian": {
+        "mAP50": 0.762,
+        "mAP50_95": 0.495,
+        "recall": 0.792
+      },
+      "cattle": {
+        "mAP50": 0.781,
+        "mAP50_95": 0.518,
+        "recall": 0.805
+      },
+      "truck": {
+        "mAP50": 0.89,
+        "mAP50_95": 0.674,
+        "recall": 0.912
+      },
+      "handcart": {
+        "mAP50": 0.718,
+        "mAP50_95": 0.442,
+        "recall": 0.735
+      }
+    }
+  },
+  "replan_trigger": {
+    "total_cycles": 120,
+    "rule_triggers": 88,
+    "learned_triggers": 35,
+    "concordance_rate_pct": 54.17,
+    "rule_f1": 0.8944,
+    "rule_precision": 0.8182,
+    "rule_recall": 0.9863,
+    "learned_f1": 0.5741,
+    "learned_precision": 0.8857,
+    "learned_recall": 0.4247
+  }
+}

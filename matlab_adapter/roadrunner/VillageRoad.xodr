@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenDRIVE>
+  <header revMajor="1" revMinor="6" name="VillageRoad_SIH26037" version="1.00" date="2026-10-14T06:00:00" north="0.0" south="0.0" east="0.0" west="0.0">
+    <geoReference><![CDATA[+proj=tmerc +lat_0=12.9716 +lon_0=77.5946 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs]]></geoReference>
+  </header>
+  <road name="RuralVillageCorridor" length="150.0" id="1" junction="-1">
+    <link/>
+    <planView>
+      <geometry s="0.0" x="0.0" y="0.0" hdg="0.0" length="150.0">
+        <line/>
+      </geometry>
+    </planView>
+    <elevationProfile>
+      <elevation s="0.0" a="0.0" b="0.002" c="0.0" d="0.0"/>
+    </elevationProfile>
+    <lateralProfile>
+      <superelevation s="0.0" a="0.0" b="0.0" c="0.0" d="0.0"/>
+    </lateralProfile>
+    <lanes>
+      <laneSection s="0.0">
+        <left>
+          <!-- Unpaved soft dirt shoulder (non-lane) -->
+          <lane id="2" type="shoulder" level="false">
+            <link/>
+            <width sOffset="0.0" a="1.5" b="0.0" c="0.0" d="0.0"/>
+            <roadMark sOffset="0.0" type="none" weight="standard" color="standard" width="0.0"/>
+          </lane>
+          <!-- Left corridor surface without lane markings -->
+          <lane id="1" type="driving" level="false">
+            <link/>
+            <width sOffset="0.0" a="3.6" b="0.0" c="0.0" d="0.0"/>
+            <roadMark sOffset="0.0" type="none" weight="standard" color="standard" width="0.0"/>
+          </lane>
+        </left>
+        <center>
+          <lane id="0" type="none" level="false">
+            <!-- Centerline has NO painted lane marking on Indian village road -->
+            <roadMark sOffset="0.0" type="none" weight="standard" color="standard" width="0.0"/>
+          </lane>
+        </center>
+        <right>
+          <!-- Right corridor surface without lane markings -->
+          <lane id="-1" type="driving" level="false">
+            <link/>
+            <width sOffset="0.0" a="3.6" b="0.0" c="0.0" d="0.0"/>
+            <roadMark sOffset="0.0" type="none" weight="standard" color="standard" width="0.0"/>
+          </lane>
+          <!-- Unpaved soft dirt shoulder -->
+          <lane id="-2" type="shoulder" level="false">
+            <link/>
+            <width sOffset="0.0" a="1.5" b="0.0" c="0.0" d="0.0"/>
+            <roadMark sOffset="0.0" type="none" weight="standard" color="standard" width="0.0"/>
+          </lane>
+        </right>
+      </laneSection>
+    </lanes>
+    <objects>
+      <!-- Roadside Potholes and Boulders (SIH26037 G2 Non-lane obstacles) -->
+      <object id="pothole_01" name="Pothole_Deep" type="obstacle" s="25.0" t="0.8" zOffset="-0.15" validLength="1.4" orientation="none" length="1.4" width="1.1" hdg="0.0" pitch="0.0" roll="0.0"/>
+      <object id="pothole_02" name="Pothole_Shallow" type="obstacle" s="58.0" t="-0.9" zOffset="-0.08" validLength="1.2" orientation="none" length="1.2" width="1.0" hdg="0.0" pitch="0.0" roll="0.0"/>
+      <object id="dirt_berm" name="Shoulder_Dirt_Berm" type="barrier" s="42.0" t="3.5" zOffset="0.30" validLength="6.0" orientation="none" length="6.0" width="1.2" hdg="0.0" pitch="0.0" roll="0.0"/>
+    </objects>
+  </road>
+</OpenDRIVE>

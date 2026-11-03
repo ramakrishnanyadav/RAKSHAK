@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "commit_hash": "e8b4785fa4b1c2d3e4f5a6b7c8d9e0f123456789",
+  "notes": "Cost weights frozen for SIH26037 ADAPTIVE-PATH benchmark. Tuned on 'tune' split and frozen before 'frozen_test'.",
+  "weights": {
+    "tune": {
+      "w1_distance": 0.25,
+      "w2_collision_risk": 2.50,
+      "w3_curvature": 0.35,
+      "w4_energy": 0.15,
+      "w5_replan_cost": 0.20
+    },
+    "validate": {
+      "w1_distance": 0.25,
+      "w2_collision_risk": 2.50,
+      "w3_curvature": 0.35,
+      "w4_energy": 0.15,
+      "w5_replan_cost": 0.20
+    },
+    "frozen_test": {
+      "w1_distance": 0.25,
+      "w2_collision_risk": 2.50,
+      "w3_curvature": 0.35,
+      "w4_energy": 0.15,
+      "w5_replan_cost": 0.20
+    }
+  }
+}

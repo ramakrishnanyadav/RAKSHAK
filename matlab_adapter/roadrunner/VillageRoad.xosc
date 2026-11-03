@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="0" date="2026-10-14T06:00:00" description="ADAPTIVE-PATH Village Road Scenario 1: Oncoming Truck + Potholes" author="SIH26037 Team"/>
+  <ParameterDeclarations>
+    <ParameterDeclaration name="EgoSpeed" parameterType="double" value="6.5"/>
+    <ParameterDeclaration name="TruckSpeed" parameterType="double" value="5.5"/>
+  </ParameterDeclarations>
+  <CatalogLocations/>
+  <RoadNetwork>
+    <LogicFile filepath="VillageRoad.xodr"/>
+  </RoadNetwork>
+  <Entities>
+    <ScenarioObject name="Ego">
+      <Vehicle name="EgoVehicle" vehicleCategory="car">
+        <ParameterDeclarations/>
+        <Performance maxSpeed="35.0" maxAcceleration="3.0" maxDeceleration="8.0"/>
+        <BoundingBox>
+          <Center x="1.4" y="0.0" z="0.75"/>
+          <Dimensions width="1.8" length="4.2" height="1.5"/>
+        </BoundingBox>
+        <Axles>
+          <FrontAxle maxSteering="0.61" wheelDiameter="0.65" trackWidth="1.5" positionX="2.7" positionZ="0.32"/>
+          <RearAxle maxSteering="0.0" wheelDiameter="0.65" trackWidth="1.5" positionX="0.0" positionZ="0.32"/>
+        </Axles>
+        <Properties/>
+      </Vehicle>
+    </ScenarioObject>
+    <ScenarioObject name="OncomingTruck">
+      <Vehicle name="HeavyTruck_Tata" vehicleCategory="truck">
+        <ParameterDeclarations/>
+        <Performance maxSpeed="20.0" maxAcceleration="1.5" maxDeceleration="6.0"/>
+        <BoundingBox>
+          <Center x="3.5" y="0.0" z="1.5"/>
+          <Dimensions width="2.5" length="8.0" height="3.2"/>
+        </BoundingBox>
+        <Axles>
+          <FrontAxle maxSteering="0.5" wheelDiameter="1.0" trackWidth="2.1" positionX="5.0" positionZ="0.5"/>
+          <RearAxle maxSteering="0.0" wheelDiameter="1.0" trackWidth="2.1" positionX="0.0" positionZ="0.5"/>
+        </Axles>
+        <Properties/>
+      </Vehicle>
+    </ScenarioObject>
+    <ScenarioObject name="EdgePedestrian">
+      <Pedestrian model="Pedestrian_Indian_01" mass="70.0" name="EdgePedestrian" pedestrianCategory="pedestrian">
+        <ParameterDeclarations/>
+        <BoundingBox>
+          <Center x="0.0" y="0.0" z="0.85"/>
+          <Dimensions width="0.6" length="0.6" height="1.7"/>
+        </BoundingBox>
+        <Properties/>
+      </Pedestrian>
+    </ScenarioObject>
+  </Entities>
+  <Storyboard>
+    <Init>
+      <Actions>
+        <Private entityRef="Ego">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="0.0" y="0.0" z="0.0" h="0.0"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="$EgoSpeed"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+        <Private entityRef="OncomingTruck">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="75.0" y="0.6" z="0.0" h="3.14159"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="$TruckSpeed"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+        <Private entityRef="EdgePedestrian">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="35.0" y="-2.6" z="0.0" h="0.05"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="1.1"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+      </Actions>
+    </Init>
+    <Story name="VillageRoadStory">
+      <Act name="EncounterAct">
+        <ManeuverGroup maximumExecutionCount="1" name="TruckManeuverGroup">
+          <Actors selectTriggeringEntities="false">
+            <EntityRef entityRef="OncomingTruck"/>
+          </Actors>
+          <Maneuver name="TruckEncroachManeuver">
+            <Event name="EncroachEvent" priority="overwrite">
+              <Action name="EncroachLateralAction">
+                <PrivateAction>
+                  <LateralAction>
+                    <LaneOffsetAction continuous="true">
+                      <LaneOffsetActionDynamics dynamicsShape="sinusoidal" maxLateralAcc="1.0"/>
+                      <LaneOffsetTarget>
+                        <AbsoluteTargetLaneOffset value="0.8"/>
+                      </LaneOffsetTarget>
+                    </LaneOffsetAction>
+                  </LateralAction>
+                </PrivateAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="DistanceToEgoCondition" delay="0.0" conditionEdge="rising">
+                    <ByEntityCondition>
+                      <TriggeringEntities triggeringEntitiesRule="any">
+                        <EntityRef entityRef="Ego"/>
+                      </TriggeringEntities>
+                      <EntityCondition>
+                        <RelativeDistanceCondition entityRef="OncomingTruck" relativeDistanceType="longitudinal" value="45.0" freespace="false" rule="lessThan"/>
+                      </EntityCondition>
+                    </ByEntityCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+          </Maneuver>
+        </ManeuverGroup>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="SimulationStart" delay="0.0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0.0" rule="greaterOrEqual"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Act>
+    </Story>
+    <StopTrigger>
+      <ConditionGroup>
+        <Condition name="TimeoutOrGoal" delay="0.0" conditionEdge="rising">
+          <ByValueCondition>
+            <SimulationTimeCondition value="16.0" rule="greaterOrEqual"/>
+          </ByValueCondition>
+        </Condition>
+      </ConditionGroup>
+    </StopTrigger>
+  </Storyboard>
+</OpenSCENARIO>

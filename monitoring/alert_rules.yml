@@ -1,0 +1,42 @@
+groups:
+  - name: adaptive_path_alerts
+    rules:
+      - alert: SimulationEngineHighFailureRate
+        expr: (runs_failed / runs_total) > 0.10
+        for: 2m
+        labels:
+          severity: critical
+          category: simulation_engine
+        annotations:
+          summary: "Simulation failure rate exceeded 10% tolerance"
+          description: "Over 10% of simulation runs are failing in worker jobs. Check MATLAB license, worker subprocess logs, or disk space."
+
+      - alert: SimulationQueueBacklog
+        expr: runs_active > 8
+        for: 3m
+        labels:
+          severity: warning
+          category: queue_saturation
+        annotations:
+          summary: "Simulation queue backlog detected"
+          description: "Active runs count has remained above 8 for over 3 minutes. Worker capacity is nearing saturation."
+
+      - alert: APIHighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 1m
+        labels:
+          severity: critical
+          category: api_availability
+        annotations:
+          summary: "API 5xx error rate exceeded 5%"
+          description: "FastAPI service is returning high volume of 500 internal errors."
+
+      - alert: DatabaseConnectionFailure
+        expr: up{job="adaptive-path-api"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          category: infrastructure
+        annotations:
+          summary: "API health endpoint unreachable"
+          description: "Liveness probe on http://api:8000/api/health failed."

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="0" date="2026-10-14T06:00:00" description="ADAPTIVE-PATH Urban Intersection Scenario 2: Cross Auto-Rickshaw + Weaving Two-Wheeler" author="SIH26037 Team"/>
+  <ParameterDeclarations>
+    <ParameterDeclaration name="EgoSpeed" parameterType="double" value="6.0"/>
+    <ParameterDeclaration name="RickshawSpeed" parameterType="double" value="4.5"/>
+    <ParameterDeclaration name="TwoWheelerSpeed" parameterType="double" value="6.0"/>
+  </ParameterDeclarations>
+  <CatalogLocations/>
+  <RoadNetwork>
+    <LogicFile filepath="UrbanIntersection.xodr"/>
+  </RoadNetwork>
+  <Entities>
+    <ScenarioObject name="Ego">
+      <Vehicle name="EgoVehicle" vehicleCategory="car">
+        <ParameterDeclarations/>
+        <Performance maxSpeed="35.0" maxAcceleration="3.0" maxDeceleration="8.0"/>
+        <BoundingBox>
+          <Center x="1.4" y="0.0" z="0.75"/>
+          <Dimensions width="1.8" length="4.2" height="1.5"/>
+        </BoundingBox>
+        <Axles>
+          <FrontAxle maxSteering="0.61" wheelDiameter="0.65" trackWidth="1.5" positionX="2.7" positionZ="0.32"/>
+          <RearAxle maxSteering="0.0" wheelDiameter="0.65" trackWidth="1.5" positionX="0.0" positionZ="0.32"/>
+        </Axles>
+        <Properties/>
+      </Vehicle>
+    </ScenarioObject>
+    <ScenarioObject name="CrossingRickshaw">
+      <Vehicle name="AutoRickshaw_01" vehicleCategory="car">
+        <ParameterDeclarations/>
+        <Performance maxSpeed="15.0" maxAcceleration="2.0" maxDeceleration="6.0"/>
+        <BoundingBox>
+          <Center x="1.2" y="0.0" z="0.9"/>
+          <Dimensions width="1.3" length="2.8" height="1.8"/>
+        </BoundingBox>
+        <Axles>
+          <FrontAxle maxSteering="0.7" wheelDiameter="0.4" trackWidth="1.1" positionX="1.8" positionZ="0.2"/>
+          <RearAxle maxSteering="0.0" wheelDiameter="0.4" trackWidth="1.1" positionX="0.0" positionZ="0.2"/>
+        </Axles>
+        <Properties/>
+      </Vehicle>
+    </ScenarioObject>
+    <ScenarioObject name="WeavingTwoWheeler">
+      <Vehicle name="Motorcycle_01" vehicleCategory="motorbike">
+        <ParameterDeclarations/>
+        <Performance maxSpeed="25.0" maxAcceleration="3.5" maxDeceleration="7.0"/>
+        <BoundingBox>
+          <Center x="0.8" y="0.0" z="0.6"/>
+          <Dimensions width="0.75" length="1.9" height="1.2"/>
+        </BoundingBox>
+        <Axles>
+          <FrontAxle maxSteering="0.7" wheelDiameter="0.5" trackWidth="0.1" positionX="1.3" positionZ="0.25"/>
+          <RearAxle maxSteering="0.0" wheelDiameter="0.5" trackWidth="0.1" positionX="0.0" positionZ="0.25"/>
+        </Axles>
+        <Properties/>
+      </Vehicle>
+    </ScenarioObject>
+  </Entities>
+  <Storyboard>
+    <Init>
+      <Actions>
+        <Private entityRef="Ego">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="0.0" y="0.0" z="0.0" h="0.0"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="$EgoSpeed"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+        <Private entityRef="CrossingRickshaw">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="38.0" y="12.0" z="0.0" h="-1.570796"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="$RickshawSpeed"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+        <Private entityRef="WeavingTwoWheeler">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="45.0" y="-10.0" z="0.0" h="1.428"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <LongitudinalAction>
+              <SpeedAction>
+                <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                <SpeedActionTarget>
+                  <AbsoluteTargetSpeed value="$TwoWheelerSpeed"/>
+                </SpeedActionTarget>
+              </SpeedAction>
+            </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+      </Actions>
+    </Init>
+    <Story name="UrbanIntersectionStory">
+      <Act name="JunctionCutAct">
+        <ManeuverGroup maximumExecutionCount="1" name="IntersectionManeuverGroup">
+          <Actors selectTriggeringEntities="false">
+            <EntityRef entityRef="CrossingRickshaw"/>
+          </Actors>
+          <Maneuver name="CutAcrossManeuver">
+            <Event name="CutEvent" priority="overwrite">
+              <Action name="ContinueCrossingAction">
+                <PrivateAction>
+                  <LongitudinalAction>
+                    <SpeedAction>
+                      <SpeedActionDynamics dynamicsShape="linear" value="2.0" dynamicsDimension="time"/>
+                      <SpeedActionTarget>
+                        <AbsoluteTargetSpeed value="4.8"/>
+                      </SpeedActionTarget>
+                    </SpeedAction>
+                  </LongitudinalAction>
+                </PrivateAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="StartTime" delay="0.0" conditionEdge="none">
+                    <ByValueCondition>
+                      <SimulationTimeCondition value="0.0" rule="greaterOrEqual"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+          </Maneuver>
+        </ManeuverGroup>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="SimulationStart" delay="0.0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0.0" rule="greaterOrEqual"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Act>
+    </Story>
+    <StopTrigger>
+      <ConditionGroup>
+        <Condition name="TimeoutOrGoal" delay="0.0" conditionEdge="rising">
+          <ByValueCondition>
+            <SimulationTimeCondition value="15.0" rule="greaterOrEqual"/>
+          </ByValueCondition>
+        </Condition>
+      </ConditionGroup>
+    </StopTrigger>
+  </Storyboard>
+</OpenSCENARIO>
