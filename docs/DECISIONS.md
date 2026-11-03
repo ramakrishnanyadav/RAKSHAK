@@ -29,6 +29,7 @@
 | **DEC-019** | 2026-11-03 | Statistical Independence Qualification for Multi-Agent Union Aggregation: Formally qualified as a monotonic, bounded upper-bound approximation under positive cluster correlation. | Probability Theory | Final G2 Patch |
 | **DEC-020** | 2026-11-03 | Exact McNemar Power Verification ($95.40\%$) and Preservation of $N=150$: Re-evaluated asymptotic ($95.93\%$, $92.58\%$ cc) vs exact power; established discordance sensitivity table. | Statistical Power | Final G2 Patch |
 | **DEC-021** | 2026-11-03 | Conformal Score & Prediction Set Consistency via Anisotropic Mahalanobis Calibration: Nonconformity score defined identically to deployed elliptical prediction set; $\beta_{\text{long}}=0.50, \beta_{\text{lat}}=0.35$ established as pre-calibrated tuning split normalizers; separate pointwise and simultaneous trajectory coverage defined. | Conformal Prediction | Final G2 Closure |
+| **DEC-022** | 2026-11-03 | Episode-Level Conformal Aggregation & Inference-Time Feature Parity: Conservative maximum across same-class obstacles ($s_e = \max_j s_{e, j}$); non-target episodes excluded (no zero scores); independent episode count $n_e(c)$ distinguished from observation count $N_{\text{obs}}(c)$; inference inputs ($v_j(t_0), L_j$) strictly defined at query timestamp $t_0$ for calibration and inference parity. | Statistical Rigor | Final G2 Review |
 
 ---
 
@@ -69,3 +70,14 @@
   5. **Separate Pointwise and Simultaneous Trajectory Calibration**:
      - *Pointwise*: Calibrated step-by-step ($t_k \in \{0.20\text{ s}, \dots, 2.80\text{ s}\}$) for step-level metrics and risk fields.
      - *Simultaneous*: Calibrated via trajectory supremum score $s_i^{\text{sim}} = \max_k s_i(t_k)$ to guarantee joint containment across the full $2.8\text{ s}$ horizon for event replanning triggers (`CONFORMAL_VIOLATION`).
+
+#### DEC-022: Episode-Level Conformal Aggregation & Inference-Time Feature Parity
+- **Context & Problem**: When an episode contains multiple obstacles of the same class (e.g. several pedestrians or two-wheelers), treating each obstacle as an independent observation violates the exchangeability assumption across simulation episodes. Additionally, ambiguity regarding feature timing ($v_j$) could lead to subtle future-information leakage during calibration.
+- **Decision & Mathematical Resolution**:
+  1. **Episode-Level Score Aggregation**: Each independent episode $e$ contributes exactly one nonconformity score per class $c$:
+     - Pointwise: $s_e(c, t_k) = \max_{j \in \mathcal{J}_e(c)} s_{e, j}(c, t_k)$.
+     - Simultaneous: $s_e^{\text{sim}}(c) = \max_{j \in \mathcal{J}_e(c)} \max_{k=1}^K s_{e, j}(c, t_k)$.
+  2. **Exclusion of Non-Target Episodes**: Episodes without class $c$ ($\mathcal{J}_e(c) = \emptyset$) must not contribute zero scores; they are excluded from the class $c$ calibration set.
+  3. **Sample Unit Accounting**: Effective sample size is $n_e(c) = |\{ e \in \mathcal{S}_{\text{calib}} : |\mathcal{J}_e(c)| \ge 1 \}|$, strictly distinguished from observation count $N_{\text{obs}}(c) \ge n_e(c)$. Conformal quantiles are computed on $n_e(c)$ independent episode scores using $m = \lceil (n_e(c) + 1)(1 - \alpha) \rceil$.
+  4. **Inference-Time Normalizer Inputs**: The speed argument $v_j(t_0) = \sqrt{v_x(t_0)^2 + v_y(t_0)^2}$ is strictly defined as the instantaneous observed scalar speed at forecast timestamp $t_0$ from the perception tracker. Bounding length $L_j$ is a static bounding dimension from track classification at $t_0$.
+  5. **Calibration-Inference Parity**: Identical feature inputs $(v_j(t_0), L_j)$ are used in both offline calibration and real-time online deployment. Realized future steps are used solely to compute tracking displacement errors $[\Delta x, \Delta y]^T$.

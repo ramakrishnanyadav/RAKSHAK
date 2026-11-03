@@ -25,40 +25,55 @@ In ADAPTIVE-PATH, this formulation is formalized into a continuous, normalized p
 
 ## 2. Dynamic Obstacle Kernel & Calibrated Anisotropic Conformal Sets
 
-Let dynamic obstacle $j \in \{1, \dots, M\}$ be located at $(x_j, y_j)$ with heading $\psi_j$, speed $v_j = \sqrt{v_{x, j}^2 + v_{y, j}^2}$, length $L_j$, width $W_j$, and agent category $c_j$.
+Let dynamic obstacle $j \in \{1, \dots, M\}$ be located at $(x_j, y_j)$ with heading $\psi_j$, instantaneous speed $v_j(t_0) = \sqrt{v_{x, j}(t_0)^2 + v_{y, j}(t_0)^2}$, length $L_j$, width $W_j$, and agent category $c_j$.
 
 ### 2.1 Anisotropic Body-Frame Transformation
 To reflect roadway physical reality—where vehicles and road users exhibit substantially higher motion variability along their longitudinal heading (acceleration/braking timing) than laterally (lane and corridor tracking)—any spatial evaluation point $(x, y)$ at prediction horizon step $t_k$ is transformed into the obstacle's predicted local body frame:
 
 $$\begin{bmatrix} \Delta x_{\text{local}} \\ \Delta y_{\text{local}} \end{bmatrix} = \begin{bmatrix} \cos \psi_j(t_k) & \sin \psi_j(t_k) \\ -\sin \psi_j(t_k) & \cos \psi_j(t_k) \end{bmatrix} \begin{bmatrix} x - x_{j, \text{pred}}(t_k) \\ y - y_{j, \text{pred}}(t_k) \end{bmatrix}$$
 
-### 2.2 Directional Tracking Normalizers & Aspect Ratio Calibration ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$)
+### 2.2 Directional Tracking Normalizers, Inference-Time Inputs & Aspect Ratio ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$)
 To parameterize the anisotropic geometry prior to calibration, the directional scaling normalizers are defined as:
-$$\sigma_{\text{long}}(c_j, t_k) = \beta_{\text{long}} \cdot \sigma_0(c_j, v_j, t_k)$$
-$$\sigma_{\text{lat}}(c_j, t_k) = \beta_{\text{lat}} \cdot \sigma_0(c_j, v_j, t_k)$$
+$$\sigma_{\text{long}}(c_j, t_k) = \beta_{\text{long}} \cdot \sigma_0(c_j, v_j(t_0), t_k)$$
+$$\sigma_{\text{lat}}(c_j, t_k) = \beta_{\text{lat}} \cdot \sigma_0(c_j, v_j(t_0), t_k)$$
 
 Where base kinematic expansion is:
-$$\sigma_0(c_j, v_j, t_k) = \max\left(1.00, \; 0.50 L_j + 0.20 v_j + 0.15 t_k\right)$$
+$$\sigma_0(c_j, v_j(t_0), t_k) = \max\left(1.00, \; 0.50 L_j + 0.20 v_j(t_0) + 0.15 t_k\right)$$
 
-- **How the Coefficients $\beta_{\text{long}} = 0.50$ and $\beta_{\text{lat}} = 0.35$ are Obtained**:
+- **Precise Definition of Inference-Time Inputs ($v_j(t_0), L_j, W_j$)**:
+  1. **Observed Speed $v_j(t_0)$**: $v_j(t_0) = \sqrt{v_{x, j}(t_0)^2 + v_{y, j}(t_0)^2}$ is the **instantaneous observed scalar speed at query timestamp $t_0$ (prediction time)**, measured by the perception state estimator (`AgentTrack.v_x`, `AgentTrack.v_y`). It is strictly available prior to trajectory forecasting, not a realized future speed.
+  2. **Bounding Dimensions ($L_j, W_j$)**: Static bounding length and width are determined at prediction time from object classification and bounding-box tracking (`AgentTrack.length`, `AgentTrack.width`).
+  3. **Calibration-Inference Parity**: During offline calibration on $\mathcal{S}_{\text{calib}}$, the exact same feature values $(v_j(t_0), L_j)$ observed at forecast initiation timestamp $t_0$ are used to evaluate $\sigma_0$. Future ground truth trajectory states are used solely to compute the displacement error vector $[\Delta x, \Delta y]^T$.
+- **How Coefficients $\beta_{\text{long}} = 0.50$ and $\beta_{\text{lat}} = 0.35$ are Obtained**:
   1. The directional weights establish an anisotropic aspect ratio:
      $$\frac{\beta_{\text{long}}}{\beta_{\text{lat}}} = \frac{0.50}{0.35} \approx 1.429$$
   2. This $1.43 : 1.0$ aspect ratio was empirically estimated from residual tracking errors across the independent training/tuning split (Split 1 `tune`, Seeds 1000–1009):
      $$\frac{\beta_{\text{long}}}{\beta_{\text{lat}}} = \frac{\sqrt{\frac{1}{N_{\text{tune}}} \sum_{i=1}^{N_{\text{tune}}} (\Delta x_{\text{local}, i})^2}}{\sqrt{\frac{1}{N_{\text{tune}}} \sum_{i=1}^{N_{\text{tune}}} (\Delta y_{\text{local}, i})^2}}$$
   3. **Calibration Rule**: These directional scale parameters are fixed *prior to conformal calibration*. They act as fixed normalizers inside the score function, ensuring that the conformal calibration phase calibrates the uniform inflation factor without modifying the aspect ratio or distorting the set.
 
-### 2.3 Normalized Anisotropic Mahalanobis Nonconformity Score
-To ensure the nonconformity score strictly matches the anisotropic geometry of the deployed prediction set, the nonconformity score for calibration trajectory $i$ of class $c$ at horizon step $t_k$ is formulated as the normalized anisotropic Mahalanobis distance:
+### 2.3 Normalized Anisotropic Mahalanobis Score & Conservative Episode Aggregation
+For dynamic obstacle $j \in \mathcal{J}_e(c)$ in episode $e$ at horizon step $t_k$, the obstacle-level nonconformity score is formulated as the normalized anisotropic Mahalanobis distance:
 
-$$s_i(c, t_k) = \sqrt{\left(\frac{\Delta x_{\text{local}, i}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, i}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
+$$s_{e, j}(c, t_k) = \sqrt{\left(\frac{\Delta x_{\text{local}, e, j}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, e, j}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
 
-Where $\Delta x_{\text{local}, i}(t_k)$ and $\Delta y_{\text{local}, i}(t_k)$ are the actual observed longitudinal and lateral position residuals relative to the model's nominal forecast.
+Where $\Delta x_{\text{local}, e, j}(t_k)$ and $\Delta y_{\text{local}, e, j}(t_k)$ are the actual observed longitudinal and lateral position residuals relative to the model's nominal forecast.
+
+#### Episode-Level Score Aggregation & Independent Episode Unit
+When an episode contains multiple obstacles of the same class ($|\mathcal{J}_e(c)| > 1$), each independent episode must contribute **exactly one scalar score** to ensure exchangeability across episodes:
+1. **Pointwise Episode Score**:
+   $$s_e(c, t_k) = \max_{j \in \mathcal{J}_e(c)} s_{e, j}(c, t_k)$$
+2. **Simultaneous Episode Score**:
+   $$s_e^{\text{sim}}(c) = \max_{j \in \mathcal{J}_e(c)} \max_{k \in \{1, \dots, K\}} s_{e, j}(c, t_k)$$
+3. **Exclusion of Non-Target Episodes (No Zero Scores)**:
+   Episodes without obstacles of class $c$ ($\mathcal{J}_e(c) = \emptyset$) **must NOT contribute zero scores**. Assigning zero to non-occurring agents would artificially compress empirical nonconformity quantiles and invalidate coverage. Such episodes are excluded from class $c$ calibration.
+4. **Independent Episodes vs. Obstacle Observations**:
+   Sample size $n_e(c) = |\{ e \in \mathcal{S}_{\text{calib}} : |\mathcal{J}_e(c)| \ge 1 \}|$ denotes the count of independent episodes, which is strictly distinct from the total count of obstacle observations $N_{\text{obs}}(c) = \sum |\mathcal{J}_e(c)| \ge n_e(c)$. The finite-sample quantile is computed strictly across the $n_e(c)$ independent episode scores.
 
 ### 2.4 Exact Deployed Prediction Set & Mathematical Coverage Guarantee
-Let calibration split $\mathcal{S}_{\text{calib}}$ consist of $n$ independent simulation episodes ($n \ge 40$ per class $c$).  
+Let calibration split $\mathcal{S}_{\text{calib}}$ have $n_e(c)$ independent episodes containing class $c$ ($n_e(c) \ge 40$).  
 The finite-sample conformal quantile at coverage level $1 - \alpha = 0.95$ is:
-$$\hat{q}_{1-\alpha}(c, t_k) = s_{(m)}(c, t_k), \quad m = \lceil (n + 1)(1 - \alpha) \rceil$$
-Where $s_{(1)} \le s_{(2)} \le \dots \le s_{(n)}$ are the sorted calibration nonconformity scores.
+$$\hat{q}_{1-\alpha}(c, t_k) = s_{(m)}(c, t_k), \quad m = \lceil (n_e(c) + 1)(1 - \alpha) \rceil$$
+Where $s_{(1)} \le s_{(2)} \le \dots \le s_{(n_e(c))}$ are the sorted episode-level nonconformity scores.
 
 The **exact prediction set deployed by the predictor** is defined as the sub-level set:
 $$\mathcal{C}_{1-\alpha}(c, t_k) = \left\{ \mathbf{p} = (x, y) \in \mathbb{R}^2 : s(\mathbf{p}; c, t_k) \le \hat{q}_{1-\alpha}(c, t_k) \right\}$$
@@ -74,8 +89,8 @@ $$r_{\text{lat}}(c, t_k) = \hat{q}_{1-\alpha}(c, t_k) \cdot \sigma_{\text{lat}}(
 #### Coverage Claim Restriction
 > [!IMPORTANT]
 > **Strict Conformal Validity Invariant**:
-> Because $\mathbf{p}_{\text{true}} \in \mathcal{C}_{1-\alpha}(c, t_k) \iff s(\mathbf{p}_{\text{true}}) \le \hat{q}_{1-\alpha}(c, t_k)$, the Split-Conformal Theorem proves that under exchangeability:
-> $$P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}(c, t_k)\right) \ge 1 - \alpha$$
+> Because $\mathbf{p}_{\text{true}} \in \mathcal{C}_{1-\alpha}(c, t_k) \iff s(\mathbf{p}_{\text{true}}) \le \hat{q}_{1-\alpha}(c, t_k)$, and episode scores take the maximum across all class instances in the episode, the Split-Conformal Theorem proves that under episode exchangeability:
+> $$P\left(\forall j \in \mathcal{J}_e(c), \; \mathbf{p}_{\text{true}, j}(t_k) \in \mathcal{C}_{1-\alpha}(c, t_k)\right) \ge 1 - \alpha$$
 > **No coverage claim may be made for any post-hoc transformed, scaled, or clipped set unless the score itself is calibrated on that exact transformed geometry.** The deployed prediction set $\mathcal{C}_{1-\alpha}$ is identically the sub-level set of the calibrated score.
 
 ### 2.5 Pointwise vs. Simultaneous Coverage Definitions
@@ -83,7 +98,7 @@ ADAPTIVE-PATH formally distinguishes and calibrates two distinct conformal cover
 
 1. **Pointwise Conformal Coverage (Per Horizon Step $t_k$)**:
    - Calibrated independently at each prediction horizon step $t_k \in \{0.20\text{ s}, 0.40\text{ s}, \dots, 2.80\text{ s}\}$ ($K = 14$ steps).
-   - Nonconformity scores: $s_i(c, t_k)$.
+   - Nonconformity scores: $s_e(c, t_k) = \max_{j \in \mathcal{J}_e(c)} s_{e, j}(c, t_k)$.
    - Quantile: $\hat{q}_{1-\alpha}^{\text{pt}}(c, t_k) = s_{(m)}(c, t_k)$.
    - **Pointwise Guarantee**:
      $$\forall k \in \{1, \dots, K\}, \quad P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}^{\text{pt}}(c, t_k)\right) \ge 1 - \alpha$$
@@ -91,8 +106,8 @@ ADAPTIVE-PATH formally distinguishes and calibrates two distinct conformal cover
 
 2. **Simultaneous Conformal Coverage (Trajectory-Wide Horizon $H = 2.80\text{ s}$)**:
    - Calibrated across the entire 14-step trajectory rollout to control Family-Wise Error Rate (FWER) across time.
-   - Trajectory supremum score:
-     $$s_i^{\text{sim}}(c) = \max_{k \in \{1, \dots, K\}} s_i(c, t_k) = \max_{k \in \{1, \dots, K\}} \sqrt{\left(\frac{\Delta x_{\text{local}, i}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, i}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
+   - Episode trajectory supremum score:
+     $$s_e^{\text{sim}}(c) = \max_{j \in \mathcal{J}_e(c)} \max_{k \in \{1, \dots, K\}} s_{e, j}(c, t_k)$$
    - Quantile: $\hat{q}_{1-\alpha}^{\text{sim}}(c) = s_{(m)}^{\text{sim}}(c)$.
    - Simultaneous envelope semi-axes:
      $$r_{\text{long}}^{\text{sim}}(c, t_k) = \hat{q}_{1-\alpha}^{\text{sim}}(c) \cdot \sigma_{\text{long}}(c, t_k)$$

@@ -179,33 +179,63 @@ $$\text{Var}_{H_0} = \frac{p_{\text{disc}}}{N}, \quad \text{Var}_{H_1} = \frac{p
 ## 9. Split-Conformal Calibration Standard
 
 ### 9.1 Calibration Episode Unit & Independence
-- **Calibration Unit**: Independent simulation episode $(s, \omega) \in \mathcal{S}_{\text{calib}}$ (Seeds 1500–1539 across 5 scenario families $= 200$ episodes).
+- **Calibration Unit**: Independent simulation episode $e = (s, \omega) \in \mathcal{S}_{\text{calib}}$ (Seeds 1500–1539 across 5 scenario families $= 200$ episodes).
 - Episodes are strictly independent under varied stochastic seeds, agent spawning locations, and physical timing.
+- **Clear Distinction: Independent Episodes vs. Obstacle Observations**:
+  Let $\mathcal{J}_e(c)$ denote the set of dynamic obstacles of class $c$ present in episode $e$.
+  - An episode is included in the calibration pool for class $c$ if and only if at least one obstacle of class $c$ appears in that episode ($|\mathcal{J}_e(c)| \ge 1$).
+  - Let $\mathcal{E}_{\text{calib}}(c) = \{ e \in \mathcal{S}_{\text{calib}} : |\mathcal{J}_e(c)| \ge 1 \}$ denote the subset of relevant calibration episodes for class $c$.
+  - The effective calibration sample size is the number of **independent episodes**:
+    $$n_e(c) = |\mathcal{E}_{\text{calib}}(c)|$$
+  - This is strictly distinguished from the total count of obstacle observations:
+    $$N_{\text{obs}}(c) = \sum_{e \in \mathcal{E}_{\text{calib}}(c)} |\mathcal{J}_e(c)| \ge n_e(c)$$
+  - **Exclusion of Episodes Without Target Class**: Episodes without the target class ($\mathcal{J}_e(c) = \emptyset$) **must NOT contribute zero scores**. Assigning a nonconformity score of zero to absent obstacles would artificially compress the calibration empirical distribution and destroy coverage guarantees. Such episodes are completely excluded from the calibration set for class $c$.
 
 ### 9.2 Anisotropic Mahalanobis Non-Conformity Score Formulation
-To ensure the nonconformity score strictly matches the anisotropic geometry of the deployed prediction set, the score for dynamic obstacle $j$ of class $c$ at prediction horizon step $t_k \in \{0.20\text{ s}, \dots, 2.80\text{ s}\}$ ($K = 14$ steps) is formulated in the obstacle's predicted body coordinate frame:
+For dynamic obstacle $j \in \mathcal{J}_e(c)$ in episode $e$ at prediction horizon step $t_k \in \{0.20\text{ s}, \dots, 2.80\text{ s}\}$ ($K = 14$ steps), the obstacle-level nonconformity score is formulated in the obstacle's predicted body frame:
 
-$$s_{i, j}(c, t_k) = \sqrt{\left(\frac{\Delta x_{\text{local}, i, j}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, i, j}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
+$$s_{e, j}(c, t_k) = \sqrt{\left(\frac{\Delta x_{\text{local}, e, j}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, e, j}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
 
 Where:
-- $\Delta x_{\text{local}, i, j}(t_k)$ and $\Delta y_{\text{local}, i, j}(t_k)$ are the longitudinal and lateral tracking residuals relative to the model's nominal trajectory forecast.
-- $\sigma_{\text{long}}(c, t_k) = \beta_{\text{long}} \cdot \sigma_0(c, v_j, t_k)$ and $\sigma_{\text{lat}}(c, t_k) = \beta_{\text{lat}} \cdot \sigma_0(c, v_j, t_k)$ are directional scale normalizers.
+- $\Delta x_{\text{local}, e, j}(t_k)$ and $\Delta y_{\text{local}, e, j}(t_k)$ are the longitudinal and lateral tracking residuals relative to the model's nominal trajectory forecast.
+- $\sigma_{\text{long}}(c, t_k) = \beta_{\text{long}} \cdot \sigma_0(c, v_j(t_0), t_k)$ and $\sigma_{\text{lat}}(c, t_k) = \beta_{\text{lat}} \cdot \sigma_0(c, v_j(t_0), t_k)$ are directional scale normalizers.
 
-### 9.3 Origin and Pre-Calibration of Directional Coefficients ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$)
+### 9.3 Inference-Time Normalizer Inputs & Calibration Parity
+To guarantee exact mathematical parity between calibration and online inference without temporal lookahead or data leakage:
+- **Observed Speed $v_j(t_0)$**:
+  $$v_j(t_0) = \sqrt{v_{x, j}(t_0)^2 + v_{y, j}(t_0)^2}$$
+  is the **instantaneous observed scalar speed at query timestamp $t_0$ (prediction time)**, obtained from the current perception tracking state (`AgentTrack.v_x`, `AgentTrack.v_y`). It is strictly an inference-time quantity available before rollout, NOT a realized future speed.
+- **Bounding Dimensions ($L_j, W_j$)**:
+  Obstacle length $L_j$ and width $W_j$ are static bounding dimensions available at prediction time from track classification (`AgentTrack.length`, `AgentTrack.width`).
+- **Kinematic Expansion Base ($\sigma_0$)**:
+  $$\sigma_0(c, v_j(t_0), t_k) = \max\left(1.00, \; 0.50 L_j + 0.20 v_j(t_0) + 0.15 t_k\right)$$
+- **Strict Calibration-Inference Parity**: The identical feature tuple $(v_j(t_0), L_j)$ measured at the forecast trigger instant $t_0$ is used in both offline calibration and online inference. Future trajectory steps are used exclusively to compute the realized position residual vector $[\Delta x, \Delta y]^T$.
+
+### 9.4 Episode-Level Calibration Score Aggregation
+When multiple obstacles of class $c$ are present simultaneously within an episode $e$ ($|\mathcal{J}_e(c)| > 1$), each independent episode must contribute **exactly one scalar score** to preserve exchangeability at the episode level.
+1. **Episode Pointwise Nonconformity Score**:
+   Defined conservatively as the maximum nonconformity score across all obstacles of class $c$ in episode $e$:
+   $$s_e(c, t_k) = \max_{j \in \mathcal{J}_e(c)} s_{e, j}(c, t_k)$$
+2. **Episode Simultaneous Trajectory Nonconformity Score**:
+   Defined as the maximum across both all obstacles of class $c$ and all horizon steps $t_k \in \{1, \dots, K\}$:
+   $$s_e^{\text{sim}}(c) = \max_{j \in \mathcal{J}_e(c)} \max_{k \in \{1, \dots, K\}} s_{e, j}(c, t_k)$$
+   This conservative maximum ensures that achieving $(1-\alpha)$ coverage on episode-level scores simultaneously guarantees that all obstacles of class $c$ in the episode are covered with probability at least $1-\alpha$.
+
+### 9.5 Origin and Pre-Calibration of Directional Coefficients ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$)
 - **Aspect Ratio Rationale**: Road corridor trajectory errors exhibit larger longitudinal timing dispersion than lateral corridor deviation ($\beta_{\text{long}} / \beta_{\text{lat}} \approx 1.429$).
 - **Source Split**: Directional coefficients $\beta_{\text{long}} = 0.50$ and $\beta_{\text{lat}} = 0.35$ were fitted empirically on the independent training/tuning split (Split 1 `tune`, Seeds 1000–1009) by calculating root-mean-square residual ratios across observed trajectories.
 - **Pre-Registration Lock**: These scale parameters are fixed *prior to calibration* and serve as normalizers inside the score function. Conformal calibration on $\mathcal{S}_{\text{calib}}$ calibrates the scalar expansion factor $\hat{q}$ without post-hoc set distortion.
 
-### 9.4 Class-by-Horizon Sample Size Requirement & Finite-Sample Quantile
-- **Requirement**: **$n \ge 40$ independent observed trajectories per class $c$ across prediction horizon step $t_k$**.
+### 9.6 Class-by-Horizon Sample Size Requirement & Finite-Sample Quantile
+- **Requirement**: **$n_e(c) \ge 40$ independent episodes containing class $c$ across prediction horizon step $t_k$**.
 - For target coverage level $1 - \alpha = 0.95$:
-  $$m = \lceil (n + 1)(1 - \alpha) \rceil = \lceil 0.95(n + 1) \rceil$$
-  - For $n = 40$: $m = \lceil 0.95 \times 41 \rceil = \lceil 38.95 \rceil = 39$. Calibrated quantile is $\hat{q}_{0.95}(c, t_k) = s_{(39)}$.
-- **Behavior when Sample Counts are Insufficient ($n < 40$)**:
-  - If any class has $n < 40$ valid calibration trajectories at horizon $t_k$, **mathematical 95% coverage is formally marked as "Coverage Guarantee Unavailable (n < 40)"**.
+  $$m = \lceil (n_e(c) + 1)(1 - \alpha) \rceil = \lceil 0.95(n_e(c) + 1) \rceil$$
+  - For $n_e(c) = 40$: $m = \lceil 0.95 \times 41 \rceil = \lceil 38.95 \rceil = 39$. Calibrated quantile is $\hat{q}_{0.95}(c, t_k) = s_{(39)}$.
+- **Behavior when Sample Counts are Insufficient ($n_e(c) < 40$)**:
+  - If any class has $n_e(c) < 40$ valid calibration episodes at horizon $t_k$, **mathematical 95% coverage is formally marked as "Coverage Guarantee Unavailable (n < 40)"**.
   - The predictor is prohibited from claiming conformal coverage and must fall back to conservative geometric road bounds ($r_{\text{fallback}} = 3.50\text{ m}$), setting `coverage_guarantee_valid = False` in the output telemetry log.
 
-### 9.5 Exact Deployed Prediction Set & Coverage Invariant
+### 9.7 Exact Deployed Prediction Set & Coverage Invariant
 The exact prediction set deployed by the predictor is the sub-level set:
 $$\mathcal{C}_{1-\alpha}(c, t_k) = \left\{ (x, y) \in \mathbb{R}^2 : \left(\frac{\Delta x_{\text{local}}}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}}}{\sigma_{\text{lat}}(c, t_k)}\right)^2 \le \hat{q}_{1-\alpha}^2(c, t_k) \right\}$$
 
@@ -218,16 +248,15 @@ $$r_{\text{lat}}(c, t_k) = \hat{q}_{1-\alpha}(c, t_k) \cdot \sigma_{\text{lat}}(
   $$P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}(c, t_k)\right) \ge 1 - \alpha$$
   No coverage claim is permitted for any transformed or heuristically scaled set unless calibrated using a matching score function.
 
-### 9.6 Pointwise vs. Simultaneous Trajectory Coverage
+### 9.8 Pointwise vs. Simultaneous Trajectory Coverage
 1. **Pointwise Conformal Coverage**:
-   - Calibrated step-by-step for each $t_k \in \{0.20\text{ s}, \dots, 2.80\text{ s}\}$ using $s_i(c, t_k)$ and quantile $\hat{q}_{1-\alpha}^{\text{pt}}(c, t_k)$.
+   - Calibrated step-by-step for each $t_k \in \{0.20\text{ s}, \dots, 2.80\text{ s}\}$ using episode scores $s_e(c, t_k)$ and quantile $\hat{q}_{1-\alpha}^{\text{pt}}(c, t_k)$.
    - Guarantees marginal coverage at each discrete horizon step:
      $$\forall k \in \{1, \dots, K\}, \quad P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}^{\text{pt}}(c, t_k)\right) \ge 1 - \alpha$$
    - Utilized for frame-by-frame telemetry and risk field potential calculations.
 2. **Simultaneous Trajectory Coverage**:
-   - Calibrated across the complete 14-step future trajectory using the trajectory supremum score:
-     $$s_i^{\text{sim}}(c) = \max_{k \in \{1, \dots, K\}} s_i(c, t_k)$$
-     $$\hat{q}_{1-\alpha}^{\text{sim}}(c) = s_{(\lceil (n+1)(1-\alpha) \rceil)}^{\text{sim}}(c)$$
+   - Calibrated across the complete 14-step future trajectory using episode supremum scores $s_e^{\text{sim}}(c)$:
+     $$\hat{q}_{1-\alpha}^{\text{sim}}(c) = s_{(\lceil (n_e(c)+1)(1-\alpha) \rceil)}^{\text{sim}}(c)$$
    - Semi-axes: $r_{\text{long}}^{\text{sim}}(c, t_k) = \hat{q}_{1-\alpha}^{\text{sim}}(c) \cdot \sigma_{\text{long}}(c, t_k)$ and $r_{\text{lat}}^{\text{sim}}(c, t_k) = \hat{q}_{1-\alpha}^{\text{sim}}(c) \cdot \sigma_{\text{lat}}(c, t_k)$.
    - Guarantees joint spatial containment across the entire future planning horizon:
      $$P\left(\forall k \in \{1, \dots, K\}, \quad \mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}^{\text{sim}}(c, t_k)\right) \ge 1 - \alpha$$
