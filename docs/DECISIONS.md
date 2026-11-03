@@ -14,29 +14,36 @@
 | **DEC-004** | 2026-11-03 | Critical Ordering Rule: F4 Conformal Calibration Integration MUST precede final F3 tuning and validation. | Research Methodology | Standing Rules / Phase 1 |
 | **DEC-005** | 2026-11-03 | Separation of Run Classes: `run_class=experiment` (strictly entering ITT denominator) and `run_class=interactive` (demos/manual, excluded from research claims). | Experimental Design | Phase 1 / SAP |
 | **DEC-006** | 2026-11-03 | Parallel Demo Fallback Track Governance: UI demo runs in parallel with Phase 1 under strict branch coordination; cannot use unapproved metric definitions or fabricated numbers. | Demo Architecture | Workstream B Directive |
-| **DEC-007** | 2026-11-03 | Four-Way Disjoint Seed Splits: Tuning (1000–1009), Calibration (1500–1539), Validation (2000–2009), and Confirmatory Frozen (3000–3029). | Dataset Integrity | Second G2 Review |
-| **DEC-008** | 2026-11-03 | Deadlock & Livelock Prevention: Introduction of Exploratory Lateral Creep to prevent permanent vehicle halting behind obstacles (resolving Finding F3 root cause). | Planning & Control | Second G2 Review |
-| **DEC-009** | 2026-11-03 | Non-Closing TTC Standardization: Diverging ($\dot{r} \le 0$) objects yield $\text{TTC} \equiv \texttt{null}$ with flag $\texttt{is\_closing=False}$; zero arbitrary default values. | Metric Methodology | Second G2 Review |
-| **DEC-010** | 2026-11-03 | Discrete SAT Collision Limitation: Explicitly document $10\text{ Hz}$ temporal sampling limits ($\Delta s \le 2.0\text{ m}$ displacement at $20\text{ m/s}$); bounded by vehicle geometry ($4.2\text{ m}$). | Dynamics & Testing | Second G2 Review |
-| **DEC-011** | 2026-11-03 | Variable-Timestep Jerk Formulation: Standardized second-order finite difference with causal 3-step moving average filter; exclude initial 2 boundary samples from denominators. | Kinematics & Comfort | Second G2 Review |
-| **DEC-012** | 2026-11-03 | Pre-Specified Strongest-Baseline Selection Rule: Selected strictly on the Validation Split prior to unblinding the frozen test set using hierarchical tie-breakers. | Statistical Rigor | Second G2 Review |
+| **DEC-007** | 2026-11-03 | Five-Way Disjoint Seed Allocation: Tuning (1000–1009), Calibration (1500–1539), Validation-A (2000–2004), Validation-B (2005–2009), Confirmatory Frozen (3000–3029). | Dataset Integrity | Final G2 Review |
+| **DEC-008** | 2026-11-03 | Exploratory Lateral Creep Designated as Unvalidated Candidate Correction: Candidate solution to F3 deadlock; cannot override hard collision or shoulder boundary constraints. | Planning & Control | Final G2 Review |
+| **DEC-009** | 2026-11-03 | Non-Closing & Missing TTC: Diverging ($\mathbf{r} \cdot \mathbf{v}_{\text{rel}} \le 0$) or non-intersecting trajectories yield $\text{TTC} \equiv \texttt{null}$; zero arbitrary numerical default constants. | Metric Methodology | Final G2 Review |
+| **DEC-010** | 2026-11-03 | Discrete SAT Collision Limitation & Projected Geometry: $10\text{ Hz}$ sampling bounds documented ($\Delta s \le 2.40\text{ m}$ displacement at $24.0\text{ m/s}$); continuous swept-volume identified as future enhancement. | Dynamics & Testing | Final G2 Review |
+| **DEC-011** | 2026-11-03 | Variable-Timestep Jerk Formulation: Standardized second-order finite difference with causal 3-step moving average filter; exclude initial 2 boundary samples from denominators. | Kinematics & Comfort | Final G2 Review |
+| **DEC-012** | 2026-11-03 | Strongest-Baseline Selection Isolated to `val_a`: Evaluated on Seeds 2000–2004, completely decoupled from P3 algorithm tuning in `val_b` (Seeds 2005–2009). | Statistical Rigor | Final G2 Review |
+| **DEC-013** | 2026-11-03 | 2D Anisotropic Conformal Uncertainty Covariance Inflation: Spatial dispersion inflated along both body axes ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$) using calibrated empirical error quantiles. | Risk & Prediction | Final G2 Review |
+| **DEC-014** | 2026-11-03 | Multi-Agent Independent Union Aggregation: Multi-agent dynamic potentials aggregated via $1 - \prod (1 - R_j)$ after individual saturation clipping $\min(1.0, \dots)$. | Risk Mathematics | Final G2 Review |
+| **DEC-015** | 2026-11-03 | Full Vehicle Footprint Lateral Shoulder Limits: $W_{\text{veh}} = 1.80\text{ m}$ footprint constrains vehicle center to $|y_{\text{ego}}| \le 3.80\text{ m}$ ($4.70 - 0.90\text{ m}$); values $> 3.80\text{ m}$ represent hard barrier violations. | Road Geometry | Final G2 Review |
+| **DEC-016** | 2026-11-03 | Bootstrap Sample Expansion: Increase final confirmatory bootstrap resamples from 1,000 to 10,000 with BCa and percentile intervals to ensure stable 95% tails. | Statistical Rigor | Final G2 Review |
 
 ---
 
 ### Detailed Scientific Decision Records
 
-#### DEC-007: Four-Way Disjoint Seed Allocation
-- **Decision**: The random seed space is partitioned into four strictly non-overlapping integer intervals:
-  - `tune`: $[1000, 1009]$ ($10$ seeds/scenario)
-  - `calib`: $[1500, 1539]$ ($40$ seeds/scenario, ensuring $\ge 40$ independent episodes for split conformal quantiles)
-  - `val`: $[2000, 2009]$ ($10$ seeds/scenario, reserved for baseline selection and P3 creep tuning)
-  - `frozen`: $[3000, 3029]$ ($30$ seeds/scenario, strictly locked until Gate G3)
-- **Rationale**: Completely isolates conformal calibration fitting from hyperparameter tuning and model selection, preventing epistemic data contamination.
+#### DEC-007 & DEC-012: Separation of Validation Sub-Splits
+- **Decision**: The validation seed space $[2000, 2009]$ is partitioned into two independent sub-splits:
+  - `val_a` (Seeds 2000–2004, $25$ episodes): Dedicated strictly to benchmarking baselines B0, B1, B2 and identifying the single strongest comparator $B^*$.
+  - `val_b` (Seeds 2005–2009, $25$ episodes): Dedicated strictly to tuning P3 parameters (progress rewards, stationary penalties, lateral crawl speeds).
+- **Rationale**: Completely prevents tuning P3 on the same episodes used to select the comparator baseline, guaranteeing strict methodological separation prior to frozen evaluation.
 
-#### DEC-008: Deadlock Prevention via Exploratory Lateral Creep
-- **Context**: In historical frozen results, P3 had a 0.0% goal completion rate because any high obstacle risk caused candidate speeds $v = 0$ to minimize cost, resulting in permanent livelock.
-- **Decision**: Introduce a hysteresis recovery state and an "Exploratory Lateral Creep" behavior when stationary time $t_{\text{stationary}} \ge 2.0\text{ s}$ behind a blocked lane. P3 evaluates shoulder bypass trajectories at $1.5\text{ m/s}$ with boosted progress rewards, safely bypassing halted obstacles rather than stopping permanently.
+#### DEC-013: Two-Dimensional Anisotropic Conformal Covariance Inflation
+- **Decision**: The 2D Gaussian spatial covariance matrix $\mathbf{\Sigma}_j(t)$ in the obstacle body frame is inflated additively along both axes by the calibrated split-conformal quantile $r_{\text{conf}}(c, t)$:
+  $$\sigma_{\text{long}}^2(t) = (\sigma_{\text{long}} + 0.50 \cdot r_{\text{conf}})^2, \quad \sigma_{\text{lat}}^2(t) = (\sigma_{\text{lat}} + 0.35 \cdot r_{\text{conf}})^2$$
+- **Rationale**: Respects the physical anisotropy of non-holonomic vehicle tracking errors on unstructured roads while providing a mathematically sound 2D uncertainty envelope.
 
-#### DEC-011: Variable-Timestep Jerk and Boundary Handling
-- **Decision**: Filtered acceleration $a_{k, \text{filt}}$ is differentiated over interval $\frac{1}{2}(\Delta t_k + \Delta t_{k-1})$. Steps $k \in \{0, 1\}$ are excluded from summation; the denominator for mean and RMS jerk is $K - 2$. Incomplete runs with $K < 3$ report `null` with `INSUFFICIENT_SAMPLES`.
-- **ISO 2631 Clarification**: Jerk is reported purely as a kinematic motion comfort proxy, with unsupported claims of ISO 2631 whole-body vibration certification explicitly disclaimed.
+#### DEC-014: Multi-Agent Risk Aggregation via Independent Union
+- **Decision**: Individual agent potentials $R_j(x, y, t)$ are individually saturated to $[0.0, 1.0]$ and aggregated using the probabilistic independent union:
+  $$R_{\text{dynamic, total}} = 1.0 - \prod_{j=1}^M \Big(1.0 - R_j(x, y, t)\Big)$$
+- **Rationale**: Monotonic, mathematically bounded in $[0.0, 1.0]$, and prevents artificial risk explosion when multiple vehicles or pedestrians cluster in dense traffic.
+
+#### DEC-015: Full Vehicle Footprint Lateral Clearance
+- **Decision**: Vehicle lateral feasibility must account for the full rectangular width ($W_{\text{veh}} = 1.80\text{ m}$). Center coordinates $|y_{\text{ego}}| > 3.80\text{ m}$ result in the outer tire encroaching into the roadside ditch ($Y_{\text{ditch}} = 4.70\text{ m}$) and are enforced as hard infinite cost barriers.

@@ -1,9 +1,9 @@
 # Statistical Analysis Plan (SAP) — ADAPTIVE-PATH
 
-> **Protocol ID**: SAP-SIH26037-v2.0 (Revised for Second Gate G2 Review)  
-> **Status**: Proposed / Under G2 Review  
+> **Protocol ID**: SAP-SIH26037-v2.1 (Final G2 Scientific Revisions)  
+> **Status**: Proposed / Under Final G2 Review  
 > **Prepared Date**: 2026-11-03  
-> **Approval Date**: Pending Second Gate G2 Review  
+> **Approval Date**: Pending Final Gate G2 Review  
 > **Git Commit / Branch**: `research/phase-0-audit`  
 > **Authoritative Pre-Registration**: Strictly defines statistical contrasts, hypotheses, endpoints, sample sizes, power calculations, and calibration protocols prior to final confirmatory execution.
 
@@ -18,8 +18,8 @@ Can uncertainty-aware, event-triggered path replanning (Planner **P3: Risk-Adapt
 ## 2. Experimental Population, Run Classes & ITT Principle
 
 ### 2.1 The 5 Canonical Scenario Families
-1. `SCENARIO_1_VILLAGE_ROAD`: Narrow single-lane unmarked road, unpaved shoulders, oncoming heavy truck forcing shoulder bypass.
-2. `SCENARIO_2_URBAN_INTERSECTION`: Uncontrolled four-way intersection, cross-cutting three-wheelers, swarming two-wheelers.
+1. `SCENARIO_1_VILLAGE_ROAD`: Narrow single-lane road, unpaved shoulders, oncoming truck forcing shoulder bypass.
+2. `SCENARIO_2_URBAN_INTERSECTION`: Uncontrolled four-way crossroads, cross-cutting three-wheelers, swarming two-wheelers.
 3. `SCENARIO_3_HIGHWAY_MERGE`: High-speed corridor, slow agricultural tractors merging from acute unpaved ramps.
 4. `SCENARIO_4_DENSE_MARKET`: Roadside vendor fruit stalls, occluded pedestrian cut-ins.
 5. `SCENARIO_5_CATTLE_CROSSING`: High-mass livestock entering active lane and halting mid-path.
@@ -35,43 +35,42 @@ Under ITT, every launched experiment run is classified:
 
 ---
 
-## 3. Four-Way Disjoint Data Splits & Seed Governance
+## 3. Five-Way Disjoint Data Splits & Seed Governance
 
-To enforce absolute protection against data snooping, tuning leakage, and overfitting, the random seed space is partitioned into **four mutually disjoint sets**:
+To enforce complete protection against data snooping, tuning leakage, and overfitting, the random seed space is partitioned into **five mutually disjoint sets**, explicitly separating baseline selection from P3 algorithm tuning:
 
-| Dataset Split | Purpose | Seed Range | Seeds per Scenario | Total Episodes (5 Scenarios) | Access Gate |
-| :--- | :--- | :---: | :---: | :---: | :---: |
-| **Tuning Split** | Initial parameter exploration & algorithm design | $1000\text{--}1009$ | $10$ | $50$ | Phase 0 / Free |
-| **Calibration Split** | Fitting non-parametric split-conformal quantiles | $1500\text{--}1539$ | $40$ | $200$ | After Gate G2 |
-| **Validation Split** | $B^*$ selection & P3 livelock progress tuning | $2000\text{--}2009$ | $10$ | $50$ | After Gate G2 |
-| **Confirmatory Frozen Split** | Final locked hypothesis testing & paper results | $3000\text{--}3029$ | $30$ | **$150$** (Proposed) | **Strictly Locked until G3** |
+| Dataset Split | Identifier | Purpose | Seed Range | Seeds / Scenario | Total Episodes | Access Gate |
+| :--- | :---: | :--- | :---: | :---: | :---: | :---: |
+| **Tuning Split** | `tune` | Initial parameter exploration & algorithm design | $1000\text{--}1009$ | $10$ | $50$ | Free / Phase 0 |
+| **Calibration Split** | `calib` | Fitting class-by-horizon split-conformal quantiles | $1500\text{--}1539$ | $40$ | $200$ | After Gate G2 |
+| **Validation Sub-Split A** | `val_a` | Strongest-baseline comparator selection ($B^*$) | $2000\text{--}2004$ | $5$ | $25$ | After Gate G2 |
+| **Validation Sub-Split B** | `val_b` | P3 lateral creep & livelock progress tuning | $2005\text{--}2009$ | $5$ | $25$ | After Gate G2 |
+| **Confirmatory Frozen Split** | `frozen` | Final locked hypothesis testing & paper results | $3000\text{--}3029$ | $30$ | **$150$** (Locked) | **Locked until G3** |
 
-### Proof of Disjointness
-$$\mathcal{S}_{\text{tune}} \cap \mathcal{S}_{\text{calib}} = [1000, 1009] \cap [1500, 1539] = \emptyset$$
-$$\mathcal{S}_{\text{calib}} \cap \mathcal{S}_{\text{val}} = [1500, 1539] \cap [2000, 2009] = \emptyset$$
-$$\mathcal{S}_{\text{val}} \cap \mathcal{S}_{\text{frozen}} = [2000, 2009] \cap [3000, 3029] = \emptyset$$
-$$\mathcal{S}_{\text{tune}} \cap \mathcal{S}_{\text{frozen}} = [1000, 1009] \cap [3000, 3029] = \emptyset$$
+### Mathematical Proof of Mutual Disjointness
+$$\mathcal{S}_{\text{tune}} [1000, 1009] \cap \mathcal{S}_{\text{calib}} [1500, 1539] = \emptyset$$
+$$\mathcal{S}_{\text{calib}} [1500, 1539] \cap \mathcal{S}_{\text{val\_a}} [2000, 2004] = \emptyset$$
+$$\mathcal{S}_{\text{val\_a}} [2000, 2004] \cap \mathcal{S}_{\text{val\_b}} [2005, 2009] = \emptyset$$
+$$\mathcal{S}_{\text{val\_b}} [2005, 2009] \cap \mathcal{S}_{\text{frozen}} [3000, 3029] = \emptyset$$
 
+- **Separation of Baseline Selection from Tuning**:
+  - Baseline comparator $B^*$ is selected strictly using `val_a` (Seeds 2000–2004).
+  - P3 algorithm adjustments (such as exploratory lateral creep) are tuned strictly using `val_b` (Seeds 2005–2009).
+  - This nested separation guarantees that P3 tuning cannot overfit against the baseline selection benchmark.
 - **Historical Exposed Results**: Results previously generated in `frozen_test_results.json` are permanently marked as **Exploratory Pilot Data** and will never be reported as confirmatory.
 
 ---
 
-## 4. Primary Contrast & Baseline Selection Rule
+## 4. Strongest-Baseline Selection Rule
 
-### 4.1 Comparator Candidates
-The candidate classical baseline planners are:
-- **`B0`**: Shortest Path (Centerline follower, non-reactive).
-- **`B1`**: DWA + Velocity Obstacles (Reactive short-horizon avoidance).
-- **`B2`**: Kinematic Hybrid $A^*$ (SE(2) graph search with obstacle clearance heuristics).
+Prior to unblinding the Confirmatory Frozen Split, the single strongest classical baseline planner $B^*$ is selected from candidates (**B0**: Shortest Path, **B1**: DWA + Velocity Obstacles, **B2**: Kinematic Hybrid $A^*$) using performance across **Validation Sub-Split A** (`val_a`, Seeds 2000–2004):
 
-### 4.2 Selection Rule
-Prior to unblinding the Confirmatory Frozen Split, the single strongest baseline $B^*$ is selected based on performance across the **Validation Split** (Seeds 2000–2009):
-1. **Primary Metric**: Highest Safe-Progress Rate ($Y_{\text{SP}}$).
+1. **Primary Criterion**: Highest Safe-Progress Rate ($Y_{\text{SP}}$).
 2. **Tie-Breaker 1**: Highest minimum obstacle clearance ($d_{\min}$).
 3. **Tie-Breaker 2**: Lowest mean RMS jerk ($j_{\text{RMS}}$).
 4. **Tie-Breaker 3**: Lowest P95 planning latency ($\tau_{P95}$).
 
-The selected baseline $B^*$ is committed to `docs/DECISIONS.md` before Gate G3 authorization.
+The identity of $B^*$ will be formally committed to `docs/DECISIONS.md` before Gate G3 authorization.
 
 ---
 
@@ -80,8 +79,14 @@ The selected baseline $B^*$ is committed to `docs/DECISIONS.md` before Gate G3 a
 ### 5.1 Primary Endpoint: Safe-Progress Rate ($Y_{\text{SP}}$)
 $$Y_{\text{SP}, i} = \mathbb{I}(\text{CollisionFree}_i = \text{True} \land \text{GoalCompleted}_i = \text{True})$$
 
-### 5.2 Hypothesis Formulation
-We test the paired binary outcomes across matched scenario-seed episodes $(s_k, \omega_m)$:
+### 5.2 Definition of Discordant Proportions ($p_{10}$ and $p_{01}$)
+In paired testing across matched scenario-seed episodes $(s_k, \omega_m)$:
+- **$p_{10}$**: The population proportion of matched episodes where Planner P3 achieves safe progress ($Y_{\text{P3}} = 1$) AND the baseline comparator $B^*$ fails safe progress ($Y_{B^*} = 0$):
+  $$p_{10} = P(Y_{\text{P3}} = 1 \land Y_{B^*} = 0)$$
+- **$p_{01}$**: The population proportion of matched episodes where Planner P3 fails safe progress ($Y_{\text{P3}} = 0$) AND the baseline comparator $B^*$ achieves safe progress ($Y_{B^*} = 1$):
+  $$p_{01} = P(Y_{\text{P3}} = 0 \land Y_{B^*} = 1)$$
+
+### 5.3 Hypothesis Formulation
 - **Null Hypothesis ($H_0$)**: $p_{10} \le p_{01}$  
   *(The probability of P3 succeeding while $B^*$ fails is less than or equal to the probability of $B^*$ succeeding while P3 fails)*
 - **Alternative Hypothesis ($H_1$)**: $p_{10} > p_{01}$  
@@ -90,41 +95,52 @@ We test the paired binary outcomes across matched scenario-seed episodes $(s_k, 
 
 ---
 
-## 6. Sample Size & Statistical Power Calculations
+## 6. Sample Size, Power Calculations & Sensitivity Analysis
 
-> **Caveat on Sample Size**: $N = 150$ matched episodes (30 seeds $\times$ 5 scenarios) are **proposed** based on conservative power projections. The final statistical power depends on the empirical discordance observed during validation. If validation reveals low total discordance ($p_{10} + p_{01} < 0.15$), the required sample size will be formally re-evaluated and expanded prior to Gate G3.
+### 6.1 Exact Test vs. Asymptotic Power Terminology
+- **Hypothesis Testing Execution**: The primary hypothesis will be evaluated using the **Exact McNemar Test** (conditional exact binomial test under $B(n_{\text{disc}}, 0.5)$), which does not rely on large-sample approximations.
+- **Power & Sample Size Modeling**: Sample size planning is modeled using the **asymptotic normal approximation to McNemar's test** with continuity correction (Miettinen / Lu & Bean method).
 
-### 6.1 Paired-Binary Power Model (Exact McNemar Test)
-For paired binary data, statistical power depends on the proportion of discordant pairs:
-$$p_{10} = P(\text{P3} = 1, B^* = 0), \quad p_{01} = P(\text{P3} = 0, B^* = 1)$$
-$$n_{\text{disc}} = N \cdot (p_{10} + p_{01}), \quad \text{Odds Ratio } \psi = \frac{p_{10}}{p_{01}}$$
+### 6.2 Asymptotic Power Formula
+Let $N$ be total matched episodes. Expected discordant pairs $n_{\text{disc}} = N(p_{10} + p_{01})$, and risk difference $\Delta_{\text{SP}} = p_{10} - p_{01}$.
+$$\text{Power} = \Phi\left( \frac{\sqrt{N}(p_{10} - p_{01}) - z_{1-\alpha/2} \sqrt{p_{10} + p_{01}} - \frac{1}{\sqrt{N}}}{\sqrt{p_{10} + p_{01} - (p_{10} - p_{01})^2}} \right)$$
 
-Under the asymptotic normal approximation with continuity correction:
-$$\text{Power} = \Phi\left( \frac{\sqrt{N}(p_{10} - p_{01}) - z_{1-\alpha/2} \sqrt{p_{10} + p_{01}}}{\sqrt{p_{10} + p_{01} - (p_{10} - p_{01})^2}} \right)$$
+### 6.3 Reproducible Step-by-Step Power Calculation ($N = 150$)
+- **Parameters**: $N = 150$, $\alpha = 0.05$ (two-sided, $z_{0.975} = 1.960$).
+- **Assumed Proportions**: $p_{10} = 0.250$ (P3 wins $25\%$ of pairs), $p_{01} = 0.080$ ($B^*$ wins $8\%$ of pairs).
+  - Risk difference $\Delta = 0.250 - 0.080 = 0.170$.
+  - Total discordance $p_{\text{disc}} = 0.250 + 0.080 = 0.330$. Expected discordant pairs $n_{\text{disc}} = 150 \times 0.330 = 49.5$.
+  - Numerator term 1: $\sqrt{150} \times 0.170 = 12.2474 \times 0.170 = 2.0821$.
+  - Numerator term 2: $1.960 \times \sqrt{0.330} = 1.960 \times 0.57446 = 1.1259$.
+  - Continuity term: $\frac{1}{\sqrt{150}} = 0.0816$.
+  - Numerator: $2.0821 - 1.1259 - 0.0816 = 0.8746$.
+  - Denominator variance: $\sqrt{0.330 - (0.170)^2} = \sqrt{0.330 - 0.0289} = \sqrt{0.3011} = 0.5487$.
+  - Z-score: $Z = \frac{0.8746}{0.5487} = 1.5939$.
+  - Normal CDF: $\Phi(1.5939) \approx 0.9445$ (**$94.5\%$ Statistical Power**).
 
-### 6.2 Power Table across Sample Sizes & Effect Sizes ($\alpha = 0.05$, two-sided)
+### 6.4 Sensitivity Analysis Table across Effect Sizes ($N = 150$)
 
-| Total Matched Pairs ($N$) | Assumed $p_{10}$ | Assumed $p_{01}$ | Total Discordance | Odds Ratio ($\psi$) | Estimated Statistical Power ($1 - \beta$) |
+| Scenario | $p_{10}$ | $p_{01}$ | Total Discordance ($p_{\text{disc}}$) | Odds Ratio ($\psi$) | Estimated Statistical Power |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| **50** | $0.30$ | $0.10$ | $40\%$ | $3.0$ | $61.4\%$ |
-| **75** | $0.30$ | $0.10$ | $40\%$ | $3.0$ | $78.8\%$ |
-| **100** | $0.30$ | $0.10$ | $40\%$ | $3.0$ | $89.2\%$ |
-| **150 (Proposed)** | **$0.30$** | **$0.10$** | **$40\%$** | **$3.0$** | **$97.6\%$** |
-| **150 (Proposed)** | **$0.25$** | **$0.10$** | **$35\%$** | **$2.5$** | **$88.4\%$** |
-| **150 (Proposed)** | **$0.20$** | **$0.10$** | **$30\%$** | **$2.0$** | **$68.2\%$** |
+| **High Effect** | $0.300$ | $0.080$ | $38.0\%$ | $3.75$ | **$> 99.0\%$** |
+| **Moderate Effect (Target)** | **$0.250$** | **$0.080$** | **$33.0\%$** | **$3.12$** | **$94.5\%$** |
+| **Conservative Effect** | $0.200$ | $0.080$ | $28.0\%$ | $2.50$ | **$81.2\%$** |
+| **Low Effect Boundary** | $0.180$ | $0.090$ | $27.0\%$ | $2.00$ | **$62.5\%$** |
 
-- **Conclusion**: If the true odds ratio $\psi \ge 2.5$ with discordant proportion $\ge 35\%$, the proposed $N = 150$ episodes provides $> 88\%$ power. If validation data shows $\psi < 2.5$, sample size will be adjusted at G3.
+- **Sample Size Lock**: The proposed sample size is locked at **$N = 150$ matched episodes** (30 seeds $\times$ 5 scenarios, Seeds 3000–3029).
+- **Adequacy Review Invariant**: If empirical discordance on validation data indicates $\psi < 2.0$, Gate G3 review will require explicit sample expansion before frozen execution.
 
 ---
 
 ## 7. Primary Statistical Analysis Specification
 
-1. **Exact McNemar Test**: Computed from the $2 \times 2$ contingency table of paired outcomes:
-   $$p\text{-value} = 2 \cdot \sum_{k=n_{10}}^{n_{\text{disc}}} \binom{n_{\text{disc}}}{k} 0.5^{n_{\text{disc}}} \quad \left(\text{if } n_{10} > \frac{n_{\text{disc}}}{2}\right)$$
+1. **Exact McNemar Test**: Computed from the $2 \times 2$ contingency table of paired outcomes $(n_{10}, n_{01})$:
+   $$p\text{-value} = 2 \cdot \sum_{k=n_{10}}^{n_{\text{disc}}} \binom{n_{\text{disc}}}{k} 0.5^{n_{\text{disc}}} \quad \left(\text{for } n_{10} > \frac{n_{\text{disc}}}{2}\right)$$
 2. **Paired Risk Difference**:
-   $$\widehat{\Delta}_{\text{SP}} = \hat{p}_{\text{P3}} - \hat{p}_{B^*} = \frac{n_{10} - n_{01}}{N}$$
-3. **95% Confidence Intervals**:
-   - Primary: **1,000 paired percentile bootstrap resamples** resampling matched scenario-seed pairs with replacement at the episode level.
+   $$\widehat{\Delta}_{\text{SP}} = \frac{n_{10} - n_{01}}{N}$$
+3. **Confidence Interval (10,000 Bootstrap Replicates)**:
+   - Primary: **10,000 paired bootstrap resamples** (resampling matched scenario-seed pairs with replacement at the episode level).
+   - Computes both **Percentile** and **Bias-Corrected and Accelerated (BCa)** 95% confidence intervals.
    - Secondary: Exact Wilson score interval for marginal differences.
 
 ---
@@ -135,7 +151,7 @@ $$\text{Power} = \Phi\left( \frac{\sqrt{N}(p_{10} - p_{01}) - z_{1-\alpha/2} \sq
 1. **Minimum Clearance ($d_{\min}$)**: Paired Wilcoxon signed-rank test on continuous distance (meters). Effect size: Cliff's Delta ($\delta$) and median difference.
 2. **Kinematic Comfort (RMS Jerk $j_{\text{RMS}}$)**: Paired Wilcoxon signed-rank test on $(\text{m/s}^3)$.
 3. **Progress Efficiency ($\eta_{\text{prog}}$)**: Paired Wilcoxon signed-rank test on ratio $[0, 1]$.
-4. **Computational Latency ($\tau_{P95}$)**: Paired t-test / Wilcoxon on tail latency (ms).
+4. **Computational Latency ($\tau_{P95}$)**: Paired Wilcoxon signed-rank test on tail latency (ms).
 
 ### 8.2 Family-Wise Error Rate (FWER) Control
 - Tested using the **Holm-Bonferroni step-down procedure** across the 4 secondary endpoints at family level $\alpha = 0.05$.
@@ -147,18 +163,20 @@ $$\text{Power} = \Phi\left( \frac{\sqrt{N}(p_{10} - p_{01}) - z_{1-\alpha/2} \sq
 ## 9. Split-Conformal Calibration Standard
 
 ### 9.1 Calibration Episode Unit & Independence
-- Calibration unit: Independent simulation episode $(s, \omega) \in \mathcal{S}_{\text{calib}}$ ($n = 40$ seeds across 5 scenarios $= 200$ episodes).
+- Calibration unit: Independent simulation episode $(s, \omega) \in \mathcal{S}_{\text{calib}}$ (Seeds 1500–1539 across 5 scenarios $= 200$ episodes).
 
 ### 9.2 Non-Conformity Score Formulation
-For dynamic obstacle $j$ of class $c$ over prediction horizon $H = 2.80\text{ s}$ ($14$ steps at $\Delta t = 0.2\text{ s}$):
-$$s_{i, j} = \max_{k \in \{1,\dots,14\}} \|\mathbf{p}_{\text{true}, i, j}(t_k) - \mathbf{p}_{\text{forecast}, i, j}(t_k)\|_2$$
+For dynamic obstacle $j$ of class $c$ at horizon step $k \in \{1, \dots, 14\}$ ($t_k = k \cdot 0.20\text{ s}$ over horizon $H = 2.80\text{ s}$):
+$$s_{i, j}(c, t_k) = \|\mathbf{p}_{\text{true}, i, j}(t_k) - \mathbf{p}_{\text{forecast}, i, j}(t_k)\|_2$$
 
-### 9.3 Sample Size Requirement per Class
-- Minimum requirement: **$n \ge 40$ independent observed trajectories per class**.
+### 9.3 Class-by-Horizon Sample Size Requirement
+- **Requirement**: **$n \ge 40$ independent observed trajectories per class $c$ across prediction horizon step $t_k$**.
 - For target coverage $1 - \alpha = 0.95$:
-  $$k = \lceil (n + 1)(1 - \alpha) \rceil = \lceil 0.95(n + 1) \rceil$$
-  - For $n = 40$: $k = \lceil 0.95 \times 41 \rceil = \lceil 38.95 \rceil = 39$. The 39th ordered score is the calibrated quantile $\hat{q}_{0.95} = s_{(39)}$.
-- **Insufficient Sample Rule**: If an agent class has $n < 40$ observed calibration trajectories, conformal coverage is marked as **unavailable**; the predictor cannot claim 95% mathematical coverage and must fall back to conservative geometric road bounds.
+  $$m = \lceil (n + 1)(1 - \alpha) \rceil = \lceil 0.95(n + 1) \rceil$$
+  - For $n = 40$: $m = \lceil 0.95 \times 41 \rceil = \lceil 38.95 \rceil = 39$. Calibrated quantile is $\hat{q}_{0.95}(c, t_k) = s_{(39)}$.
+- **Behavior when Sample Counts are Insufficient ($n < 40$)**:
+  - If any class has $n < 40$ valid calibration trajectories at horizon $t_k$, **mathematical 95% coverage is formally marked as "Coverage Guarantee Unavailable (n < 40)"**.
+  - The predictor is prohibited from claiming conformal coverage and must fall back to conservative geometric road bounds ($r_{\text{fallback}} = 3.50\text{ m}$), setting `coverage_guarantee_valid = False` in the output telemetry log.
 
 ---
 
