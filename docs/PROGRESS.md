@@ -34,7 +34,7 @@ Deadline: 2026-11-15
 ## In progress
 | Item | Owner/agent | Files | Next action | Blocker |
 |---|---|---|---|---|
-| Phase 1 Step 3: F3 Diagnosis & Correction | Antigravity | `engine/planners/`, `engine/risk/` | Diagnose and correct P3 livelock using validation split only (val_a: Seeds 2000–2019) | Awaiting user sign-off on Step 2 |
+| Phase 1 Step 3: F3 Diagnosis & Correction Design | Antigravity | `engine/planners/`, `docs/F3_DIAGNOSIS.md` | Finalize mathematical design (persistence penalty, hypothesis weighting, risk kernel consistency) | Completed Step 3A; Awaiting G2/Step 3A approval |
 | Workstream B: Demo Fallback Track | Antigravity | `studio/`, `scripts/` | Coordinated cattle-crossing fallback demo | Parallel workstream |
 
 ## Decisions made

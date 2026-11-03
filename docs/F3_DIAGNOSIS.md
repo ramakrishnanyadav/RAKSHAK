@@ -166,40 +166,140 @@ In benign seeds where stopping occurred earlier ($x \approx 20\text{ m}$), the v
 
 ---
 
-## 5. Proposed Correction Architecture (Pre-Registration for Validation Sub-Split B)
+## 5. Finalized F3 Correction Design Architecture (Phase 1 Step 3A)
 
-The proposed correction consists of three mathematically sound, pre-registered adjustments to be tuned **exclusively on Validation Sub-Split B (`val_b`, Seeds 2005–2009)**:
+The finalized correction architecture addresses the three design questions with exact mathematical specifications, to be tuned **exclusively on Validation Sub-Split B (`val_b`, Seeds 2005–2009)**.
 
-### 5.1 Dynamic Stationary Persistence Penalty
-Incorporate cumulative stopped duration $t_{\text{stopped}}$ into the progress cost:
-$$J_{\text{progress}}(s_{\text{ratio}}, t_{\text{stopped}}) = w_{\text{prog}} \cdot (1.0 - s_{\text{ratio}}) + w_{\text{stall}} \cdot \min(10.0, t_{\text{stopped}}^{1.5}) \cdot \mathbb{I}(s_{\text{ratio}} == 0)$$
-- At $t_{\text{stopped}} = 0\text{ s}$: penalty is $2.20$ (permitting smooth temporary yield).
-- At $t_{\text{stopped}} \ge 2.0\text{ s}$: penalty escalates to $> 15.0$, breaking the stopping local minimum and forcing the optimizer to evaluate exploratory bypass tentacles.
+### 5.1 Design Question 1: Stationary Persistence Penalty
 
-### 5.2 Exploratory Lateral Creep Candidates
-Expand the candidate generator when stopped ($v < 0.20\text{ m/s}$) or approaching hazard:
-- Add ultra-low creep speed ratios: $s_{\text{ratio}} \in \{0.05, 0.10\}$ ($0.40 - 0.80\text{ m/s}$).
-- Expand lateral offsets to shoulder margins: $\Delta y \in \{-2.4, -1.8, 1.8, 2.4\}\text{ m}$ subject to hard chassis road-boundary constraints ($|y| + W_{\text{eff}}(\psi) \le 4.70\text{ m}$).
+#### 1. Exact Mathematical Formulation
+Let $t_{\text{stopped}} \ge 0$ be the continuous duration that the ego vehicle has remained in a standstill or near-standstill state ($v < 0.20\text{ m/s}$).
+The progress loss in the candidate trajectory cost function is augmented with a dynamic persistence penalty:
+$$J_{\text{progress}}(s_{\text{ratio}}, t_{\text{stopped}}) = w_{\text{prog}} \cdot (1.0 - s_{\text{ratio}}) + J_{\text{persist}}(s_{\text{ratio}}, t_{\text{stopped}})$$
+where:
+$$J_{\text{persist}}(s_{\text{ratio}}, t_{\text{stopped}}) = \begin{cases} w_{\text{stall}} \cdot \min\left(J_{\text{stall\_max}}, \max\left(0.0, \frac{t_{\text{stopped}} - t_{\text{grace}}}{1.00}\right)^\gamma\right) & \text{if } s_{\text{ratio}} == 0.0 \\ 0.0 & \text{otherwise} \end{cases}$$
 
-### 5.3 Hypothesis Likelihood Weighting
-Score hypothesis intersection proportionally to calibrated posterior probability $w_{\text{hyp}}$ rather than uniform worst-case phantom wall blocking:
-$$\text{Penalty}_{\text{envelope}} = \sum_{h=1}^H w_h \cdot \mathbb{I}(\text{dist}(\mathbf{p}_k, \hat{\mathbf{p}}_{h, k}) < R_{\text{safe}, h})$$
+#### 2. Exact Parameter Specification
+- **Baseline Progress Weight**: $w_{\text{prog}} = 2.20$.
+- **Grace Period**: $t_{\text{grace}} = 1.00\text{ s}$.  
+  *Justification*: When an obstacle unexpectedly enters the driving corridor, an immediate yield or emergency stop is legally and physically required. A $1.00\text{ s}$ grace period permits a smooth, unhurried stop without artificial urgency, allowing sensor tracking and multi-hypothesis forecasts to stabilize.
+- **Stall Weight**: $w_{\text{stall}} = 4.00$.
+- **Growth Exponent**: $\gamma = 1.50$ (smooth superlinear escalation).
+- **Saturation Cap**: $J_{\text{stall\_max}} = 5.00 \implies$ maximum persistence penalty $w_{\text{stall}} \cdot J_{\text{stall\_max}} = 20.00$.
+
+#### 3. Exact Calculated Stationary Costs
+Evaluating total stationary candidate cost $J_{\text{stat}}(t_{\text{stopped}}) = 2.20 + 4.00 \cdot \min\left(5.00, \max(0.0, t_{\text{stopped}} - 1.00)^{1.5}\right)$:
+
+| Stopped Time ($t_{\text{stopped}}$) | Effective Delay ($t - t_{\text{grace}}$) | Normalized Delay Term | $J_{\text{persist}}$ | Total Stationary Cost ($J_{\text{stat}}$) | Behavioral Interpretation |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **$0.00\text{ s}$** | $0.00\text{ s}$ | $0.000$ | $0.00$ | **$2.20$** | Initial stopping decision; unhurried braking. |
+| **$1.00\text{ s}$** | $0.00\text{ s}$ | $0.000$ | $0.00$ | **$2.20$** | Nominal waiting grace period; obstacle may clear. |
+| **$2.00\text{ s}$** | $1.00\text{ s}$ | $1.000$ | $4.00$ | **$6.20$** | Mild urgency; optimizer begins considering low-cost lateral bypass. |
+| **$3.00\text{ s}$** | $2.00\text{ s}$ | $2.828$ | $11.31$ | **$13.51$** | Strong urgency; stationary cost exceeds creep bypass cost ($\approx 5.50$). |
+| **$10.00\text{ s}$** | $9.00\text{ s}$ | $5.000$ (capped) | $20.00$ | **$22.20$** | Fully saturated penalty; vehicle actively creeps forward if feasible. |
+
+#### 4. Timer Accumulation, Reset & Anti-Chatter Hysteresis
+- **Accumulation Rule**:
+  At each discrete planning step with interval $dt = 0.10\text{ s}$:
+  $$\text{if } ego.v < 0.20\text{ m/s}: \quad t_{\text{stopped}} \leftarrow t_{\text{stopped}} + dt$$
+- **Clearance / Cruising Reset**:
+  When the vehicle successfully establishes forward cruising motion:
+  $$\text{if } ego.v \ge 0.50\text{ m/s}: \quad t_{\text{stopped}} \leftarrow 0.00\text{ s}$$
+- **Anti-Chatter Hysteresis Zone ($0.20 \le ego.v < 0.50\text{ m/s}$)**:
+  While creeping or crawling at low speed, $t_{\text{stopped}}$ is **held constant** (neither incremented nor reset to zero). This prevents high-frequency limit-cycle oscillations where creeping would instantly reset the timer, causing the planner to abort creeping and stop again.
+- **Scenario Reset**:
+  In `P3AdaptivePlanner.reset()`, $t_{\text{stopped}} \leftarrow 0.00\text{ s}$.
+
+#### 5. Proof of Safety Preservation (Objective Cannot Reward Unsafe Movement)
+- **Constraint Invariance 1 (Hard Collision Filter)**:
+  Any candidate trajectory that intersects an obstacle's physical bounding box or crosses the driveable road boundary ($|y| > 4.70\text{ m}$) is rejected at the kinematic generation loop via `continue`. Its cost is **never computed**.
+- **Constraint Invariance 2 (Saturation Cap vs. Collision Penalty)**:
+  If a road is completely blocked with zero clearance, forward moving candidates penetrate conformal cones or physical safety zones, incurring penalties $\ge 60.00$. Because $J_{\text{stat}}$ is strictly capped at $22.20$, the optimizer maintains:
+  $$J_{\text{stat}}(10\text{ s}) = 22.20 \ll 60.00 \le J_{\text{moving\_collision}}$$
+  Therefore, the vehicle will **strictly remain stopped** if no physically safe bypass corridor exists. It is mathematically impossible for the persistence penalty to force a collision.
+- **Constraint Invariance 3 (Emergency Override Precedence)**:
+  Minimal-Risk Manoeuvre (MRM) and emergency braking triggers (`if max_agent_uncertainty > 2.6 and current_ego_risk > 0.6`) execute **prior** to candidate optimization and directly return `EMERGENCY_BRAKE`. The persistence penalty exists purely inside the local path optimizer and cannot override high-level safety tripwires.
+
+---
+
+### 5.2 Design Question 2: Hypothesis Probability Weighting
+
+#### 1. Separation of Hard Safety Feasibility from Expected Risk
+- **Hard Safety Feasibility**:
+  Evaluated against the obstacle's **physically detected pose and oriented bounding box** at step $k=0$ and projected forward:
+  $$\text{Clearance}_{\text{hard}}(\mathbf{p}_{\text{ego}}(t_k), \mathbf{p}_{\text{obs}}(t_k)) > 0.00\text{ m}$$
+  Zero tolerance: no candidate that overlaps any physical actor is feasible.
+- **Soft Expected Conformal Risk**:
+  Conformal envelopes represent the statistical uncertainty of where the actor might be in the future under multiple possible behavioral intents. The penalty is evaluated as the **mathematical expectation** across the hypothesis mixture:
+  $$\text{Cost}_{\text{conf}}(t_k) = \sum_{h=1}^H w_h \cdot C_{\text{violation}} \cdot \mathbb{I}\Big(\text{dist}\big(\mathbf{p}_{\text{ego}}(t_k), \hat{\mathbf{p}}_{h}(t_k)\big) < R_{\text{ego}} + r_{\text{cone}}(t_k)\Big)$$
+  where $C_{\text{violation}} = 4.00$ per horizon step, and $\sum_{h=1}^H w_h = 1.00$.
+
+#### 2. Interaction with Conformal Coverage Guarantee
+- The split-conformal guarantee proved in Gate G2 applies to the predictor's nonconformity score:
+  $$P\Big(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}(c, t_k)\Big) \ge 1 - \alpha = 0.95$$
+- **Preservation Invariants**:
+  1. **Quantile Invariance**: Calibrated quantiles are **never reduced** ($\hat{q}^{\text{sim}} = 4.3586$ for cattle remains untouched).
+  2. **Hypothesis Retention**: No hypothesis is pruned or discarded on account of probability. An intent with $w_h = 0.15$ remains in the evaluation set.
+  3. **Likelihood Scaling**: Penetrating the envelope of a $45\%$ likely trajectory incurs an expected penalty of $0.45 \times 4.00 = 1.80$ per step, whereas penetrating a $15\%$ likely tail incurs $0.15 \times 4.00 = 0.60$ per step. This breaks the "phantom wall" deadlock, allowing the vehicle to carefully choose the path of lowest probability threat without compromising statistical coverage.
+
+---
+
+### 5.3 Design Question 3: Conformal Geometry and Risk-Field Consistency
+
+#### 1. Audit of the `0.40 * cone_r` Expansion
+In `engine/risk/field.py:74`, the legacy implementation contained:
+```python
+sigma += cone_r * 0.4
+```
+- **Analysis**:
+  - `cone_r` is a scalar radius derived from the conformal envelope.
+  - Adding `cone_r * 0.4` directly to the Gaussian standard deviation $\sigma$ artificially inflates the spatial variance from $\sigma \approx 1.75\text{ m}$ to $\sigma \approx 3.02\text{ m}$.
+  - This isotropic scalar dilation collapses the approved body-frame anisotropic aspect ratio ($\beta_{\text{long}} : \beta_{\text{lat}} = 0.50 : 0.35$).
+  - Furthermore, it spreads a non-zero Gaussian tail out to $8.0\text{ m}$, penalizing stationary vehicles that are safely stopped well outside the actor's trajectory.
+
+#### 2. Comparison with Approved Anisotropic Kernel (`docs/RISK_DEFINITION.md` §2.3)
+The approved G2 definition specifies that conformal uncertainty is an **oriented elliptical level set**:
+$$\mathcal{C}_{1-\alpha}(c, t_k) = \left\{ (x, y) : \left(\frac{\Delta x_{\text{local}}}{r_{\text{long}}}\right)^2 + \left(\frac{\Delta y_{\text{local}}}{r_{\text{lat}}}\right)^2 \le 1.0 \right\}$$
+where $r_{\text{long}} = \hat{q}_{1-\alpha} \sigma_{\text{long}}$ and $r_{\text{lat}} = \hat{q}_{1-\alpha} \sigma_{\text{lat}}$.
+
+#### 3. Rigorous Structural Separation
+To achieve complete mathematical consistency:
+1. **Conformal Prediction Sets ($\mathcal{C}_{1-\alpha}$)**:
+   Represent the **hard/firm statistical uncertainty boundary** evaluated via anisotropic body-frame Mahalanobis distance.
+2. **Continuous Risk Field ($R(x, y)$)**:
+   Represents the **smooth potential field** evaluated from physical bounding geometry and relative closing speed.
+3. **No Uncalibrated Cross-Contamination**:
+   The heuristic `sigma += cone_r * 0.4` scalar term will be removed from the spatial risk variance. The continuous field will evaluate physical spatial clearance, while conformal prediction envelopes will enforce the calibrated anisotropic boundary penalty. This prevents artificial risk inflation at $8\text{ m}$ while preserving 100% of the approved calibration mathematics.
+
+---
+
+### 5.4 Exploratory Lateral Creep Candidates
+To enable the vehicle to exploit available road margins ($|y| \le 4.70\text{ m}$), the candidate tentacle generator is augmented when stopped or approaching hazard:
+- **Crawl Speed Ratios**: $s_{\text{ratio}} \in \{0.05, 0.10\} \implies v_{\text{crawl}} \in \{0.40\text{ m/s}, 0.80\text{ m/s}\}$.
+- **Expanded Lateral Offsets**: $\Delta y \in \{-2.40, -1.80, -1.20, -0.60, 0.00, 0.60, 1.20, 1.80, 2.40\}\text{ m}$.
+- **Chassis Boundary Feasibility**: Evaluated with the oriented vehicle footprint ($|y| + W_{\text{eff}}(\psi) \le 4.70\text{ m}$).
 
 ---
 
 ## 6. Pre-Registered Verification Plan for Step 3 Implementation
 
 When authorized to begin the correction:
-1. Reconcile `engine/scenarios/registry.py` to `val_a: 2000–2004` and `val_b: 2005–2009`.
-2. Tune correction weights ($w_{\text{stall}}$, creep speeds) **strictly on `val_b` (Seeds 2005–2009)**.
-3. Unit tests to add in `tests/test_f3_recovery.py`:
-   - `test_p3_stationary_persistence_penalty_escalation`: verifies cost of $v=0$ increases monotonically over time.
-   - `test_p3_generates_lateral_creep_under_standstill`: verifies crawl primitives appear when stationary.
-   - `test_p3_recovers_and_bypasses_stationary_cattle`: verifies safe progress $> 65\text{ m}$ on Scenario 5 without collision.
-4. **Zero access to `val_a` (2000–2004) or `frozen` (3000–3029)**.
+1. **Reconciled Split Protocol**:
+   - `val_a` (Seeds 2000–2004): Baseline comparator selection ($B^*$) only. Zero P3 tuning.
+   - `val_b` (Seeds 2005–2009): P3 lateral creep and persistence tuning.
+2. **Dedicated Test Suite (`tests/test_f3_recovery.py`)**:
+   - `test_stationary_persistence_penalty_monotonic_escalation`: verifies costs match exact table at $t \in \{0, 1, 2, 3, 10\}\text{ s}$.
+   - `test_stationary_timer_reset_and_hysteresis`: verifies reset at $v \ge 0.50$ and hold at $0.20 \le v < 0.50$.
+   - `test_persistence_penalty_cannot_override_collision_avoidance`: verifies stopped vehicle never forces a collision when road is blocked.
+   - `test_hypothesis_likelihood_weighting_preserves_hard_feasibility`: verifies physical collision checks remain active.
+   - `test_lateral_creep_generation_under_standstill`: verifies crawl primitives appear when stationary.
+   - `test_p3_cattle_crossing_deadlock_recovery_val_b`: verifies Safe-Progress Rate $\ge 80\%$ on `val_b` Scenario 5 without collisions.
+3. **Strict Gate Stop**: Zero access to `frozen` split (Seeds 3000–3029).
 
 ---
 
 ## 7. Mandatory Gate Stop
 
-**Diagnostic investigation is complete. No code modifications or tuning sweeps have been executed. Awaiting explicit user governance approval.**
+**Step 3A design finalization is complete. No P3 planner source code has been modified. No validation or frozen runs have been executed. Awaiting explicit user governance approval before implementing Phase 1 Step 3B.**
+
+

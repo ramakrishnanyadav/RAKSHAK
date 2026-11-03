@@ -113,3 +113,29 @@
      - Aligned `backend/app/adapters/pipeline/aggregator.py` to forward directly to `engine.metrics.compute_frame_metrics(frames)`.
   4. **Verification**: 145/145 backend pytest tests pass (including 12 in `test_conformal_calibrator.py` and 9 in `test_metrics.py`), and 17/17 Studio vitest tests pass.
 
+#### DEC-025: Governance Reaffirmation of Five-Way Disjoint Seed Allocation & F3 Correction Design Finalization (Step 3A)
+- **Context & Problem**: In Step 2, `engine/scenarios/registry.py` and `docs/PROGRESS.md` inadvertently referenced an exploratory 20-seed expansion (`val_a: 2000–2019`, `val_b: 2020–2039`), causing a split discrepancy with `docs/SAP.md` and `docs/DECISIONS.md` DEC-007 / DEC-012. Furthermore, the F3 diagnostic investigation required mathematical finalization across three core architectural questions before implementation.
+- **Decision & Mathematical Resolution**:
+  1. **Governance Reaffirmation of Seed Allocation**:
+     Reaffirmed the approved G2 five-way disjoint partition and corrected `engine/scenarios/registry.py` and `docs/PROGRESS.md`:
+     - `tune`: Seeds 1000–1009 ($N=10$, 50 episodes) — diagnostic profiling & initial algorithm design.
+     - `calib`: Seeds 1500–1539 ($N=40$, 200 episodes) — conformal calibration table generation.
+     - `val_a`: Seeds 2000–2004 ($N=5$, 25 episodes) — **strongest-baseline selection ($B^*$) only**. Strictly isolated from P3 tuning.
+     - `val_b`: Seeds 2005–2009 ($N=5$, 25 episodes) — **P3 algorithm tuning & exploratory lateral creep validation**.
+     - `frozen`: Seeds 3000–3029 ($N=30$, 150 episodes) — confirmatory final evaluation (locked until G3).
+  2. **Question 1 — Stationary Persistence Penalty Design**:
+     - Formulated dynamic stall penalty: $J_{\text{stat}}(t_{\text{stopped}}) = 2.20 + 4.00 \cdot \min(5.00, \max(0.0, t_{\text{stopped}} - 1.00)^{1.5})$.
+     - Calculated exact costs: $t=0\text{ s} \implies 2.20$; $t=1\text{ s} \implies 2.20$; $t=2\text{ s} \implies 6.20$; $t=3\text{ s} \implies 13.51$; $t=10\text{ s} \implies 22.20$.
+     - Defined accumulation ($v < 0.20\text{ m/s}$), reset ($v \ge 0.50\text{ m/s}$), and hold hysteresis ($0.20 \le v < 0.50\text{ m/s}$).
+     - Proved that hard collision and road boundary filters (`continue`) and the $22.20 \ll 60.00$ collision penalty cap strictly prevent unsafe movement from being rewarded. MRM overrides take precedence prior to optimization.
+  3. **Question 2 — Hypothesis Probability Weighting Design**:
+     - Separated hard safety feasibility (physical clearance to detected obstacle pose $> 0\text{ m}$) from soft expected risk.
+     - Formulated conformal cost as the mixture expectation: $\text{Cost}_{\text{conf}}(t_k) = \sum_h w_h \cdot 4.00 \cdot \mathbb{I}(\text{dist} < R_{\text{ego}} + r_{\text{cone}})$.
+     - Calibrated quantiles are preserved untouched ($\hat{q}^{\text{sim}} = 4.3586$ for cattle); zero hypotheses are pruned or discarded.
+  4. **Question 3 — Conformal Geometry & Risk-Field Consistency**:
+     - Delineated the exact anisotropic Mahalanobis prediction set $\mathcal{C}_{1-\alpha}$ (with semi-axes $r_{\text{long}}, r_{\text{lat}}$) from the continuous Gaussian scalar potential field $R(x, y)$.
+     - Removed the heuristic isotropic scalar expansion `sigma += cone_r * 0.4` to eliminate artificial Gaussian dilation at $8\text{ m}$ while preserving 100% of calibration mathematics.
+  5. **Pre-Registered Verification Protocol**:
+     - Documented dedicated test suite in `docs/F3_DIAGNOSIS.md` to be implemented and verified strictly on `val_b` (Seeds 2005–2009).
+
+
