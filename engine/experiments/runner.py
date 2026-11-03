@@ -59,7 +59,12 @@ class ValidationExperimentRunner:
         self.seed_count = seed_count
         self.dt = dt
         self.vehicle_model = KinematicBicycleModel()
-        self.predictor = NonLaneMultiHypothesisPredictor(horizon_s=2.8, dt=0.2)
+        calib_file = Path("engine/ml/models/conformal_tables.json")
+        self.predictor = NonLaneMultiHypothesisPredictor(
+            horizon_s=2.8,
+            dt=0.2,
+            calibration_path=str(calib_file) if calib_file.exists() else None,
+        )
         self.output_dir = Path("engine/experiments/results")
         self.output_dir.mkdir(parents=True, exist_ok=True)
 

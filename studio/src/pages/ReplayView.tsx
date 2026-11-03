@@ -143,7 +143,7 @@ export const ReplayView: React.FC = () => {
                 min_clearance_m: manifest.metrics.min_clearance_m,
                 mean_speed_m_s: manifest.metrics.mean_speed_m_s,
                 max_jerk_m_s3: manifest.metrics.max_jerk_m_s3,
-                mean_jerk_m_s3: manifest.metrics.max_jerk_m_s3 * 0.6,
+                mean_jerk_m_s3: manifest.metrics.mean_jerk_m_s3 ?? 0.0,
                 replan_count: manifest.metrics.replan_count,
                 p95_latency_ms: manifest.metrics.p95_latency_ms,
                 failure_tag: (manifest.metrics.failure_tag as any) || null,

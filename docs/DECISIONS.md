@@ -90,3 +90,26 @@
   2. Integrated calibrator into `NonLaneMultiHypothesisPredictor`. When uncalibrated or $n_e < 40$, predictor falls back to $3.50\text{ m}$ with `coverage_guarantee_valid = False` without claiming coverage.
   3. Extended `ConformalConePoint` schema with optional `semi_axis_x`, `semi_axis_y`, and `coverage_guarantee_valid` for full backwards compatibility across all runner and frontend schemas.
   4. Tested with 10 unit/integration tests in `tests/test_conformal_calibrator.py` (100% pass, 135/135 backend tests pass).
+
+#### DEC-024: Authoritative Metrics Consolidation & Independent Conformal Artifact Generation (Workstreams A, B, C)
+- **Context & Problem**: Resolves audit findings F1, F2, and F7 while fulfilling Workstreams A, B, and C authorized under Phase 1 Step 2:
+  1. F1: Fabricated jerk metric in `studio/src/pages/ReplayView.tsx:146` (`mean_jerk_m_s3 = max_jerk * 0.6`).
+  2. F2: Fabricated fallback metrics in `studio/src/pages/CompareView.tsx:117-140` (`0.8m`, `2.4m`, `5.5m/s`, `4.2m/s³`).
+  3. F7: Duplicate and divergent metric calculations between `engine/metrics.py` (which mocked clearance as 99.0m and used ego_risk for collisions) and `backend/app/adapters/pipeline/aggregator.py`.
+  4. F4 Verification: Verification of downstream consumers (`engine/risk/field.py`, `engine/behaviour/state_machine.py`, `engine/planners/p2_risk_aware.py`, `engine/planners/p3_adaptive.py`) regarding `coverage_guarantee_valid`.
+- **Decision & Mathematical Resolution**:
+  1. **Workstream A (Consumer Audit & Enforcement)**: All downstream planner, risk-field, and state-machine consumers strictly verify `getattr(cone, "coverage_guarantee_valid", True)`. Uncalibrated fallback envelopes ($3.50\text{ m}$) do not trigger `CONFORMAL_VIOLATION` or apply calibrated safety margins.
+  2. **Workstream B (Independent Calibration Artifact)**: Executed `scripts/generate_calibration_artifact.py` strictly across the designated calibration split (Seeds 1500–1539 across all 5 scenarios = 200 simulation episodes). Zero overlap with tuning, validation, or frozen-test splits. Generated `engine/ml/models/conformal_tables.json` with full audit provenance. Achieved $n_e \ge 40$ independent episodes for all 6 target road obstacle classes (`cattle`: 40, `auto_rickshaw`: 80, `two_wheeler`: 40, `pedestrian`: 80, `truck`: 40, `handcart`: 40) with valid 95% finite-sample quantiles ($m = \lceil(n_e+1)(1-\alpha)\rceil$).
+  3. **Workstream C (Authoritative Metrics Consolidation)**:
+     - F1: Replaced `max_jerk * 0.6` with `manifest.metrics.mean_jerk_m_s3 ?? 0.0` in `ReplayView.tsx`.
+     - F2: Removed hardcoded numbers in `CompareView.tsx`. Display `--` or safe nulls when data is missing and compute performance deltas dynamically only when valid.
+     - F7: Fully implemented the exact mathematical specifications from `docs/METRICS.md` (v2.2.0) in `engine/metrics.py`:
+       - Discrete SAT polygon intersection across full trajectory.
+       - Exact polygon-to-polygon clearance ($d_{\min}$).
+       - Exact 2D constant-relative-velocity TTC with 5-case handling table ($C \le 0 \implies 0, A = 0 \implies \text{null}, \mathbf{r} \cdot \mathbf{v}_{\text{rel}} \le 0 \implies \text{null}, \mathcal{D} < 0 \implies \text{null}$, positive root contact time).
+       - Near-miss predicate ($d_{\min} < 1.00\text{ m} \lor \text{TTC} < 1.20\text{ s}$).
+       - Causal 3-step moving average filtered variable-timestep jerk excluding boundary samples ($k=0, 1$).
+       - Goal completion predicate ($x \ge 65.0\text{ m} \land |y| \le 4.70\text{ m} \land \text{CollisionFree} \land t \le 20.0\text{ s} \land v_{\text{term}} \ge 0.50\text{ m/s}$).
+     - Aligned `backend/app/adapters/pipeline/aggregator.py` to forward directly to `engine.metrics.compute_frame_metrics(frames)`.
+  4. **Verification**: 145/145 backend pytest tests pass (including 12 in `test_conformal_calibrator.py` and 9 in `test_metrics.py`), and 17/17 Studio vitest tests pass.
+

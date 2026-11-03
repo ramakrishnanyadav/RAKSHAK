@@ -27,11 +27,14 @@ Deadline: 2026-11-15
 | Architecture & Decisions Record (v2.3) | Updated `docs/DECISIONS.md` with DEC-001 through DEC-023 | DONE |
 | Gate G2 User Sign-Off | Explicit user approval received | DONE |
 | Phase 1 Step 1: F4 Conformal Calibration Integration | `engine/prediction/conformal_calibrator.py`, `engine/prediction/predictor.py`, `tests/test_conformal_calibrator.py` (10/10 passed, 135/135 full suite passed) | DONE |
+| Phase 1 Step 2: Workstream A — F4 Consumer Audit & Enforcement | Audited normalizers, feature parity, quantile bounds; enforced `coverage_guarantee_valid` across `engine/risk/field.py`, `engine/behaviour/state_machine.py`, `engine/planners/p2_risk_aware.py`, `engine/planners/p3_adaptive.py`; verified via unit tests | DONE |
+| Phase 1 Step 2: Workstream B — Independent Calibration Artifact | Generated `engine/ml/models/conformal_tables.json` strictly on calibration split (Seeds 1500–1539, 40 seeds x 5 scenarios = 200 episodes); $n_e \ge 40$ for all 6 target classes; full audit provenance recorded | DONE |
+| Phase 1 Step 2: Workstream C — Authoritative Metrics Consolidation | Resolved F1 (`ReplayView.tsx:146`), F2 (`CompareView.tsx:117-140`), and F7 (`engine/metrics.py`, `backend/app/adapters/pipeline/aggregator.py`); verified exact SAT, clearance, 2D TTC, filtered jerk, goal predicate (145/145 backend tests pass, 17/17 studio tests pass) | DONE |
 
 ## In progress
 | Item | Owner/agent | Files | Next action | Blocker |
 |---|---|---|---|---|
-| Phase 1 Step 2: F3 Diagnosis & Correction | Antigravity | `engine/planners/`, `engine/risk/` | Diagnose and correct P3 livelock using validation split only | Awaiting user review of F4 |
+| Phase 1 Step 3: F3 Diagnosis & Correction | Antigravity | `engine/planners/`, `engine/risk/` | Diagnose and correct P3 livelock using validation split only (val_a: Seeds 2000–2019) | Awaiting user sign-off on Step 2 |
 | Workstream B: Demo Fallback Track | Antigravity | `studio/`, `scripts/` | Coordinated cattle-crossing fallback demo | Parallel workstream |
 
 ## Decisions made
@@ -52,6 +55,7 @@ Deadline: 2026-11-15
 | 2026-11-03 | Conformal Score & Prediction Set Consistency via Anisotropic Mahalanobis Calibration Level Sets | Deployed set matches score level set; $\beta_{\text{long}}=0.50, \beta_{\text{lat}}=0.35$ pre-calibrated on tuning split; pointwise vs simultaneous coverage defined | DEC-021 / Final G2 Closure |
 | 2026-11-03 | Episode-Level Conformal Aggregation & Inference-Time Feature Parity | Conservative max across same-class obstacles ($s_e = \max_j s_{e, j}$); non-target episodes excluded (no zero scores); independent episode count $n_e(c)$ distinguished from observation count $N_{\text{obs}}(c)$; inference inputs ($v_j(t_0), L_j$) strictly defined at query timestamp $t_0$ | DEC-022 / Final G2 Review |
 | 2026-11-03 | F4 Conformal Calibration Integration Architecture | Implemented exact anisotropic Mahalanobis calibrator; finite-sample order statistic $m = \lceil(n_e+1)(1-\alpha)\rceil$; 3.50m fallback strictly marked coverage_guarantee_valid=False; 10/10 tests pass | DEC-023 / Phase 1 Step 1 |
+| 2026-11-03 | Authoritative Metrics Consolidation & Independent Conformal Artifact Generation | Resolved F1 (jerk calculation), F2 (frontend fallbacks), F7 (metrics consolidation); generated independent calibration artifact across Seeds 1500–1539; 145/145 backend and 17/17 studio tests pass | DEC-024 / Phase 1 Step 2 |
 
 ## Open questions and risks
 - F4 split-conformal calibration integration will require generating calibration logs across seeds 1500–1539.

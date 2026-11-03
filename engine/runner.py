@@ -5,6 +5,7 @@ Perception (Camera, LiDAR, Radar) -> Multi-Object Tracker -> Non-Lane World Mode
 Behaviour State Machine -> Prediction -> Continuous Risk Field -> Planner -> Vehicle Controller -> apath-log/v1
 """
 
+import os
 import time
 import hashlib
 import json
@@ -48,7 +49,14 @@ class SimulationRunner:
 
     def __init__(self, dt: float = 0.1):
         self.dt = dt
-        self.predictor = NonLaneMultiHypothesisPredictor(horizon_s=2.8, dt=0.2)
+        calib_file = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "ml", "models", "conformal_tables.json")
+        )
+        self.predictor = NonLaneMultiHypothesisPredictor(
+            horizon_s=2.8,
+            dt=0.2,
+            calibration_path=calib_file if os.path.exists(calib_file) else None,
+        )
         self.learned_predictor = LearnedMultiModalPredictor(horizon_s=2.8, dt=0.2)
         self.risk_field_evaluator = CalibratedRiskField()
         self.vehicle_model = KinematicBicycleModel()

@@ -65,11 +65,13 @@ class CalibratedRiskField:
             # Spatial sigma scaled by vehicle velocity and agent length
             sigma = max(1.2, 0.5 * (ag.length + ag.width) + 0.15 * math.hypot(ag.v_x, ag.v_y))
 
-            # Conformal uncertainty expansion: if cone expands, risk field widens
+            # Conformal uncertainty expansion: if calibrated cone expands, risk field widens
             if ag.conformal_envelope:
-                # Add first 1.0s conformal expansion
-                cone_r = ag.conformal_envelope[min(4, len(ag.conformal_envelope) - 1)].radius_m
-                sigma += cone_r * 0.4
+                # Add first 1.0s conformal expansion only if calibrated coverage guarantee is valid
+                target_cone = ag.conformal_envelope[min(4, len(ag.conformal_envelope) - 1)]
+                if getattr(target_cone, "coverage_guarantee_valid", True):
+                    cone_r = target_cone.radius_m
+                    sigma += cone_r * 0.4
 
             spatial_term = math.exp(-(dist ** 2) / (2.0 * (sigma ** 2)))
             temporal_term = 1.0 / (1.0 + 0.5 * max(0.0, ttc))
@@ -179,14 +181,17 @@ class CalibratedRiskField:
 
                     # Lookup conformal radius
                     cone_r = 1.0
+                    is_valid_calib = False
                     if ag.conformal_envelope:
                         for cp in ag.conformal_envelope:
                             if cp.t_rel >= t_horizon:
-                                cone_r = cp.radius_m
+                                if getattr(cp, "coverage_guarantee_valid", True):
+                                    cone_r = cp.radius_m
+                                    is_valid_calib = True
                                 break
 
-                    # If clearance is less than vehicle half width + conformal cone radius
-                    if dist < (1.1 + cone_r):
+                    # Only claim CONFORMAL_VIOLATION if envelope has a valid mathematical coverage guarantee
+                    if is_valid_calib and dist < (1.1 + cone_r):
                         return True, "CONFORMAL_VIOLATION"
 
         return False, None

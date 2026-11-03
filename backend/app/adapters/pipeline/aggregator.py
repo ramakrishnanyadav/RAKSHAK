@@ -34,59 +34,11 @@ class MetricsAggregator:
     @staticmethod
     def aggregate_from_frames(frames: List[Frame], duration_s: float, goal_reached: bool) -> RunMetrics:
         """
-        Recalculates RunMetrics from frame time-series.
+        Recalculates RunMetrics from frame time-series using the authoritative
+        single source of truth in engine.metrics.
         """
-        if not frames:
-            return RunMetrics(
-                duration_s=0.0,
-                completed_goal=False,
-                collision_occurred=False,
-                near_miss_count=0,
-                min_clearance_m=0.0,
-                mean_speed_m_s=0.0,
-                max_jerk_m_s3=0.0,
-                mean_jerk_m_s3=0.0,
-                replan_count=0,
-                p95_latency_ms=0.0,
-                failure_tag="NONE",
-            )
-
-        speeds = [f.ego.v for f in frames]
-        jerks = [abs(f.ego.jerk) for f in frames]
-        latencies = [f.planner_output.latency_ms for f in frames]
-
-        # Clearance and collisions
-        min_clear = 99.0
-        near_misses = 0
-        collision = False
-
-        for f in frames:
-            for ag in f.agents:
-                dx = f.ego.x - ag.x
-                dy = f.ego.y - ag.y
-                dist = math.hypot(dx, dy)
-                if dist < min_clear:
-                    min_clear = dist
-                if dist < 2.0:
-                    near_misses += 1
-                if dist < 1.0:
-                    collision = True
-
-        replan_count = sum(1 for f in frames if f.planner_output.replan_triggered)
-
-        return RunMetrics(
-            duration_s=round(duration_s, 2),
-            completed_goal=goal_reached,
-            collision_occurred=collision,
-            near_miss_count=near_misses,
-            min_clearance_m=round(min_clear, 3),
-            mean_speed_m_s=round(float(np.mean(speeds)), 3),
-            max_jerk_m_s3=round(float(np.max(jerks)), 3),
-            mean_jerk_m_s3=round(float(np.mean(jerks)), 3),
-            replan_count=replan_count,
-            p95_latency_ms=round(float(np.percentile(latencies, 95)), 2),
-            failure_tag="NONE" if not collision else "PLANNING",
-        )
+        from engine.metrics import compute_frame_metrics
+        return compute_frame_metrics(frames)
 
     def check_parity(
         self,

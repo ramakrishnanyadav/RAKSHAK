@@ -113,7 +113,9 @@ class P3AdaptivePlanner(BasePlanner):
         max_agent_uncertainty = 0.0
         for ag in visible_agents:
             if ag.conformal_envelope:
-                max_agent_uncertainty = max(max_agent_uncertainty, ag.conformal_envelope[-1].radius_m)
+                last_cone = ag.conformal_envelope[-1]
+                if getattr(last_cone, "coverage_guarantee_valid", True):
+                    max_agent_uncertainty = max(max_agent_uncertainty, last_cone.radius_m)
 
         if max_agent_uncertainty > self.risk_thresholds.uncertainty_mrm_limit and current_ego_risk > 0.6:
             # Minimal-Risk Manoeuvre triggered
@@ -181,12 +183,13 @@ class P3AdaptivePlanner(BasePlanner):
 
                     # Multi-hypothesis conformal envelope avoidance
                     for ag in visible_agents:
-                        # Conformal radius at t_fut
+                        # Conformal radius at t_fut (calibrated only)
                         cone_r = 1.0
                         if ag.conformal_envelope:
                             for cp in ag.conformal_envelope:
                                 if cp.t_rel >= t_fut:
-                                    cone_r = cp.radius_m
+                                    if getattr(cp, "coverage_guarantee_valid", True):
+                                        cone_r = cp.radius_m
                                     break
 
                         # Weighted hypothesis risk

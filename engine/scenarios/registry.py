@@ -107,19 +107,30 @@ SCENARIO_BUILDERS = {
 
 def get_seeds_for_split(split: str) -> List[int]:
     """
-    Standard seed protocol:
+    Standard seed protocol as defined in docs/SAP.md:
     - tune: 1000 - 1009 (10 seeds)
-    - validate: 2000 - 2009 (10 seeds)
+    - calibration / calib: 1500 - 1539 (40 seeds)
+    - val_a: 2000 - 2019 (20 seeds)
+    - val_b: 2020 - 2039 (20 seeds)
+    - validate: 2000 - 2009 (legacy 10 seeds)
     - frozen_test: 3000 - 3029 (30 seeds per variant, G5 requirement)
     """
     if split == "tune":
         return list(range(1000, 1010))
+    elif split in ("calibration", "calib"):
+        return list(range(1500, 1540))
+    elif split == "val_a":
+        return list(range(2000, 2020))
+    elif split == "val_b":
+        return list(range(2020, 2040))
     elif split == "validate":
         return list(range(2000, 2010))
     elif split == "frozen_test":
         return list(range(3000, 3030))
     else:
-        raise ValueError(f"Unknown split: {split}. Allowed: 'tune', 'validate', 'frozen_test'")
+        raise ValueError(
+            f"Unknown split: {split}. Allowed: 'tune', 'calibration', 'calib', 'val_a', 'val_b', 'validate', 'frozen_test'"
+        )
 
 
 def build_scenario(

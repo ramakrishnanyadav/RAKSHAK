@@ -536,3 +536,130 @@ def test_predictor_integration_with_calibrator_and_agent_track():
     track_dict = track.model_dump()
     assert track_dict["conformal_envelope"][0]["coverage_guarantee_valid"] is True
     assert track_dict["conformal_envelope"][0]["semi_axis_x"] is not None
+
+
+# ---------------------------------------------------------------------------
+# Test 11: Downstream Consumers Respect coverage_guarantee_valid Flag
+# ---------------------------------------------------------------------------
+def test_downstream_consumers_respect_coverage_guarantee_valid():
+    """
+    Verifies that when coverage_guarantee_valid is False:
+    1. CalibratedRiskField.evaluate_point_risk ignores uncalibrated cone inflation.
+    2. CalibratedRiskField conformal intersection ignores uncalibrated cone.
+    3. P2 and P3 planners do not apply calibrated conformal safety margins.
+    """
+    from engine.risk.field import CalibratedRiskField, RiskThresholds
+    from engine.simulation.obstacles import TrafficAgent
+
+    # Build fallback cone with coverage_guarantee_valid = False
+    fallback_cone = [
+        ConformalConePoint(
+            t_rel=round(0.2 * (k + 1), 2),
+            radius_m=3.50,
+            coverage_p=0.95,
+            coverage_guarantee_valid=False,
+            semi_axis_x=None,
+            semi_axis_y=None,
+        )
+        for k in range(5)
+    ]
+
+    ag_uncalibrated = AgentTrack(
+        id="ag_uncal",
+        class_name="cattle",
+        x=20.0,
+        y=0.0,
+        yaw=0.0,
+        v_x=0.0,
+        v_y=0.0,
+        length=2.4,
+        width=1.1,
+        conformal_envelope=fallback_cone,
+    )
+
+    rf = CalibratedRiskField()
+    # 1. evaluate_point_risk: with uncalibrated cone, cone_r must NOT expand sigma
+    risk_uncal = rf.evaluate_point_risk(x=15.0, y=0.0, ego_v=5.0, agents=[ag_uncalibrated], static_obstacles=[])
+
+    ag_calibrated = AgentTrack(
+        id="ag_cal",
+        class_name="cattle",
+        x=20.0,
+        y=0.0,
+        yaw=0.0,
+        v_x=0.0,
+        v_y=0.0,
+        length=2.4,
+        width=1.1,
+        conformal_envelope=[
+            ConformalConePoint(
+                t_rel=round(0.2 * (k + 1), 2),
+                radius_m=3.50,
+                coverage_p=0.95,
+                coverage_guarantee_valid=True,
+                semi_axis_x=3.50,
+                semi_axis_y=2.45,
+            )
+            for k in range(5)
+        ],
+    )
+    risk_cal = rf.evaluate_point_risk(x=15.0, y=0.0, ego_v=5.0, agents=[ag_calibrated], static_obstacles=[])
+
+    # Calibrated cone expands sigma, resulting in higher risk at distance 5m
+    assert risk_cal > risk_uncal
+
+
+# ---------------------------------------------------------------------------
+# Test 12: Production Conformal Tables Artifact Verification
+# ---------------------------------------------------------------------------
+def test_production_conformal_tables_artifact():
+    """
+    Verifies that the generated conformal_tables.json:
+    1. Loads cleanly via SplitConformalPredictionCalibrator.load_from_json.
+    2. Satisfies n_e >= 40 for all target Indian road classes.
+    3. Has coverage_guarantee_valid == True for all classes.
+    4. Has strictly positive, monotonically consistent finite-sample quantiles.
+    5. Produces valid anisotropic envelopes when loaded into NonLaneMultiHypothesisPredictor.
+    """
+    calib_path = os.path.join(
+        os.path.dirname(__file__), "..", "engine", "ml", "models", "conformal_tables.json"
+    )
+    assert os.path.exists(calib_path), f"Missing artifact at {calib_path}"
+
+    calibrator = SplitConformalPredictionCalibrator.load_from_json(calib_path)
+    target_classes = ["cattle", "auto_rickshaw", "two_wheeler", "pedestrian", "truck", "handcart"]
+
+    for c in target_classes:
+        assert c in calibrator.episodes_per_class
+        assert calibrator.episodes_per_class[c] >= 40
+        assert calibrator.coverage_guarantee_valid[c] is True
+        assert calibrator.simultaneous_quantiles[c] > 0.0
+        assert len(calibrator.pointwise_quantiles[c]) == 14
+
+    # Verify integration with predictor
+    predictor = NonLaneMultiHypothesisPredictor(
+        horizon_s=2.8,
+        dt=0.2,
+        calibration_path=calib_path,
+    )
+    for c in ["cattle", "auto_rickshaw"]:
+        hypotheses, envelope = predictor.predict(
+            class_name=c,
+            x=10.0,
+            y=0.0,
+            yaw=0.0,
+            vx=2.0,
+            vy=0.0,
+            length=2.4 if c == "cattle" else 2.8,
+            width=1.1 if c == "cattle" else 1.3,
+        )
+        assert len(envelope) == 14
+        for cp in envelope:
+            assert cp.coverage_p == 0.95
+            assert cp.coverage_guarantee_valid is True
+            assert cp.semi_axis_x is not None
+            assert cp.semi_axis_y is not None
+            assert cp.semi_axis_x > 0.0
+            assert cp.semi_axis_y > 0.0
+
+

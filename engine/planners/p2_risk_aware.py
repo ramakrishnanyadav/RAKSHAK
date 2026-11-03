@@ -116,7 +116,8 @@ class P2RiskAwarePlanner(BasePlanner):
                         if ag.conformal_envelope:
                             for cp in ag.conformal_envelope:
                                 if cp.t_rel >= t_future:
-                                    cone_r = cp.radius_m
+                                    if getattr(cp, "coverage_guarantee_valid", True):
+                                        cone_r = cp.radius_m
                                     break
                         ag_x_fut = ag.x + ag.v_x * t_future
                         ag_y_fut = ag.y + ag.v_y * t_future

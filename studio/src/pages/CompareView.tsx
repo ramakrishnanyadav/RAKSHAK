@@ -103,42 +103,88 @@ export const CompareView: React.FC = () => {
       ? runLogB.frames[Math.min(currentFrameIndex, runLogB.frames.length - 1)]
       : undefined;
 
+  const metricsA = runLogA?.metrics;
+  const metricsB = runLogB?.metrics;
+
+  const clearanceA = metricsA?.min_clearance_m;
+  const clearanceB = metricsB?.min_clearance_m;
+  const clearanceDelta = (clearanceA != null && clearanceB != null)
+    ? `${(clearanceB - clearanceA) >= 0 ? '+' : ''}${(clearanceB - clearanceA).toFixed(2)} m`
+    : '--';
+  const clearanceBetter = (clearanceA != null && clearanceB != null)
+    ? (clearanceB > clearanceA ? 'B' : (clearanceB < clearanceA ? 'A' : 'Tie'))
+    : 'Tie';
+
+  const speedA = metricsA?.mean_speed_m_s;
+  const speedB = metricsB?.mean_speed_m_s;
+  const speedDelta = (speedA != null && speedB != null)
+    ? `${((speedB - speedA) * 3.6) >= 0 ? '+' : ''}${((speedB - speedA) * 3.6).toFixed(1)} km/h`
+    : '--';
+  const speedBetter = (speedA != null && speedB != null)
+    ? (speedB > speedA ? 'B' : (speedB < speedA ? 'A' : 'Tie'))
+    : 'Tie';
+
+  const jerkA = metricsA?.max_jerk_m_s3;
+  const jerkB = metricsB?.max_jerk_m_s3;
+  const jerkDelta = (jerkA != null && jerkB != null)
+    ? `${(jerkB - jerkA) >= 0 ? '+' : ''}${(jerkB - jerkA).toFixed(2)} m/s³`
+    : '--';
+  const jerkBetter = (jerkA != null && jerkB != null)
+    ? (jerkB < jerkA ? 'B' : (jerkB > jerkA ? 'A' : 'Tie'))
+    : 'Tie';
+
+  const replanA = metricsA?.replan_count;
+  const replanB = metricsB?.replan_count;
+  const replanDelta = (replanA != null && replanB != null)
+    ? `${(replanB - replanA) >= 0 ? '+' : ''}${replanB - replanA} events`
+    : '--';
+  const replanBetter = 'Tie';
+
+  const collisionA = metricsA?.collision_occurred;
+  const collisionB = metricsB?.collision_occurred;
+  const collisionDelta = (collisionA != null && collisionB != null)
+    ? (collisionA === collisionB ? 'Identical' : (!collisionB && collisionA ? 'Improved' : 'Worse'))
+    : '--';
+  const collisionBetter = (collisionA != null && collisionB != null)
+    ? (!collisionB && collisionA ? 'B' : (collisionB && !collisionA ? 'A' : 'Tie'))
+    : 'Tie';
+
   // Comparison metrics rows for accessible table
   const comparisonRows: ComparisonMetricRow[] = [
     {
       metric: 'Safety: Collision Occurred',
-      planA: runLogA?.metrics.collision_occurred ? 'COLLISION' : 'SAFE',
-      planB: runLogB?.metrics.collision_occurred ? 'COLLISION' : 'SAFE',
-      delta: runLogB?.metrics.collision_occurred ? 'Worst' : 'Improved',
-      better: !runLogB?.metrics.collision_occurred ? 'B' : 'A',
+      planA: collisionA != null ? (collisionA ? 'COLLISION' : 'SAFE') : '--',
+      planB: collisionB != null ? (collisionB ? 'COLLISION' : 'SAFE') : '--',
+      delta: collisionDelta,
+      better: collisionBetter,
     },
     {
       metric: 'Min Clearance Distance',
-      planA: `${(runLogA?.metrics.min_clearance_m ?? 0.8).toFixed(2)} m`,
-      planB: `${(runLogB?.metrics.min_clearance_m ?? 2.4).toFixed(2)} m`,
-      delta: `+${((runLogB?.metrics.min_clearance_m ?? 2.4) - (runLogA?.metrics.min_clearance_m ?? 0.8)).toFixed(2)} m`,
-      better: 'B',
+      planA: clearanceA != null ? `${clearanceA.toFixed(2)} m` : '--',
+      planB: clearanceB != null ? `${clearanceB.toFixed(2)} m` : '--',
+      delta: clearanceDelta,
+      better: clearanceBetter,
     },
     {
       metric: 'Mean Cruising Speed',
-      planA: `${((runLogA?.metrics.mean_speed_m_s ?? 5.5) * 3.6).toFixed(1)} km/h`,
-      planB: `${((runLogB?.metrics.mean_speed_m_s ?? 6.2) * 3.6).toFixed(1)} km/h`,
-      delta: `+${(((runLogB?.metrics.mean_speed_m_s ?? 6.2) - (runLogA?.metrics.mean_speed_m_s ?? 5.5)) * 3.6).toFixed(1)} km/h`,
-      better: 'B',
+      planA: speedA != null ? `${(speedA * 3.6).toFixed(1)} km/h` : '--',
+      planB: speedB != null ? `${(speedB * 3.6).toFixed(1)} km/h` : '--',
+      delta: speedDelta,
+      better: speedBetter,
     },
     {
       metric: 'Ride Comfort: Max Jerk',
-      planA: `${(runLogA?.metrics.max_jerk_m_s3 ?? 4.2).toFixed(2)} m/s³`,
-      planB: `${(runLogB?.metrics.max_jerk_m_s3 ?? 1.8).toFixed(2)} m/s³`,
-      delta: `-${((runLogA?.metrics.max_jerk_m_s3 ?? 4.2) - (runLogB?.metrics.max_jerk_m_s3 ?? 1.8)).toFixed(2)} m/s³`,
-      better: 'B',
+      planA: jerkA != null ? `${jerkA.toFixed(2)} m/s³` : '--',
+      planB: jerkB != null ? `${jerkB.toFixed(2)} m/s³` : '--',
+      delta: jerkDelta,
+      better: jerkBetter,
     },
     {
       metric: 'Adaptive Replanning Cycles',
-      planA: `${runLogA?.metrics.replan_count ?? 0} (Static)`,
-      planB: `${runLogB?.metrics.replan_count ?? 3} (Adaptive)`,
-      delta: '+3 events',
-      better: 'B',
+      planA: replanA != null ? `${replanA}` : '--',
+      planB: replanB != null ? `${replanB}` : '--',
+      delta: replanDelta,
+      better: replanBetter,
     },
   ];
 

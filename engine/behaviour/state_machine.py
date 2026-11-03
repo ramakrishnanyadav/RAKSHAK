@@ -78,10 +78,11 @@ class BehaviourStateMachine:
             dy = ag.y - ego.y
             dist = math.hypot(dx, dy)
 
-            # Check maximum epistemic prediction uncertainty radius
+            # Check maximum epistemic prediction uncertainty radius from valid calibrated envelopes
             if ag.conformal_envelope:
                 for cone_pt in ag.conformal_envelope:
-                    max_uncertainty = max(max_uncertainty, cone_pt.radius_m)
+                    if getattr(cone_pt, "coverage_guarantee_valid", True):
+                        max_uncertainty = max(max_uncertainty, cone_pt.radius_m)
 
             # Only analyze agents ahead (dx > -1.0)
             if dx > -1.0 and dist < 45.0:
