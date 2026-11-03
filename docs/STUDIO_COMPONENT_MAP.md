@@ -45,3 +45,4 @@ This document maps all shared UI and domain components in `studio/src/components
 3. **Repeated Layer Toggle Pill Logic**:
    - `ReplayView.tsx` and `CompareView.tsx` duplicate canvas layer toggle buttons (`1: World`, `2: Tracks`, `3: Conformal`, `4: Risk`, `5: Path`).
    - *Recommendation*: Extract into a reusable `<LayerToggleBar layers={...} onToggle={...} />` component.
+

@@ -80,3 +80,4 @@ This document compares the current implementation state of ADAPTIVE-PATH Studio 
    - The UI must continue to work 100% offline using pre-bundled JSON runs (`studio/public/sample_runs/`) when running without the FastAPI backend.
 3. **WCAG 2.2 AA Regression Guard**:
    - Every modified screen must pass existing Vitest component tests (`npm test`) and maintain accessibility tokens (`tokens.css`).
+

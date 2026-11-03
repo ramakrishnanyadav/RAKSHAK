@@ -89,3 +89,4 @@
   - *Min Clearance Distance* $\to$ **"Closest Distance to Obstacles"** (Larger distance is safer)
   - *Ride Comfort: Max Jerk* $\to$ **"Passenger Ride Smoothness"** (Lower is smoother)
   - *Adaptive Replanning Cycles* $\to$ **"New Paths Calculated"**
+

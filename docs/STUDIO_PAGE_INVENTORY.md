@@ -56,3 +56,4 @@ To eliminate navigation confusion and cognitive overload, the 18 views will be o
 │                   │ candidate paths, and failure attribution.          │
 └───────────────────┴────────────────────────────────────────────────────┘
 ```
+

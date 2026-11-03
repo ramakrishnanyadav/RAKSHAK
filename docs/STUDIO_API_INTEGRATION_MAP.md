@@ -63,3 +63,4 @@ The authoritative telemetry schema is versioned as `apath-log/v1` in [`engine/ap
 3. **Offline Standalone Operation**:
    - *Current State*: The Studio already supports 14 pre-bundled verified sample runs in `studio/public/sample_runs/` (`run_scenario_1_...` through `run_scenario_5_...`). When the backend server is offline, the frontend seamlessly fetches these static JSON files, allowing 100% offline demonstration.
    - *Action Required*: Clearly communicate to the user when they are viewing "Offline Pre-Bundled Runs" versus "Connected Live Engine".
+
