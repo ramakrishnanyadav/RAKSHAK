@@ -266,8 +266,9 @@ export const ReplayTimeline: React.FC<ReplayTimelineProps> = ({
             <span>{currentFrame ? (currentFrame.ego.v * 3.6).toFixed(1) : '0.0'} km/h</span>
           </div>
 
-          {/* Clearance */}
+          {/* Clearance to nearest obstacle */}
           <div
+            title="Distance to closest obstacle hazard"
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '0.8rem',
@@ -280,7 +281,7 @@ export const ReplayTimeline: React.FC<ReplayTimelineProps> = ({
               gap: '0.3rem',
             }}
           >
-            <span>Clr:</span>
+            <span>Buffer:</span>
             <strong>
               {computeFrameClearance(currentFrame).toFixed(1)}m
             </strong>
@@ -355,8 +356,8 @@ export const ReplayTimeline: React.FC<ReplayTimelineProps> = ({
             pointerEvents: 'none',
           }}
         >
-          <span style={{ color: 'var(--risk-high)' }}>— Risk R(t)</span>
-          <span style={{ color: 'var(--accent-teal)' }}>- - Clearance</span>
+          <span style={{ color: 'var(--risk-high)' }}>— Collision Risk</span>
+          <span style={{ color: 'var(--accent-teal)' }}>- - Hazard Buffer</span>
         </div>
       </div>
 

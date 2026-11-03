@@ -84,10 +84,10 @@ export const NewRun: React.FC = () => {
     <div style={{ padding: '1.5rem', maxWidth: '860px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div>
         <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 0.4rem' }}>
-          Launch Simulation Run
+          Prepare Simulation Run
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
-          Configure scenario parameters, select planning algorithm ablation, and dispatch to simulation engine.
+          Choose a road scenario, select a driving strategy, and start a simulation test drive.
         </p>
       </div>
 
@@ -290,7 +290,7 @@ export const NewRun: React.FC = () => {
               htmlFor="planner-select"
               style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.4rem' }}
             >
-              PLANNER ARCHITECTURE
+              DRIVING STRATEGY (PLANNER ALGORITHM)
             </label>
             <select
               id="planner-select"
@@ -307,10 +307,12 @@ export const NewRun: React.FC = () => {
                 minHeight: 'var(--min-target-size)',
               }}
             >
-              <option value="P3">P3: ADAPTIVE-PATH (Risk Field + Conformal Prediction + Adaptive Replan)</option>
-              <option value="P2">P2: Frenet-Optimal Planner (Continuous cost, No conformal bounds)</option>
+              <option value="P3">P3: ADAPTIVE-PATH (Intelligent Detour with Conformal Safety Margins - Recommended)</option>
+              <option value="P2">P2: Continuous Risk-Field Optimal Trajectory</option>
               <option value="P1">P1: Spatiotemporal Lattice Planner (Rule-based heuristics)</option>
-              <option value="P0">P0: Baseline DWA-VO (Reactive Dynamic Window, No prediction)</option>
+              <option value="B2">B2: Kinematic Hybrid A* (Search-based baseline)</option>
+              <option value="B1">B1: DWA + Velocity Obstacles (Reactive baseline)</option>
+              <option value="B0">B0: Shortest Path / Constant Speed (Naive baseline)</option>
             </select>
           </div>
         )}

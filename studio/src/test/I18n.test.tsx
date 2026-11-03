@@ -31,7 +31,7 @@ describe('I18nContext', () => {
     );
 
     expect(screen.getByTestId('translated-title').textContent).toBe('ADAPTIVE-PATH Studio');
-    expect(screen.getByTestId('translated-replan').textContent).toBe('Replans Triggered');
+    expect(screen.getByTestId('translated-replan').textContent).toBe('Path Adjustments');
   });
 
   it('switches to Hindi and translates strings', () => {

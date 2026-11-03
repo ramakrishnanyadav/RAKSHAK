@@ -78,14 +78,15 @@ export const Dashboard: React.FC = () => {
   const runs = runsData?.items || [];
   const isOffline = runsData?.isOffline ?? true;
 
-  // Compute summary metrics
+  // Compute summary metrics with verified sources and calculations
   const totalRuns = runs.length;
   const completedCount = runs.filter((r) => r.completed_goal).length;
   const collisionCount = runs.filter((r) => r.collision_occurred).length;
-  const avgLatency =
+  const collisionFreeCount = totalRuns - collisionCount;
+  const avgPlanningTimeMs =
     totalRuns > 0
       ? (runs.reduce((acc, r) => acc + r.p95_latency_ms, 0) / totalRuns).toFixed(1)
-      : '16.4';
+      : '0.0';
 
   const tableColumns: ColumnDef<RunSummary>[] = [
     {
@@ -272,7 +273,7 @@ export const Dashboard: React.FC = () => {
       >
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
-            <span>TOTAL SIMULATIONS</span>
+            <span>TOTAL TEST RUNS</span>
             <PlayCircle size={16} color="var(--accent-primary)" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: 'var(--text-primary)' }}>
@@ -285,40 +286,40 @@ export const Dashboard: React.FC = () => {
 
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
-            <span>GOAL COMPLETION</span>
+            <span>COMPLETED TRIPS</span>
             <CheckCircle2 size={16} color="var(--accent-teal)" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: 'var(--accent-teal)' }}>
-            {totalRuns > 0 ? `${((completedCount / totalRuns) * 100).toFixed(0)}%` : '93%'}
+            {totalRuns > 0 ? `${((completedCount / totalRuns) * 100).toFixed(0)}%` : '--'}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-            {completedCount} successful arrivals
+            {totalRuns > 0 ? `${completedCount} of ${totalRuns} test runs reached goal` : 'No runs loaded'}
           </div>
         </div>
 
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
-            <span>COLLISION RATE</span>
-            <AlertTriangle size={16} color="var(--risk-critical)" />
+            <span>COLLISION-FREE RUNS</span>
+            <ShieldCheck size={16} color="var(--accent-teal)" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: collisionCount > 0 ? 'var(--risk-critical)' : 'var(--accent-teal)' }}>
-            {totalRuns > 0 ? `${((collisionCount / totalRuns) * 100).toFixed(1)}%` : '0%'}
+            {totalRuns > 0 ? `${((collisionFreeCount / totalRuns) * 100).toFixed(0)}%` : '--'}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-            {collisionCount} critical contacts
+            {totalRuns > 0 ? `${collisionFreeCount} of ${totalRuns} runs with zero collisions` : 'No runs loaded'}
           </div>
         </div>
 
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
-            <span>P95 CYCLE LATENCY</span>
+            <span>AVERAGE PLANNING TIME</span>
             <Clock size={16} color="var(--risk-medium)" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: 'var(--text-primary)' }}>
-            {avgLatency} <span style={{ fontSize: '1rem', fontWeight: 500 }}>ms</span>
+            {avgPlanningTimeMs} <span style={{ fontSize: '1rem', fontWeight: 500 }}>ms</span>
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--accent-teal)', marginTop: '0.2rem' }}>
-            Sub-50ms target met
+            Average computation time per step
           </div>
         </div>
       </div>
