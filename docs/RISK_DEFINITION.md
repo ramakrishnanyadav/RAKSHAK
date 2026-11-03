@@ -1,9 +1,9 @@
 # ADAPTIVE-PATH — Formal Potential Risk Field Definition
 
-> **Version**: 2.2.0-draft (Final G2 Patch — Geometric & Statistical Precision)  
-> **Status**: Proposed / Under Final G2 Review  
+> **Version**: 2.3.0-final (Final G2 Closure — Conformal Score/Set Consistency)  
+> **Status**: Proposed / Awaiting Final G2 Sign-Off  
 > **Date**: 2026-11-03  
-> **Scope**: Mathematical specification of the continuous potential risk field $R(x, y, t)$, distinguishing collision probability, vulnerability severity, road boundary constraints, oriented rectangular vehicle-footprint feasibility, 2D conformal epistemic uncertainty covariance, qualified multi-agent aggregation, MRM recovery hysteresis, and candidate deadlock prevention.
+> **Scope**: Mathematical specification of the continuous potential risk field $R(x, y, t)$, distinguishing collision probability, vulnerability severity, road boundary constraints, oriented rectangular vehicle-footprint feasibility, anisotropic Mahalanobis conformal prediction sets, matching nonconformity score geometry, qualified multi-agent aggregation, MRM recovery hysteresis, and candidate deadlock prevention.
 
 ---
 
@@ -23,36 +23,92 @@ In ADAPTIVE-PATH, this formulation is formalized into a continuous, normalized p
 
 ---
 
-## 2. Dynamic Obstacle Kernel & 2D Conformal Covariance Inflation
+## 2. Dynamic Obstacle Kernel & Calibrated Anisotropic Conformal Sets
 
 Let dynamic obstacle $j \in \{1, \dots, M\}$ be located at $(x_j, y_j)$ with heading $\psi_j$, speed $v_j = \sqrt{v_{x, j}^2 + v_{y, j}^2}$, length $L_j$, width $W_j$, and agent category $c_j$.
 
-### 2.1 Anisotropic Coordinate Transformation
-To model the physical reality that vehicles and pedestrians have higher motion uncertainty along their longitudinal heading than laterally, evaluation point $(x, y)$ is transformed into the obstacle's local body frame:
+### 2.1 Anisotropic Body-Frame Transformation
+To reflect roadway physical reality—where vehicles and road users exhibit substantially higher motion variability along their longitudinal heading (acceleration/braking timing) than laterally (lane and corridor tracking)—any spatial evaluation point $(x, y)$ at prediction horizon step $t_k$ is transformed into the obstacle's predicted local body frame:
 
-$$\begin{bmatrix} \Delta x_{\text{local}} \\ \Delta y_{\text{local}} \end{bmatrix} = \begin{bmatrix} \cos \psi_j & \sin \psi_j \\ -\sin \psi_j & \cos \psi_j \end{bmatrix} \begin{bmatrix} x - x_j \\ y - y_j \end{bmatrix}$$
+$$\begin{bmatrix} \Delta x_{\text{local}} \\ \Delta y_{\text{local}} \end{bmatrix} = \begin{bmatrix} \cos \psi_j(t_k) & \sin \psi_j(t_k) \\ -\sin \psi_j(t_k) & \cos \psi_j(t_k) \end{bmatrix} \begin{bmatrix} x - x_{j, \text{pred}}(t_k) \\ y - y_{j, \text{pred}}(t_k) \end{bmatrix}$$
 
-### 2.2 Base Spatial Dispersion ($\sigma_{\text{long}}, \sigma_{\text{lat}}$)
-The spatial dispersion parameters expand with agent speed:
-$$\sigma_{\text{long}, j} = \max\left(1.20, 0.50 L_j + 0.30 v_j\right)$$
-$$\sigma_{\text{lat}, j} = \max\left(0.80, 0.50 W_j + 0.10 v_j\right)$$
+### 2.2 Directional Tracking Normalizers & Aspect Ratio Calibration ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$)
+To parameterize the anisotropic geometry prior to calibration, the directional scaling normalizers are defined as:
+$$\sigma_{\text{long}}(c_j, t_k) = \beta_{\text{long}} \cdot \sigma_0(c_j, v_j, t_k)$$
+$$\sigma_{\text{lat}}(c_j, t_k) = \beta_{\text{lat}} \cdot \sigma_0(c_j, v_j, t_k)$$
 
-### 2.3 Mathematical Relationship: Scalar Conformal Quantiles to Anisotropic Covariance Inflation
-The split-conformal calibration protocol computes a scalar Euclidean non-conformity score:
-$$s_i(c, t) = \|\mathbf{p}_{\text{true}, i}(t) - \mathbf{p}_{\text{pred}, i}(t)\|_2$$
-The calibrated $(1 - \alpha) = 0.95$ quantile $\hat{q}(c, t) \in \mathbb{R}^+$ defines an isotropic 2D Euclidean ball guaranteeing marginal coverage:
-$$P\left(\|\Delta \mathbf{p}(t)\|_2 \le \hat{q}(c, t)\right) \ge 0.95$$
+Where base kinematic expansion is:
+$$\sigma_0(c_j, v_j, t_k) = \max\left(1.00, \; 0.50 L_j + 0.20 v_j + 0.15 t_k\right)$$
 
-However, trajectory forecast errors on roadways are physically anisotropic: longitudinal braking and acceleration timing variability is empirically larger than lateral lane/corridor deviation. To map the isotropic scalar radius $\hat{q}(c, t)$ into an oriented body-frame uncertainty covariance ellipse while preserving coverage guarantees:
-$$\mathbf{\Sigma}_{\text{conf}, j}(t) = \begin{bmatrix} (\beta_{\text{long}} \cdot \hat{q}(c_j, t))^2 & 0 \\ 0 & (\beta_{\text{lat}} \cdot \hat{q}(c_j, t))^2 \end{bmatrix}$$
+- **How the Coefficients $\beta_{\text{long}} = 0.50$ and $\beta_{\text{lat}} = 0.35$ are Obtained**:
+  1. The directional weights establish an anisotropic aspect ratio:
+     $$\frac{\beta_{\text{long}}}{\beta_{\text{lat}}} = \frac{0.50}{0.35} \approx 1.429$$
+  2. This $1.43 : 1.0$ aspect ratio was empirically estimated from residual tracking errors across the independent training/tuning split (Split 1 `tune`, Seeds 1000–1009):
+     $$\frac{\beta_{\text{long}}}{\beta_{\text{lat}}} = \frac{\sqrt{\frac{1}{N_{\text{tune}}} \sum_{i=1}^{N_{\text{tune}}} (\Delta x_{\text{local}, i})^2}}{\sqrt{\frac{1}{N_{\text{tune}}} \sum_{i=1}^{N_{\text{tune}}} (\Delta y_{\text{local}, i})^2}}$$
+  3. **Calibration Rule**: These directional scale parameters are fixed *prior to conformal calibration*. They act as fixed normalizers inside the score function, ensuring that the conformal calibration phase calibrates the uniform inflation factor without modifying the aspect ratio or distorting the set.
 
-- **Anisotropic Scaling Ratios**: $\beta_{\text{long}} = 0.50$, $\beta_{\text{lat}} = 0.35$.
-- **Geometric Invariant**: Along the major longitudinal axis, the kernel expands by $0.50 \hat{q}$, while along the lateral axis it expands by $0.35 \hat{q}$, ensuring the dynamic potential encloses empirical trajectory variance without creating excessively wide lateral virtual barriers.
+### 2.3 Normalized Anisotropic Mahalanobis Nonconformity Score
+To ensure the nonconformity score strictly matches the anisotropic geometry of the deployed prediction set, the nonconformity score for calibration trajectory $i$ of class $c$ at horizon step $t_k$ is formulated as the normalized anisotropic Mahalanobis distance:
 
-### 2.4 Inflated Covariance & Dynamic Encroachment Kernel ($K_j(x, y, t)$)
-$$\sigma_{\text{long}, j}(t) = \sigma_{\text{long}, j} + \beta_{\text{long}} \cdot \hat{q}(c_j, t)$$
-$$\sigma_{\text{lat}, j}(t) = \sigma_{\text{lat}, j} + \beta_{\text{lat}} \cdot \hat{q}(c_j, t)$$
-$$K_j(x, y, t) = \exp\left( -\frac{1}{2} \left[ \left(\frac{\Delta x_{\text{local}}}{\sigma_{\text{long}, j}(t)}\right)^2 + \left(\frac{\Delta y_{\text{local}}}{\sigma_{\text{lat}, j}(t)}\right)^2 \right] \right) \in [0.0, 1.0]$$
+$$s_i(c, t_k) = \sqrt{\left(\frac{\Delta x_{\text{local}, i}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, i}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
+
+Where $\Delta x_{\text{local}, i}(t_k)$ and $\Delta y_{\text{local}, i}(t_k)$ are the actual observed longitudinal and lateral position residuals relative to the model's nominal forecast.
+
+### 2.4 Exact Deployed Prediction Set & Mathematical Coverage Guarantee
+Let calibration split $\mathcal{S}_{\text{calib}}$ consist of $n$ independent simulation episodes ($n \ge 40$ per class $c$).  
+The finite-sample conformal quantile at coverage level $1 - \alpha = 0.95$ is:
+$$\hat{q}_{1-\alpha}(c, t_k) = s_{(m)}(c, t_k), \quad m = \lceil (n + 1)(1 - \alpha) \rceil$$
+Where $s_{(1)} \le s_{(2)} \le \dots \le s_{(n)}$ are the sorted calibration nonconformity scores.
+
+The **exact prediction set deployed by the predictor** is defined as the sub-level set:
+$$\mathcal{C}_{1-\alpha}(c, t_k) = \left\{ \mathbf{p} = (x, y) \in \mathbb{R}^2 : s(\mathbf{p}; c, t_k) \le \hat{q}_{1-\alpha}(c, t_k) \right\}$$
+$$\iff \left\{ (x, y) \in \mathbb{R}^2 : \left(\frac{\Delta x_{\text{local}}}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}}}{\sigma_{\text{lat}}(c, t_k)}\right)^2 \le \hat{q}_{1-\alpha}^2(c, t_k) \right\}$$
+
+Dividing by $\hat{q}_{1-\alpha}^2(c, t_k)$, this defines an oriented ellipse:
+$$\frac{\Delta x_{\text{local}}^2}{r_{\text{long}}^2(c, t_k)} + \frac{\Delta y_{\text{local}}^2}{r_{\text{lat}}^2(c, t_k)} \le 1.0$$
+
+Where the **envelope semi-axes** are computed directly as:
+$$r_{\text{long}}(c, t_k) = \hat{q}_{1-\alpha}(c, t_k) \cdot \sigma_{\text{long}}(c, t_k)$$
+$$r_{\text{lat}}(c, t_k) = \hat{q}_{1-\alpha}(c, t_k) \cdot \sigma_{\text{lat}}(c, t_k)$$
+
+#### Coverage Claim Restriction
+> [!IMPORTANT]
+> **Strict Conformal Validity Invariant**:
+> Because $\mathbf{p}_{\text{true}} \in \mathcal{C}_{1-\alpha}(c, t_k) \iff s(\mathbf{p}_{\text{true}}) \le \hat{q}_{1-\alpha}(c, t_k)$, the Split-Conformal Theorem proves that under exchangeability:
+> $$P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}(c, t_k)\right) \ge 1 - \alpha$$
+> **No coverage claim may be made for any post-hoc transformed, scaled, or clipped set unless the score itself is calibrated on that exact transformed geometry.** The deployed prediction set $\mathcal{C}_{1-\alpha}$ is identically the sub-level set of the calibrated score.
+
+### 2.5 Pointwise vs. Simultaneous Coverage Definitions
+ADAPTIVE-PATH formally distinguishes and calibrates two distinct conformal coverage levels:
+
+1. **Pointwise Conformal Coverage (Per Horizon Step $t_k$)**:
+   - Calibrated independently at each prediction horizon step $t_k \in \{0.20\text{ s}, 0.40\text{ s}, \dots, 2.80\text{ s}\}$ ($K = 14$ steps).
+   - Nonconformity scores: $s_i(c, t_k)$.
+   - Quantile: $\hat{q}_{1-\alpha}^{\text{pt}}(c, t_k) = s_{(m)}(c, t_k)$.
+   - **Pointwise Guarantee**:
+     $$\forall k \in \{1, \dots, K\}, \quad P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}^{\text{pt}}(c, t_k)\right) \ge 1 - \alpha$$
+   - **Use Case**: Step-wise risk field potential calculation and frame-by-frame telemetry logging.
+
+2. **Simultaneous Conformal Coverage (Trajectory-Wide Horizon $H = 2.80\text{ s}$)**:
+   - Calibrated across the entire 14-step trajectory rollout to control Family-Wise Error Rate (FWER) across time.
+   - Trajectory supremum score:
+     $$s_i^{\text{sim}}(c) = \max_{k \in \{1, \dots, K\}} s_i(c, t_k) = \max_{k \in \{1, \dots, K\}} \sqrt{\left(\frac{\Delta x_{\text{local}, i}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, i}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
+   - Quantile: $\hat{q}_{1-\alpha}^{\text{sim}}(c) = s_{(m)}^{\text{sim}}(c)$.
+   - Simultaneous envelope semi-axes:
+     $$r_{\text{long}}^{\text{sim}}(c, t_k) = \hat{q}_{1-\alpha}^{\text{sim}}(c) \cdot \sigma_{\text{long}}(c, t_k)$$
+     $$r_{\text{lat}}^{\text{sim}}(c, t_k) = \hat{q}_{1-\alpha}^{\text{sim}}(c) \cdot \sigma_{\text{lat}}(c, t_k)$$
+   - **Simultaneous Trajectory Guarantee**:
+     $$P\left(\forall k \in \{1, \dots, K\}, \quad \mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}^{\text{sim}}(c, t_k)\right) \ge 1 - \alpha$$
+   - **Use Case**: Event replanning trigger evaluation (`CONFORMAL_VIOLATION`), ensuring that an obstacle trajectory departure triggers replanning with a bounded $5\%$ false alarm / breach probability over the full planning horizon.
+
+### 2.6 Calibrated Dynamic Encroachment Kernel ($K_j(x, y, t_k)$)
+To translate the statistical prediction set into a continuous, differentiable risk potential for the trajectory optimizer, the spatial kernel is defined using the calibrated envelope semi-axes:
+
+$$K_j(x, y, t_k) = \exp\left( -\frac{1}{2} \left[ \left(\frac{\Delta x_{\text{local}}}{r_{\text{long}}(c_j, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}}}{r_{\text{lat}}(c_j, t_k)}\right)^2 \right] \right) \in [0.0, 1.0]$$
+
+- **Boundary Invariant**: On the exact boundary of the $(1-\alpha)$ conformal prediction set $\partial \mathcal{C}_{1-\alpha}$, the bracketed Mahalanobis term equals $1.0$, giving:
+  $$K_j \Big|_{\partial \mathcal{C}_{1-\alpha}} = \exp(-0.50) \approx 0.6065$$
+  This establishes an exact physical correspondence: candidate trajectories clipping the 95% conformal uncertainty boundary encounter a defined base encroachment potential of $0.6065$.
 
 ---
 

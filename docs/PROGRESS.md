@@ -1,14 +1,14 @@
 # ADAPTIVE-PATH — Progress and Session Continuity
 
-Last updated: 2026-11-03 12:41 +0530  
+Last updated: 2026-11-03 12:55 +0530  
 Current branch: `research/phase-0-audit`  
 Baseline tag/commit: `baseline-v0` (Git initial baseline commit `4538e6c`)  
-Current phase: Phase 1 — Research Correctness & Definitions (Final G2 Patch)  
+Current phase: Phase 1 — Research Correctness & Definitions (Final G2 Closure Complete)  
 Deadline: 2026-11-15  
 
 ## Gate status
 - G1 repository audit: **APPROVED** (2026-11-03 11:59)
-- G2 research definitions: **WAITING (Final G2 Patch Complete; Awaiting Approval)**
+- G2 research definitions: **WAITING (Final G2 Closure Complete; Awaiting Approval)**
 - G3 frozen-test run: NOT STARTED
 
 ## Completed
@@ -21,10 +21,10 @@ Deadline: 2026-11-15
 | Step 4: Dynamics Audit | Completed in `docs/DYNAMICS.md` | DONE |
 | Step 5: Realistic Schedule to Nov 15 | Established in `docs/AUDIT.md` | DONE |
 | Gate G1 User Sign-Off | Explicit user approval received | DONE |
-| Phase 1 Step 1: Research Metric Definitions (v2.2) | Revised in `docs/METRICS.md` with exact 2D quadratic TTC & edge cases | DONE (Final G2 Pending) |
-| Phase 1 Step 1: Formal Risk Field Definition (v2.2) | Revised in `docs/RISK_DEFINITION.md` with oriented footprint & union qualification | DONE (Final G2 Pending) |
-| Phase 1 Step 1: Statistical Analysis Plan (v2.2) | Revised in `docs/SAP.md` with exact McNemar power (95.40%) & sensitivity table | DONE (Final G2 Pending) |
-| Architecture & Decisions Record (v2.2) | Updated `docs/DECISIONS.md` with DEC-001 through DEC-020 | DONE |
+| Phase 1 Step 1: Research Metric Definitions (v2.2) | Revised in `docs/METRICS.md` with exact 2D quadratic TTC & edge cases | DONE |
+| Phase 1 Step 1: Formal Risk Field Definition (v2.3) | Revised in `docs/RISK_DEFINITION.md` with Mahalanobis conformal score/set consistency | DONE |
+| Phase 1 Step 1: Statistical Analysis Plan (v2.3) | Revised in `docs/SAP.md` with exact matching score, aspect ratio derivation, pointwise & simultaneous coverage | DONE |
+| Architecture & Decisions Record (v2.3) | Updated `docs/DECISIONS.md` with DEC-001 through DEC-021 | DONE |
 
 ## In progress
 | Item | Owner/agent | Files | Next action | Blocker |
@@ -47,6 +47,7 @@ Deadline: 2026-11-15
 | 2026-11-03 | Multi-agent risk aggregated via Probabilistic Independent Union after individual clipping | Monotonic, bounded risk landscape | DEC-014, DEC-019 / Final G2 |
 | 2026-11-03 | Oriented rectangular footprint lateral constraint ($|y| + W_{\text{eff}}(\psi) \le 4.70\text{ m}$) | Physical feasibility of rectangular chassis under yaw | DEC-015, DEC-018 / Final G2 |
 | 2026-11-03 | Exact McNemar Power Verification ($95.40\%$) and preservation of $N=150$ | Verified exact vs asymptotic power & sensitivity | DEC-016, DEC-020 / Final G2 |
+| 2026-11-03 | Conformal Score & Prediction Set Consistency via Anisotropic Mahalanobis Calibration Level Sets | Deployed set matches score level set; $\beta_{\text{long}}=0.50, \beta_{\text{lat}}=0.35$ pre-calibrated on tuning split; pointwise vs simultaneous coverage defined | DEC-021 / Final G2 Closure |
 
 ## Open questions and risks
 - F4 split-conformal calibration integration will require generating calibration logs across seeds 1500–1539.

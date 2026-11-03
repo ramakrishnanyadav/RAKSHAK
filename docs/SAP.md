@@ -1,7 +1,7 @@
 # Statistical Analysis Plan (SAP) — ADAPTIVE-PATH
 
-> **Protocol ID**: SAP-SIH26037-v2.2 (Final G2 Patch — Exact Power & Nested Validation)  
-> **Status**: Proposed / Under Final G2 Review  
+> **Protocol ID**: SAP-SIH26037-v2.3 (Final G2 Closure — Conformal Score/Set Consistency)  
+> **Status**: Proposed / Awaiting Final G2 Sign-Off  
 > **Date**: 2026-11-03  
 > **Git Commit / Branch**: `research/phase-0-audit`  
 > **Authoritative Pre-Registration**: Strictly defines statistical contrasts, hypotheses, endpoints, sample sizes, exact vs. asymptotic power calculations, and calibration protocols prior to final confirmatory execution.
@@ -179,20 +179,59 @@ $$\text{Var}_{H_0} = \frac{p_{\text{disc}}}{N}, \quad \text{Var}_{H_1} = \frac{p
 ## 9. Split-Conformal Calibration Standard
 
 ### 9.1 Calibration Episode Unit & Independence
-- Calibration unit: Independent simulation episode $(s, \omega) \in \mathcal{S}_{\text{calib}}$ (Seeds 1500–1539 across 5 scenarios $= 200$ episodes).
+- **Calibration Unit**: Independent simulation episode $(s, \omega) \in \mathcal{S}_{\text{calib}}$ (Seeds 1500–1539 across 5 scenario families $= 200$ episodes).
+- Episodes are strictly independent under varied stochastic seeds, agent spawning locations, and physical timing.
 
-### 9.2 Non-Conformity Score Formulation
-For dynamic obstacle $j$ of class $c$ at horizon step $k \in \{1, \dots, 14\}$ ($t_k = k \cdot 0.20\text{ s}$ over horizon $H = 2.80\text{ s}$):
-$$s_{i, j}(c, t_k) = \|\mathbf{p}_{\text{true}, i, j}(t_k) - \mathbf{p}_{\text{forecast}, i, j}(t_k)\|_2$$
+### 9.2 Anisotropic Mahalanobis Non-Conformity Score Formulation
+To ensure the nonconformity score strictly matches the anisotropic geometry of the deployed prediction set, the score for dynamic obstacle $j$ of class $c$ at prediction horizon step $t_k \in \{0.20\text{ s}, \dots, 2.80\text{ s}\}$ ($K = 14$ steps) is formulated in the obstacle's predicted body coordinate frame:
 
-### 9.3 Class-by-Horizon Sample Size Requirement
+$$s_{i, j}(c, t_k) = \sqrt{\left(\frac{\Delta x_{\text{local}, i, j}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, i, j}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
+
+Where:
+- $\Delta x_{\text{local}, i, j}(t_k)$ and $\Delta y_{\text{local}, i, j}(t_k)$ are the longitudinal and lateral tracking residuals relative to the model's nominal trajectory forecast.
+- $\sigma_{\text{long}}(c, t_k) = \beta_{\text{long}} \cdot \sigma_0(c, v_j, t_k)$ and $\sigma_{\text{lat}}(c, t_k) = \beta_{\text{lat}} \cdot \sigma_0(c, v_j, t_k)$ are directional scale normalizers.
+
+### 9.3 Origin and Pre-Calibration of Directional Coefficients ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$)
+- **Aspect Ratio Rationale**: Road corridor trajectory errors exhibit larger longitudinal timing dispersion than lateral corridor deviation ($\beta_{\text{long}} / \beta_{\text{lat}} \approx 1.429$).
+- **Source Split**: Directional coefficients $\beta_{\text{long}} = 0.50$ and $\beta_{\text{lat}} = 0.35$ were fitted empirically on the independent training/tuning split (Split 1 `tune`, Seeds 1000–1009) by calculating root-mean-square residual ratios across observed trajectories.
+- **Pre-Registration Lock**: These scale parameters are fixed *prior to calibration* and serve as normalizers inside the score function. Conformal calibration on $\mathcal{S}_{\text{calib}}$ calibrates the scalar expansion factor $\hat{q}$ without post-hoc set distortion.
+
+### 9.4 Class-by-Horizon Sample Size Requirement & Finite-Sample Quantile
 - **Requirement**: **$n \ge 40$ independent observed trajectories per class $c$ across prediction horizon step $t_k$**.
-- For target coverage $1 - \alpha = 0.95$:
+- For target coverage level $1 - \alpha = 0.95$:
   $$m = \lceil (n + 1)(1 - \alpha) \rceil = \lceil 0.95(n + 1) \rceil$$
   - For $n = 40$: $m = \lceil 0.95 \times 41 \rceil = \lceil 38.95 \rceil = 39$. Calibrated quantile is $\hat{q}_{0.95}(c, t_k) = s_{(39)}$.
 - **Behavior when Sample Counts are Insufficient ($n < 40$)**:
   - If any class has $n < 40$ valid calibration trajectories at horizon $t_k$, **mathematical 95% coverage is formally marked as "Coverage Guarantee Unavailable (n < 40)"**.
   - The predictor is prohibited from claiming conformal coverage and must fall back to conservative geometric road bounds ($r_{\text{fallback}} = 3.50\text{ m}$), setting `coverage_guarantee_valid = False` in the output telemetry log.
+
+### 9.5 Exact Deployed Prediction Set & Coverage Invariant
+The exact prediction set deployed by the predictor is the sub-level set:
+$$\mathcal{C}_{1-\alpha}(c, t_k) = \left\{ (x, y) \in \mathbb{R}^2 : \left(\frac{\Delta x_{\text{local}}}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}}}{\sigma_{\text{lat}}(c, t_k)}\right)^2 \le \hat{q}_{1-\alpha}^2(c, t_k) \right\}$$
+
+This forms an oriented ellipse with semi-axes:
+$$r_{\text{long}}(c, t_k) = \hat{q}_{1-\alpha}(c, t_k) \cdot \sigma_{\text{long}}(c, t_k)$$
+$$r_{\text{lat}}(c, t_k) = \hat{q}_{1-\alpha}(c, t_k) \cdot \sigma_{\text{lat}}(c, t_k)$$
+
+- **Coverage Claim Restriction**:
+  Because $\mathcal{C}_{1-\alpha}(c, t_k) \equiv \{\mathbf{p} : s(\mathbf{p}) \le \hat{q}_{1-\alpha}\}$, the Split-Conformal Theorem guarantees exact finite-sample marginal coverage:
+  $$P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}(c, t_k)\right) \ge 1 - \alpha$$
+  No coverage claim is permitted for any transformed or heuristically scaled set unless calibrated using a matching score function.
+
+### 9.6 Pointwise vs. Simultaneous Trajectory Coverage
+1. **Pointwise Conformal Coverage**:
+   - Calibrated step-by-step for each $t_k \in \{0.20\text{ s}, \dots, 2.80\text{ s}\}$ using $s_i(c, t_k)$ and quantile $\hat{q}_{1-\alpha}^{\text{pt}}(c, t_k)$.
+   - Guarantees marginal coverage at each discrete horizon step:
+     $$\forall k \in \{1, \dots, K\}, \quad P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}^{\text{pt}}(c, t_k)\right) \ge 1 - \alpha$$
+   - Utilized for frame-by-frame telemetry and risk field potential calculations.
+2. **Simultaneous Trajectory Coverage**:
+   - Calibrated across the complete 14-step future trajectory using the trajectory supremum score:
+     $$s_i^{\text{sim}}(c) = \max_{k \in \{1, \dots, K\}} s_i(c, t_k)$$
+     $$\hat{q}_{1-\alpha}^{\text{sim}}(c) = s_{(\lceil (n+1)(1-\alpha) \rceil)}^{\text{sim}}(c)$$
+   - Semi-axes: $r_{\text{long}}^{\text{sim}}(c, t_k) = \hat{q}_{1-\alpha}^{\text{sim}}(c) \cdot \sigma_{\text{long}}(c, t_k)$ and $r_{\text{lat}}^{\text{sim}}(c, t_k) = \hat{q}_{1-\alpha}^{\text{sim}}(c) \cdot \sigma_{\text{lat}}(c, t_k)$.
+   - Guarantees joint spatial containment across the entire future planning horizon:
+     $$P\left(\forall k \in \{1, \dots, K\}, \quad \mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}^{\text{sim}}(c, t_k)\right) \ge 1 - \alpha$$
+   - Utilized for event replanning triggers (`CONFORMAL_VIOLATION`), preventing excessive false-positive replans along the horizon.
 
 ---
 

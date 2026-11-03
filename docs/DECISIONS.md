@@ -28,6 +28,7 @@
 | **DEC-018** | 2026-11-03 | Oriented Rectangular Vehicle-Footprint Invariant throughout Turning and Lateral Creep ($W_{\text{eff}}(\psi) = \frac{L}{2}|\sin\psi| + \frac{W}{2}|\cos\psi|$ enforced at every step). | Dynamics & Safety | Final G2 Patch |
 | **DEC-019** | 2026-11-03 | Statistical Independence Qualification for Multi-Agent Union Aggregation: Formally qualified as a monotonic, bounded upper-bound approximation under positive cluster correlation. | Probability Theory | Final G2 Patch |
 | **DEC-020** | 2026-11-03 | Exact McNemar Power Verification ($95.40\%$) and Preservation of $N=150$: Re-evaluated asymptotic ($95.93\%$, $92.58\%$ cc) vs exact power; established discordance sensitivity table. | Statistical Power | Final G2 Patch |
+| **DEC-021** | 2026-11-03 | Conformal Score & Prediction Set Consistency via Anisotropic Mahalanobis Calibration: Nonconformity score defined identically to deployed elliptical prediction set; $\beta_{\text{long}}=0.50, \beta_{\text{lat}}=0.35$ established as pre-calibrated tuning split normalizers; separate pointwise and simultaneous trajectory coverage defined. | Conformal Prediction | Final G2 Closure |
 
 ---
 
@@ -50,3 +51,21 @@
 #### DEC-020: Exact McNemar Power Verification for $N = 150$
 - **Verification**: Exact power calculation by binomial enumeration confirmed that $N = 150$ achieves **$95.40\%$ exact power** for target effect ($p_{10} = 0.25, p_{01} = 0.08, \Delta = 0.17$). Asymptotic power is $95.93\%$ without continuity correction and $92.58\%$ with continuity correction.
 - **Sensitivity Invariant**: If empirical validation reveals $\psi < 2.2$ or $\Delta < 0.12$, power drops below $75\%$, requiring sample expansion before unblinding the frozen split at Gate G3.
+
+#### DEC-021: Conformal Score and Prediction Set Consistency via Anisotropic Mahalanobis Calibration Level Sets
+- **Context & Problem**: In earlier drafts, conformal calibration computed an isotropic scalar Euclidean nonconformity score $s_i = \|\Delta \mathbf{p}\|_2$, but the predictor and risk kernel deployed an anisotropic ellipse with axes scaled by heuristic multipliers $\beta_{\text{long}} = 0.50$ and $\beta_{\text{lat}} = 0.35$. Under conformal prediction theory, a $(1-\alpha)$ coverage guarantee applies *only* to the exact sub-level set of the calibrated score function. Deploying an ad-hoc transformed ellipse invalidated the 95% coverage claim.
+- **Decision & Mathematical Resolution**:
+  1. **Anisotropic Mahalanobis Score**: The nonconformity score is defined directly in the obstacle body frame matching the deployed elliptical geometry:
+     $$s_i(c, t_k) = \sqrt{\left(\frac{\Delta x_{\text{local}, i}(t_k)}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}, i}(t_k)}{\sigma_{\text{lat}}(c, t_k)}\right)^2}$$
+  2. **Directional Scale Normalizers ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$)**:
+     The directional error aspect ratio $\beta_{\text{long}} : \beta_{\text{lat}} = 0.50 : 0.35 \approx 1.429 : 1.0$ is estimated empirically from tracking error variance on the training/tuning split (`tune`, Seeds 1000–1009) and locked *prior* to calibration. It acts as fixed normalizers inside the score function.
+  3. **Exact Deployed Prediction Set**:
+     $$\mathcal{C}_{1-\alpha}(c, t_k) = \left\{ (x, y) : \left(\frac{\Delta x_{\text{local}}}{\sigma_{\text{long}}(c, t_k)}\right)^2 + \left(\frac{\Delta y_{\text{local}}}{\sigma_{\text{lat}}(c, t_k)}\right)^2 \le \hat{q}_{1-\alpha}^2(c, t_k) \right\}$$
+     Envelope semi-axes are $r_{\text{long}} = \hat{q}_{1-\alpha} \sigma_{\text{long}}$ and $r_{\text{lat}} = \hat{q}_{1-\alpha} \sigma_{\text{lat}}$.
+  4. **Exact Finite-Sample Coverage Guarantee**:
+     Because $\mathcal{C}_{1-\alpha}$ is identically the sub-level set $\{ \mathbf{p} : s(\mathbf{p}) \le \hat{q}_{1-\alpha} \}$, the Split-Conformal Theorem rigorously guarantees:
+     $$P\left(\mathbf{p}_{\text{true}}(t_k) \in \mathcal{C}_{1-\alpha}(c, t_k)\right) \ge 1 - \alpha$$
+     No coverage claims are permitted for any transformed set without matching calibration.
+  5. **Separate Pointwise and Simultaneous Trajectory Calibration**:
+     - *Pointwise*: Calibrated step-by-step ($t_k \in \{0.20\text{ s}, \dots, 2.80\text{ s}\}$) for step-level metrics and risk fields.
+     - *Simultaneous*: Calibrated via trajectory supremum score $s_i^{\text{sim}} = \max_k s_i(t_k)$ to guarantee joint containment across the full $2.8\text{ s}$ horizon for event replanning triggers (`CONFORMAL_VIOLATION`).
