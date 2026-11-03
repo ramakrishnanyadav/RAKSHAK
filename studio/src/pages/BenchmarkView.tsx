@@ -1,287 +1,391 @@
 /**
- * Ablation Benchmarks and Statistical Significance View (Route: /app/benchmark).
- * Reports empirical performance metrics with 95% bootstrap confidence intervals [lower, upper]
- * across Planner Ablations (B0, B1, B2, P1, P2, P3).
- * Fulfills WCAG 2.2 AA requirements with full AccessibleTable integration and non-color status badges.
+ * Authentic Research Benchmark Integration (Route: /app/benchmark).
+ * 
+ * Exclusively consumes authentic validation data from runs/val_b_manifest.json
+ * ("Validation B — Research Experiment").
+ * 
+ * Strict Scientific & Provenance Compliance:
+ * 1. Explicitly isolated from user-created exploratory simulation runs.
+ * 2. Displays Git commit, timestamp, seeds [2005..2009], scenarios, and sample size N.
+ * 3. Uses exact metrics from authoritative engine/metrics.py definitions.
+ * 4. Distinguishes temporal near-miss frame counts from discrete event encounters.
+ * 5. Distinguishes missing/unavailable data ('—') from actual zeros.
+ * 6. AccessibleTable with WCAG 2.2 AA table accessibility.
  */
 
 import React, { useState } from 'react';
-import { BarChart3, Download, Filter, CheckCircle2, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  BarChart3,
+  Download,
+  Filter,
+  CheckCircle2,
+  AlertTriangle,
+  ShieldCheck,
+  Cpu,
+  GitBranch,
+  Calendar,
+  Layers,
+  Database,
+  RefreshCw,
+  Info,
+  Activity,
+  Award,
+} from 'lucide-react';
 import { AccessibleTable, ColumnDef } from '../components/AccessibleTable';
-import { DataTableToggle } from '../components/DataTableToggle';
+import { SkeletonTable, ErrorState } from '../components/StatusState';
 import { useI18n } from '../context/I18nContext';
+import { apiClient } from '../api/client';
+import { ValidationBManifest, ValidationBAggregate } from '../types/api';
+import { BENCHMARK_SCENARIOS } from './Scenarios';
 
-interface BenchmarkRow {
+interface FormattedBenchmarkRow {
+  config_key: string;
+  config_name: string;
   planner_id: string;
-  planner_name: string;
-  collision_rate: string;
-  min_clearance: string;
-  mean_jerk: string;
-  p95_latency: string;
-  replan_count: string;
-  pass_status: 'SUPERIOR' | 'BASELINE' | 'FAILED' | 'ACCEPTABLE';
+  description: string;
+  episode_count: number;
+  goal_completion_rate: number | null;
+  collision_rate: number | null;
+  safe_progress_rate: number | null;
+  mean_min_clearance_m: number | null;
+  mean_jerk_m_s3: number | null;
+  max_jerk_m_s3: number | null;
+  mean_p95_latency_ms: number | null;
+  total_near_miss_frames: number | null;
+  near_miss_frames_per_ep: number | null;
+  mrm_activations: number | null;
+  mrm_recoveries: number | null;
+  mrm_recovery_rate: number | null;
+  candidate_rejections?: {
+    physical_collision: number;
+    predicted_occupancy: number;
+    road_boundary: number;
+  };
 }
-
-const PILOT_BENCHMARK_DATA: Record<string, BenchmarkRow[]> = {
-  SCENARIO_5_CATTLE_CROSSING: [
-    {
-      planner_id: 'B0',
-      planner_name: 'B0: Centerline / Constant Speed',
-      collision_rate: '100.0% [100.0%, 100.0%]',
-      min_clearance: '0.00m [0.00, 0.00]',
-      mean_jerk: '0.00m/s³',
-      p95_latency: '0.05ms',
-      replan_count: '0',
-      pass_status: 'FAILED',
-    },
-    {
-      planner_id: 'B1',
-      planner_name: 'B1: DWA + Velocity Obstacles',
-      collision_rate: '0.0% [0.0%, 0.0%]',
-      min_clearance: '4.94m [4.93, 4.96]',
-      mean_jerk: '11.13m/s³ [9.73, 12.41]',
-      p95_latency: '2.28ms [2.00, 2.61]',
-      replan_count: '120.0',
-      pass_status: 'BASELINE',
-    },
-    {
-      planner_id: 'B2',
-      planner_name: 'B2: Kinematic Hybrid A*',
-      collision_rate: '0.0% [0.0%, 0.0%]',
-      min_clearance: '3.80m [3.40, 4.20]',
-      mean_jerk: '4.20m/s³ [3.80, 4.60]',
-      p95_latency: '14.50ms [11.20, 18.30]',
-      replan_count: '24.0',
-      pass_status: 'ACCEPTABLE',
-    },
-    {
-      planner_id: 'P1',
-      planner_name: 'P1: Nominal Predictive (Fixed Clock)',
-      collision_rate: '100.0% [100.0%, 100.0%]',
-      min_clearance: '4.33m [3.71, 4.97]',
-      mean_jerk: '2.44m/s³ [2.44, 2.44]',
-      p95_latency: '2.35ms [2.06, 2.71]',
-      replan_count: '5.0',
-      pass_status: 'FAILED',
-    },
-    {
-      planner_id: 'P2',
-      planner_name: 'P2: Risk-Aware (Conformal + Risk)',
-      collision_rate: '0.0% [0.0%, 0.0%]',
-      min_clearance: '3.34m [3.09, 3.61]',
-      mean_jerk: '1.11m/s³ [1.11, 1.12]',
-      p95_latency: '5.36ms [2.56, 8.35]',
-      replan_count: '20.0',
-      pass_status: 'ACCEPTABLE',
-    },
-    {
-      planner_id: 'P3',
-      planner_name: 'P3: Risk-Adaptive (Dynamic Trigger + MRM)',
-      collision_rate: '0.0% [0.0%, 0.0%]',
-      min_clearance: '4.45m [3.63, 5.94]',
-      mean_jerk: '1.20m/s³ [1.14, 1.25]',
-      p95_latency: '18.53ms [15.59, 21.45]',
-      replan_count: '58.3',
-      pass_status: 'SUPERIOR',
-    },
-  ],
-  SCENARIO_1_VILLAGE_ROAD: [
-    {
-      planner_id: 'B1',
-      planner_name: 'B1: DWA + Velocity Obstacles',
-      collision_rate: '0.0% [0.0%, 0.0%]',
-      min_clearance: '1.82m [1.60, 2.05]',
-      mean_jerk: '8.40m/s³',
-      p95_latency: '2.10ms',
-      replan_count: '120.0',
-      pass_status: 'BASELINE',
-    },
-    {
-      planner_id: 'P3',
-      planner_name: 'P3: Risk-Adaptive (Dynamic Trigger + MRM)',
-      collision_rate: '0.0% [0.0%, 0.0%]',
-      min_clearance: '2.65m [2.30, 2.95]',
-      mean_jerk: '1.35m/s³',
-      p95_latency: '17.20ms',
-      replan_count: '42.0',
-      pass_status: 'SUPERIOR',
-    },
-  ],
-  SCENARIO_2_URBAN_INTERSECTION: [
-    {
-      planner_id: 'B1',
-      planner_name: 'B1: DWA + Velocity Obstacles',
-      collision_rate: '15.0% [5.0%, 25.0%]',
-      min_clearance: '1.20m [0.90, 1.50]',
-      mean_jerk: '9.80m/s³',
-      p95_latency: '2.40ms',
-      replan_count: '120.0',
-      pass_status: 'FAILED',
-    },
-    {
-      planner_id: 'P3',
-      planner_name: 'P3: Risk-Adaptive (Dynamic Trigger + MRM)',
-      collision_rate: '0.0% [0.0%, 0.0%]',
-      min_clearance: '2.10m [1.80, 2.40]',
-      mean_jerk: '1.45m/s³',
-      p95_latency: '19.10ms',
-      replan_count: '51.0',
-      pass_status: 'SUPERIOR',
-    },
-  ],
-};
 
 export const BenchmarkView: React.FC = () => {
   const { t } = useI18n();
-  const [selectedScenario, setSelectedScenario] = useState<string>('SCENARIO_5_CATTLE_CROSSING');
-  const [isTableView, setIsTableView] = useState<boolean>(true);
+  const [selectedScope, setSelectedScope] = useState<string>('ALL_SCENARIOS');
 
-  const rows = PILOT_BENCHMARK_DATA[selectedScenario] || PILOT_BENCHMARK_DATA.SCENARIO_5_CATTLE_CROSSING;
+  // Query authentic Validation B benchmark manifest
+  const {
+    data: manifest,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery<ValidationBManifest>({
+    queryKey: ['val_b_manifest'],
+    queryFn: () => apiClient.getValidationBManifest(),
+    staleTime: 1000 * 60 * 30, // 30 minutes cache
+  });
 
+  // Format table rows based on active scope (Pooled Overall vs Individual Scenario)
+  const rows: FormattedBenchmarkRow[] = React.useMemo(() => {
+    if (!manifest || !manifest.configurations) return [];
+
+    return Object.entries(manifest.configurations).map(([key, config]) => {
+      let agg: ValidationBAggregate | undefined;
+
+      if (selectedScope === 'ALL_SCENARIOS') {
+        agg = config.aggregate;
+      } else {
+        agg = config.scenario_breakdown?.[selectedScope]?.aggregate;
+      }
+
+      if (!agg) {
+        return {
+          config_key: key,
+          config_name: key === 'P3_Corrected' ? 'P3 (Corrected F3)' : key === 'P3_Baseline' ? 'P3 (Zero-Stall Baseline)' : 'B1 (DWA-VO Baseline)',
+          planner_id: config.planner_id,
+          description: config.description,
+          episode_count: 0,
+          goal_completion_rate: null,
+          collision_rate: null,
+          safe_progress_rate: null,
+          mean_min_clearance_m: null,
+          mean_jerk_m_s3: null,
+          max_jerk_m_s3: null,
+          mean_p95_latency_ms: null,
+          total_near_miss_frames: null,
+          near_miss_frames_per_ep: null,
+          mrm_activations: null,
+          mrm_recoveries: null,
+          mrm_recovery_rate: null,
+        };
+      }
+
+      const epCount = agg.episode_count || 0;
+      const nearMissFramesPerEp = epCount > 0 && typeof agg.total_near_misses === 'number'
+        ? agg.total_near_misses / epCount
+        : null;
+
+      const mrmRecoveryRate = agg.total_mrm_activations && agg.total_mrm_activations > 0
+        ? (agg.total_mrm_recoveries / agg.total_mrm_activations) * 100
+        : null;
+
+      const niceName =
+        key === 'P3_Corrected'
+          ? 'P3: Adaptive Replanner (F3 Corrected)'
+          : key === 'P3_Baseline'
+          ? 'P3: Zero-Stall Penalty Baseline'
+          : 'B1: Dynamic Window Approach (DWA-VO)';
+
+      return {
+        config_key: key,
+        config_name: niceName,
+        planner_id: config.planner_id,
+        description: config.description,
+        episode_count: epCount,
+        goal_completion_rate: typeof agg.goal_completion_rate === 'number' ? agg.goal_completion_rate * 100 : null,
+        collision_rate: typeof agg.collision_rate === 'number' ? agg.collision_rate * 100 : null,
+        safe_progress_rate: typeof agg.safe_progress_rate === 'number' ? agg.safe_progress_rate * 100 : null,
+        mean_min_clearance_m: typeof agg.mean_min_clearance_m === 'number' ? agg.mean_min_clearance_m : null,
+        mean_jerk_m_s3: typeof agg.mean_jerk_m_s3 === 'number' ? agg.mean_jerk_m_s3 : null,
+        max_jerk_m_s3: typeof agg.max_jerk_m_s3 === 'number' ? agg.max_jerk_m_s3 : null,
+        mean_p95_latency_ms: typeof agg.mean_p95_latency_ms === 'number' ? agg.mean_p95_latency_ms : null,
+        total_near_miss_frames: typeof agg.total_near_misses === 'number' ? agg.total_near_misses : null,
+        near_miss_frames_per_ep: nearMissFramesPerEp,
+        mrm_activations: typeof agg.total_mrm_activations === 'number' ? agg.total_mrm_activations : null,
+        mrm_recoveries: typeof agg.total_mrm_recoveries === 'number' ? agg.total_mrm_recoveries : null,
+        mrm_recovery_rate: mrmRecoveryRate,
+        candidate_rejections: agg.total_candidate_rejections,
+      };
+    });
+  }, [manifest, selectedScope]);
+
+  // CSV Export with authentic provenance metadata
   const downloadCSV = () => {
-    const headers = ['Planner ID', 'Planner Name', 'Collision Rate (95% CI)', 'Min Clearance (95% CI)', 'Mean Jerk', 'P95 Latency', 'Replans', 'Status'];
-    const csvContent = [
-      headers.join(','),
-      ...rows.map((r) =>
-        [r.planner_id, `"${r.planner_name}"`, `"${r.collision_rate}"`, `"${r.min_clearance}"`, `"${r.mean_jerk}"`, `"${r.p95_latency}"`, r.replan_count, r.pass_status].join(',')
-      ),
-    ].join('\n');
+    if (!manifest) return;
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const meta = manifest.metadata;
+    const lines = [
+      `# ADAPTIVE-PATH Validation B Benchmark Export`,
+      `# Artifact: runs/val_b_manifest.json`,
+      `# Git Commit: ${meta.git_commit}`,
+      `# Timestamp: ${meta.timestamp}`,
+      `# Scope: ${selectedScope}`,
+      `# Seeds: ${meta.seeds.join(' ')}`,
+      `Configuration,Planner ID,Episodes,Goal Completion Rate (%),Collision Rate (%),Safe Progress Rate (%),Mean Min Clearance (m),Mean Jerk (m/s3),Max Jerk (m/s3),P95 Latency (ms),Total Near-Miss Frames,Near-Miss Frames/Episode,MRM Activations,MRM Recoveries,MRM Recovery Rate (%)`,
+      ...rows.map((r) =>
+        [
+          `"${r.config_name}"`,
+          r.planner_id,
+          r.episode_count,
+          r.goal_completion_rate !== null ? r.goal_completion_rate.toFixed(1) : '—',
+          r.collision_rate !== null ? r.collision_rate.toFixed(1) : '—',
+          r.safe_progress_rate !== null ? r.safe_progress_rate.toFixed(1) : '—',
+          r.mean_min_clearance_m !== null ? r.mean_min_clearance_m.toFixed(2) : '—',
+          r.mean_jerk_m_s3 !== null ? r.mean_jerk_m_s3.toFixed(3) : '—',
+          r.max_jerk_m_s3 !== null ? r.max_jerk_m_s3.toFixed(3) : '—',
+          r.mean_p95_latency_ms !== null ? r.mean_p95_latency_ms.toFixed(2) : '—',
+          r.total_near_miss_frames !== null ? r.total_near_miss_frames : '—',
+          r.near_miss_frames_per_ep !== null ? r.near_miss_frames_per_ep.toFixed(1) : '—',
+          r.mrm_activations !== null ? r.mrm_activations : '—',
+          r.mrm_recoveries !== null ? r.mrm_recoveries : '—',
+          r.mrm_recovery_rate !== null ? r.mrm_recovery_rate.toFixed(1) : '—',
+        ].join(',')
+      ),
+    ];
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `adaptive_path_benchmark_${selectedScenario}.csv`);
+    link.setAttribute('download', `adaptive_path_val_b_${selectedScope.toLowerCase()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const columns: ColumnDef<BenchmarkRow>[] = [
+  // Accessible Table Columns Definition
+  const columns: ColumnDef<FormattedBenchmarkRow>[] = [
     {
-      key: 'planner_id',
-      header: 'Planner',
+      key: 'config_name',
+      header: 'Strategy Configuration',
       sortable: true,
       render: (r) => (
         <div>
-          <strong style={{ color: 'var(--text-primary)' }}>{r.planner_id}</strong>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{r.planner_name}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+            <strong style={{ color: 'var(--text-primary)', fontSize: '0.9rem' }}>{r.config_name}</strong>
+            {r.config_key === 'P3_Corrected' && (
+              <span
+                style={{
+                  fontSize: '0.7rem',
+                  fontWeight: 800,
+                  padding: '1px 6px',
+                  borderRadius: '3px',
+                  background: 'rgba(16, 185, 129, 0.15)',
+                  color: 'var(--status-success)',
+                  border: '1px solid var(--status-success)',
+                }}
+              >
+                APPROVED
+              </span>
+            )}
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px', maxWidth: '320px' }}>
+            {r.description}
+          </div>
         </div>
       ),
     },
     {
+      key: 'episode_count',
+      header: 'Sample (N)',
+      sortable: true,
+      render: (r) => (
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
+          {r.episode_count > 0 ? `${r.episode_count} eps` : '—'}
+        </span>
+      ),
+    },
+    {
+      key: 'goal_completion_rate',
+      header: 'Goal Rate (%)',
+      sortable: true,
+      render: (r) => (
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            color: r.goal_completion_rate !== null && r.goal_completion_rate >= 50 ? 'var(--status-success)' : 'var(--text-primary)',
+          }}
+        >
+          {r.goal_completion_rate !== null ? `${r.goal_completion_rate.toFixed(1)}%` : '—'}
+        </span>
+      ),
+    },
+    {
       key: 'collision_rate',
-      header: 'Collision Rate (95% CI)',
+      header: 'Collision Rate (%)',
       sortable: true,
       render: (r) => {
-        const isZero = r.collision_rate.startsWith('0.0%');
+        if (r.collision_rate === null) return <span>—</span>;
+        const isLow = r.collision_rate <= 20.0;
         return (
           <span
             style={{
-              color: isZero ? 'var(--accent-teal)' : 'var(--risk-critical)',
-              fontWeight: 700,
               fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              color: isLow ? 'var(--status-success)' : 'var(--risk-critical)',
             }}
           >
-            {r.collision_rate}
+            {r.collision_rate.toFixed(1)}%
           </span>
         );
       },
     },
     {
-      key: 'min_clearance',
-      header: 'Min Clearance (95% CI)',
+      key: 'mean_min_clearance_m',
+      header: 'Mean Clearance (m)',
       sortable: true,
-      render: (r) => <span style={{ fontFamily: 'var(--font-mono)' }}>{r.min_clearance}</span>,
+      render: (r) => (
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
+          {r.mean_min_clearance_m !== null ? `${r.mean_min_clearance_m.toFixed(2)} m` : '—'}
+        </span>
+      ),
     },
     {
-      key: 'mean_jerk',
-      header: 'Comfort: Mean Jerk',
+      key: 'mean_jerk_m_s3',
+      header: 'Mean Jerk (m/s³)',
       sortable: true,
-      render: (r) => <span style={{ fontFamily: 'var(--font-mono)' }}>{r.mean_jerk}</span>,
+      render: (r) => (
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
+          {r.mean_jerk_m_s3 !== null ? `${r.mean_jerk_m_s3.toFixed(3)}` : '—'}
+        </span>
+      ),
     },
     {
-      key: 'p95_latency',
-      header: 'P95 Latency',
+      key: 'mean_p95_latency_ms',
+      header: 'P95 Latency (ms)',
       sortable: true,
-      render: (r) => <span style={{ fontFamily: 'var(--font-mono)' }}>{r.p95_latency}</span>,
+      render: (r) => (
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
+          {r.mean_p95_latency_ms !== null ? `${r.mean_p95_latency_ms.toFixed(1)} ms` : '—'}
+        </span>
+      ),
     },
     {
-      key: 'replan_count',
-      header: 'Replans',
-      sortable: true,
-      render: (r) => <span style={{ fontFamily: 'var(--font-mono)' }}>{r.replan_count}</span>,
-    },
-    {
-      key: 'pass_status',
-      header: 'SIH Evaluation',
+      key: 'near_miss_frames_per_ep',
+      header: 'Near-Miss Frames',
       sortable: true,
       render: (r) => {
-        let bg = 'rgba(16, 185, 129, 0.15)';
-        let color = 'var(--accent-teal)';
-        let icon = <CheckCircle2 size={13} aria-hidden="true" />;
-
-        if (r.pass_status === 'FAILED') {
-          bg = 'rgba(239, 68, 68, 0.15)';
-          color = 'var(--risk-critical)';
-          icon = <AlertTriangle size={13} aria-hidden="true" />;
-        } else if (r.pass_status === 'BASELINE') {
-          bg = 'rgba(245, 158, 11, 0.15)';
-          color = 'var(--risk-medium)';
-          icon = <TrendingUp size={13} aria-hidden="true" />;
-        }
-
+        if (r.total_near_miss_frames === null) return <span>—</span>;
         return (
-          <span
-            className="risk-badge"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              padding: '2px 8px',
-              borderRadius: '4px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              background: bg,
-              color,
-              border: '1px solid currentColor',
-            }}
-          >
-            {icon}
-            <span>{r.pass_status}</span>
-          </span>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+            <div>{r.total_near_miss_frames} frames</div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+              ({r.near_miss_frames_per_ep !== null ? `${r.near_miss_frames_per_ep.toFixed(1)} / ep` : '—'})
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      key: 'mrm_recovery_rate',
+      header: 'MRM Recoveries',
+      sortable: true,
+      render: (r) => {
+        if (r.mrm_activations === null) return <span>—</span>;
+        return (
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>
+            <div>
+              {r.mrm_recoveries} / {r.mrm_activations} act
+            </div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--status-success)', fontWeight: 600 }}>
+              {r.mrm_recovery_rate !== null ? `${r.mrm_recovery_rate.toFixed(1)}% recovery` : '—'}
+            </div>
+          </div>
         );
       },
     },
   ];
 
   return (
-    <div style={{ padding: '1.5rem', maxWidth: '1280px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Title & Actions */}
+    <div style={{ padding: '1.5rem', maxWidth: '1360px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Page Title & Provenance Badge */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-primary)' }}>
-              RESEARCH ABLATION
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+            <span
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                padding: '3px 8px',
+                borderRadius: 'var(--radius-sm)',
+                background: 'rgba(59, 130, 246, 0.15)',
+                color: 'var(--accent-primary)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Validation B — Research Experiment
             </span>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              1,000 Bootstrap Resamples (B = 1000)
+              Independent Verification Artifact (Gate G3)
             </span>
           </div>
+
           <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: 0 }}>
             {t('nav_benchmark')}
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: '0.25rem 0 0' }}>
-            Empirical validation with 95% bootstrap confidence intervals comparing baselines vs ADAPTIVE-PATH.
+            Empirical validation results comparing proposed P3 Adaptive Replanner against baseline ablation architectures.
           </p>
         </div>
 
+        {/* Scope Selection & Export */}
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <select
-            value={selectedScenario}
-            onChange={(e) => setSelectedScenario(e.target.value)}
+            value={selectedScope}
+            onChange={(e) => setSelectedScope(e.target.value)}
             style={{
-              padding: '0.5rem 0.85rem',
+              padding: '0.55rem 0.85rem',
               borderRadius: 'var(--radius-sm)',
               border: '1px solid var(--border-default)',
               background: 'var(--bg-surface)',
@@ -289,53 +393,164 @@ export const BenchmarkView: React.FC = () => {
               fontSize: '0.875rem',
               minHeight: 'var(--min-target-size)',
             }}
-            aria-label="Select scenario for benchmark evaluation"
+            aria-label="Select scenario scope for benchmark evaluation"
           >
-            <option value="SCENARIO_5_CATTLE_CROSSING">Scenario 5: Sudden Cattle Crossing</option>
-            <option value="SCENARIO_1_VILLAGE_ROAD">Scenario 1: Unmarked Village Road</option>
-            <option value="SCENARIO_2_URBAN_INTERSECTION">Scenario 2: Urban Intersection</option>
+            <option value="ALL_SCENARIOS">Overall Benchmark (All 5 Scenarios, N=25)</option>
+            {BENCHMARK_SCENARIOS.map((sc) => (
+              <option key={sc.id} value={sc.id}>
+                {sc.name} (N=5)
+              </option>
+            ))}
           </select>
 
           <button
             onClick={downloadCSV}
+            disabled={!manifest}
             className="btn-secondary"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.4rem',
-              padding: '0.5rem 0.85rem',
+              gap: '0.45rem',
+              padding: '0.55rem 0.95rem',
               fontSize: '0.875rem',
               minHeight: 'var(--min-target-size)',
+              cursor: manifest ? 'pointer' : 'not-allowed',
+              opacity: manifest ? 1 : 0.6,
             }}
           >
             <Download size={15} />
-            <span>Export CSV</span>
+            <span>Export Verified CSV</span>
           </button>
         </div>
       </div>
 
-      {/* Main Benchmarks Table */}
-      <div className="glass-panel" style={{ padding: '1.25rem' }}>
-        <AccessibleTable
-          caption={`Ablation evaluation results for ${selectedScenario.replace(/_/g, ' ')}`}
-          summary="Displays collision rate with 95% bootstrap confidence intervals, minimum obstacle clearance, comfort jerk, and cycle latency"
-          columns={columns}
-          data={rows}
-          keyField="planner_id"
-        />
-      </div>
+      {/* Research Provenance & Dataset Metadata Card */}
+      {manifest?.metadata && (
+        <div
+          className="glass-panel"
+          style={{
+            padding: '1.1rem 1.25rem',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '1rem',
+            background: 'var(--bg-surface-elevated)',
+            borderLeft: '4px solid var(--accent-primary)',
+          }}
+        >
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+              Artifact Source
+            </div>
+            <strong style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+              runs/val_b_manifest.json
+            </strong>
+          </div>
 
-      {/* Methodology & Statistical Verification Box */}
-      <div className="glass-panel" style={{ padding: '1.25rem', borderLeft: '4px solid var(--accent-primary)' }}>
-        <h2 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 0.4rem', color: 'var(--text-primary)' }}>
-          Statistical Significance & Evaluation Methodology
-        </h2>
-        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-          Confidence intervals are constructed using non-parametric percentile bootstrap (B = 1,000 resamples).
-          <strong> P3 (ADAPTIVE-PATH)</strong> demonstrates statistically significant collision avoidance (0.0% [0.0%, 0.0%])
-          while reducing peak lateral jerk by <strong>89%</strong> compared to reactive baseline B1 (1.20 m/s³ vs 11.13 m/s³),
-          confirming smooth, non-disruptive navigation through unstructured Indian traffic.
-        </p>
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+              Engine Git Commit
+            </div>
+            <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)' }}>
+              {manifest.metadata.git_commit.slice(0, 10)}
+            </span>
+          </div>
+
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+              Evaluation Seeds
+            </div>
+            <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+              {manifest.metadata.seeds.join(', ')} ({manifest.metadata.seeds.length} seeds)
+            </span>
+          </div>
+
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+              Episodes Per Planner
+            </div>
+            <span style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+              {manifest.metadata.total_episodes_per_planner} episodes (5 scenarios × 5 seeds)
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Loading & Error States */}
+      {isLoading && (
+        <div className="glass-panel" style={{ padding: '2rem' }}>
+          <SkeletonTable rows={4} cols={8} />
+        </div>
+      )}
+
+      {isError && (
+        <ErrorState
+          title="Validation Benchmark Data Unavailable"
+          message={
+            error instanceof Error
+              ? error.message
+              : 'Failed to retrieve runs/val_b_manifest.json from the API endpoint or static data directory.'
+          }
+          onRetry={() => {
+            refetch();
+          }}
+        />
+      )}
+
+      {/* Benchmark Data Table */}
+      {!isLoading && !isError && manifest && (
+        <div className="glass-panel" style={{ padding: '1.25rem' }}>
+          <AccessibleTable
+            caption={`Validation B benchmark empirical evaluation for ${
+              selectedScope === 'ALL_SCENARIOS'
+                ? 'All 5 Canonical Scenarios (Pooled N=25)'
+                : selectedScope.replace(/_/g, ' ') + ' (N=5)'
+            }`}
+            summary="Empirical evaluation comparing P3 Corrected, P3 Zero-Stall Baseline, and B1 DWA-VO Baseline with completion, collision, clearance, comfort, latency, and near-miss metrics."
+            columns={columns}
+            data={rows}
+            keyField="config_key"
+          />
+        </div>
+      )}
+
+      {/* Scientific Methodology & Metric Definitions */}
+      <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Info size={18} style={{ color: 'var(--accent-primary)' }} />
+          <h2 style={{ fontSize: '1rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
+            Authoritative Metric Definitions (engine/metrics.py & docs/METRICS.md)
+          </h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', fontSize: '0.825rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+          <div>
+            <strong style={{ color: 'var(--text-primary)' }}>Goal Completion Rate:</strong>
+            <p style={{ margin: '0.2rem 0 0' }}>
+              Requires reaching terminal threshold (x ≥ 65.0m, |y| ≤ 4.70m) within duration t ≤ 20.0s, terminal velocity v ≥ 0.50 m/s, with zero physical collisions.
+            </p>
+          </div>
+
+          <div>
+            <strong style={{ color: 'var(--text-primary)' }}>Collision Detection (SAT):</strong>
+            <p style={{ margin: '0.2rem 0 0' }}>
+              Full oriented polygon intersection via Separating Axis Theorem (SAT) evaluated between the 4.20m × 1.80m ego vehicle and oriented obstacle footprints.
+            </p>
+          </div>
+
+          <div>
+            <strong style={{ color: 'var(--text-primary)' }}>Near-Miss Temporal Frames:</strong>
+            <p style={{ margin: '0.2rem 0 0' }}>
+              Number of 10Hz simulation frames where minimum clearance d_min &lt; 1.00m or Time-to-Collision TTC &lt; 1.20s. Reflects cumulative proximity duration rather than discrete event encounters.
+            </p>
+          </div>
+
+          <div>
+            <strong style={{ color: 'var(--text-primary)' }}>Causal Filtered Jerk:</strong>
+            <p style={{ margin: '0.2rem 0 0' }}>
+              Variable-timestep longitudinal jerk filtered via a 3-step causal moving average to eliminate discrete step artifacts while measuring authentic passenger ride comfort.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

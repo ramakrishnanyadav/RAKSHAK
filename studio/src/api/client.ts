@@ -20,6 +20,7 @@ import {
   AuditLogEntry,
   SystemStats,
   ApiErrorFormat,
+  ValidationBManifest,
 } from '../types/api';
 
 class ApiClient {
@@ -279,6 +280,19 @@ class ApiClient {
   }
 
   // Benchmarks endpoints
+  async getValidationBManifest(): Promise<ValidationBManifest> {
+    try {
+      return await this.request<ValidationBManifest>('/api/benchmarks/val_b');
+    } catch {
+      // Fallback to static public artifact
+      const res = await fetch('/data/val_b_manifest.json');
+      if (res.ok) {
+        return await res.json();
+      }
+      throw new Error('Failed to load Validation B manifest from both API and static data path');
+    }
+  }
+
   async getBenchmarks(scenarioId?: string, split: string = 'tune'): Promise<ScenarioBenchmarkSummary[]> {
     const q = new URLSearchParams({ split });
     if (scenarioId) q.set('scenario_id', scenarioId);

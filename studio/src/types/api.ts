@@ -229,3 +229,83 @@ export interface ApiErrorFormat {
   details: Record<string, unknown>;
   request_id: string | null;
 }
+
+// ---------------------------------------------------------------------------
+// Validation B Benchmark Manifest Types (Authentic Research Artifact Schema)
+// ---------------------------------------------------------------------------
+
+export interface ValidationBEpisode {
+  scenario_id: string;
+  seed: number;
+  planner_id: string;
+  duration_s: number;
+  completed_goal: boolean;
+  collision_occurred: boolean;
+  safe_progress: boolean;
+  near_miss_count: number;
+  min_clearance_m: number;
+  mean_jerk_m_s3: number;
+  max_jerk_m_s3: number;
+  stopped_duration_s: number;
+  mrm_activations: number;
+  mrm_recoveries: number;
+  replan_count: number;
+  p95_latency_ms: number;
+  mean_latency_ms: number;
+  rejection_reasons?: {
+    physical_collision?: number;
+    predicted_occupancy?: number;
+    road_boundary?: number;
+    dynamic_kinematic?: number;
+  };
+}
+
+export interface ValidationBAggregate {
+  episode_count: number;
+  safe_progress_rate: number;
+  collision_rate: number;
+  goal_completion_rate: number;
+  total_near_misses: number;
+  min_clearance_overall_m: number;
+  mean_min_clearance_m: number;
+  mean_jerk_m_s3: number;
+  max_jerk_m_s3: number;
+  mean_stopped_duration_s: number;
+  total_mrm_activations: number;
+  total_mrm_recoveries: number;
+  mean_p95_latency_ms: number;
+  mean_latency_ms: number;
+  total_candidate_rejections?: {
+    physical_collision: number;
+    predicted_occupancy: number;
+    road_boundary: number;
+    dynamic_kinematic: number;
+  };
+}
+
+export interface ValidationBConfiguration {
+  description: string;
+  planner_id: string;
+  params: Record<string, unknown>;
+  aggregate: ValidationBAggregate;
+  scenario_breakdown: Record<
+    string,
+    {
+      aggregate: ValidationBAggregate;
+      episodes: ValidationBEpisode[];
+    }
+  >;
+}
+
+export interface ValidationBManifest {
+  metadata: {
+    title: string;
+    git_commit: string;
+    timestamp: string;
+    split: string;
+    seeds: number[];
+    scenarios: string[];
+    total_episodes_per_planner: number;
+  };
+  configurations: Record<string, ValidationBConfiguration>;
+}

@@ -6,7 +6,9 @@ and computes pairwise planner comparison deltas.
 
 from typing import List, Optional
 from collections import defaultdict
-from fastapi import APIRouter, Depends, Query
+import json
+from pathlib import Path
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 
 from backend.app.database import get_db
@@ -35,6 +37,16 @@ PLANNER_DISPLAY_NAMES = {
     "P2": "P2: Risk-Aware (Conformal + Risk)",
     "P3": "P3: Risk-Adaptive (Dynamic Trigger + MRM)",
 }
+
+
+@router.get("/val_b")
+def get_val_b_manifest():
+    """Return the authentic Validation B benchmark manifest."""
+    manifest_path = Path("runs/val_b_manifest.json")
+    if not manifest_path.exists():
+        raise HTTPException(status_code=404, detail="Validation B manifest not found")
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 @router.get("", response_model=List[ScenarioBenchmarkSummary])
