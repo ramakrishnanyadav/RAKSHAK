@@ -65,14 +65,6 @@ class CalibratedRiskField:
             # Spatial sigma scaled by vehicle velocity and agent length
             sigma = max(1.2, 0.5 * (ag.length + ag.width) + 0.15 * math.hypot(ag.v_x, ag.v_y))
 
-            # Conformal uncertainty expansion: if calibrated cone expands, risk field widens
-            if ag.conformal_envelope:
-                # Add first 1.0s conformal expansion only if calibrated coverage guarantee is valid
-                target_cone = ag.conformal_envelope[min(4, len(ag.conformal_envelope) - 1)]
-                if getattr(target_cone, "coverage_guarantee_valid", True):
-                    cone_r = target_cone.radius_m
-                    sigma += cone_r * 0.4
-
             spatial_term = math.exp(-(dist ** 2) / (2.0 * (sigma ** 2)))
             temporal_term = 1.0 / (1.0 + 0.5 * max(0.0, ttc))
 
@@ -166,12 +158,6 @@ class CalibratedRiskField:
         # Conformal envelope intersection check with ego trajectory
         if ego_path and len(ego_path) > 2:
             for ag in agents:
-                # Corridor intrusion check: agent ahead entering ego corridor
-                if ego_path:
-                    ego_head_x = ego_path[0][0]
-                    if ego_head_x < ag.x < (ego_head_x + 35.0) and abs(ag.y) < 2.5:
-                        return True, "CONFORMAL_VIOLATION"
-
                 # Check if agent or its uncertainty envelope intersects ego path within 3.0s horizon
                 for pt_idx, (px, py) in enumerate(ego_path[:30]): # Full horizon
                     t_horizon = pt_idx * 0.1

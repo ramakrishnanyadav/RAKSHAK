@@ -578,8 +578,6 @@ def test_downstream_consumers_respect_coverage_guarantee_valid():
     )
 
     rf = CalibratedRiskField()
-    # 1. evaluate_point_risk: with uncalibrated cone, cone_r must NOT expand sigma
-    risk_uncal = rf.evaluate_point_risk(x=15.0, y=0.0, ego_v=5.0, agents=[ag_uncalibrated], static_obstacles=[])
 
     ag_calibrated = AgentTrack(
         id="ag_cal",
@@ -603,10 +601,26 @@ def test_downstream_consumers_respect_coverage_guarantee_valid():
             for k in range(5)
         ],
     )
-    risk_cal = rf.evaluate_point_risk(x=15.0, y=0.0, ego_v=5.0, agents=[ag_calibrated], static_obstacles=[])
 
-    # Calibrated cone expands sigma, resulting in higher risk at distance 5m
-    assert risk_cal > risk_uncal
+    # 1. check_replan_trigger: uncalibrated cone must NOT trigger CONFORMAL_VIOLATION
+    # Path passing near agent (x=20) at t_horizon = 0.4s (index 4)
+    test_path = [(16.0 + 1.0 * i, 0.0) for i in range(10)]
+    trig_uncal, reason_uncal = rf.check_replan_trigger(
+        current_risk=0.1,
+        previous_risk=0.1,
+        ego_path=test_path,
+        agents=[ag_uncalibrated],
+        time_since_last_replan_s=0.5,
+    )
+    trig_cal, reason_cal = rf.check_replan_trigger(
+        current_risk=0.1,
+        previous_risk=0.1,
+        ego_path=test_path,
+        agents=[ag_calibrated],
+        time_since_last_replan_s=0.5,
+    )
+    assert reason_uncal != "CONFORMAL_VIOLATION"
+    assert reason_cal == "CONFORMAL_VIOLATION"
 
 
 # ---------------------------------------------------------------------------

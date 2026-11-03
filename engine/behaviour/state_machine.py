@@ -78,25 +78,25 @@ class BehaviourStateMachine:
             dy = ag.y - ego.y
             dist = math.hypot(dx, dy)
 
-            # Check maximum epistemic prediction uncertainty radius from valid calibrated envelopes
-            if ag.conformal_envelope:
+            # Check maximum epistemic prediction uncertainty radius for agents ahead in corridor
+            if ag.conformal_envelope and 1.5 < dx < 20.0 and abs(dy) < 1.5:
                 for cone_pt in ag.conformal_envelope:
                     if getattr(cone_pt, "coverage_guarantee_valid", True):
                         max_uncertainty = max(max_uncertainty, cone_pt.radius_m)
 
             # Only analyze agents ahead (dx > -1.0)
             if dx > -1.0 and dist < 45.0:
-                rel_v = ego.v - ag.v_x
-                if rel_v > 0.2:
-                    ttc = max(0.01, dist / rel_v)
-                    min_ttc = min(min_ttc, ttc)
-
-                # Check lateral overlap with ego corridor (|dy| < 1.8m)
-                if abs(dy) < 1.8:
+                # Check lateral overlap with ego corridor accounting for agent physical dimensions
+                ag_lat_reach = max(getattr(ag, "length", 2.4) or 2.4, getattr(ag, "width", 1.2) or 1.2) / 2.0
+                if abs(dy) < (1.4 + ag_lat_reach):
                     forward_clearance = min(forward_clearance, dist)
                     lead_agent_speed = math.hypot(ag.v_x, ag.v_y)
-                    if dist < 12.0 and lead_agent_speed < 1.0:
+                    if dist < 15.0 and lead_agent_speed < 1.0:
                         blocked_ahead = True
+                    rel_v = ego.v - ag.v_x
+                    if rel_v > 0.2:
+                        ttc = max(0.01, dist / rel_v)
+                        min_ttc = min(min_ttc, ttc)
 
                 # Check oncoming heavy vehicle (truck/bus heading opposite)
                 if ag.v_x < -1.0 and abs(dy) < 2.5:
@@ -127,17 +127,20 @@ class BehaviourStateMachine:
             new_state = "EMERGENCY_BRAKE"
             trigger_reason = "RISK_THRESHOLD_EXCEEDED"
             replan_req = True
-        elif max_uncertainty >= self.uncertainty_mrm_threshold:
-            # Conservative Minimal-Risk Manoeuvre when uncertainty exceeds threshold
+        elif self.current_state == "EMERGENCY_BRAKE":
+            # Recover from emergency brake once vehicle has safely halted or min_ttc is safe
+            if min_ttc > 2.0 or ego.v < 0.5:
+                if blocked_ahead:
+                    new_state = "STOP" if (forward_clearance < 4.5 and ego.v < 0.2) else "BYPASS"
+                else:
+                    new_state = "SLOW"
+                trigger_reason = "RISK_RESOLVED"
+                replan_req = True
+        elif max_uncertainty >= self.uncertainty_mrm_threshold and (ego.v > 3.0 or current_risk > 0.5):
+            # Conservative Minimal-Risk Manoeuvre when uncertainty exceeds threshold at cruising speed
             new_state = "EMERGENCY_BRAKE"
             trigger_reason = "UNCERTAINTY_EXCEEDED_MRM"
             replan_req = True
-        elif self.current_state == "EMERGENCY_BRAKE":
-            # Recover from emergency brake only when clearance opens and speed is calm
-            if min_ttc > 2.5 and forward_clearance > 8.0:
-                new_state = "SLOW"
-                trigger_reason = "RISK_RESOLVED"
-                replan_req = True
         elif oncoming_threat and forward_clearance < 25.0:
             # Yield to oncoming traffic in narrow road
             new_state = "YIELD"
@@ -184,7 +187,7 @@ class BehaviourStateMachine:
             lateral_bias = -1.2  # Steer towards roadside shoulder to allow oncoming truck to pass
             trace = f"YIELD: Encroaching oncoming threat; yielding on shoulder bias={lateral_bias:.1f}m"
         elif self.current_state == "BYPASS":
-            target_speed = max(3.0, self.nominal_speed * 0.60)
+            target_speed = min(2.8, self.nominal_speed * 0.40)
             lateral_bias = 1.3  # Lateral detour around stationary obstacle
             trace = f"BYPASS: Executing lateral detour around obstacle at {lateral_bias:.1f}m"
         elif self.current_state == "STOP":

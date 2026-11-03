@@ -81,6 +81,7 @@ class SimulationRunner:
         world, ego, sc_cfg = build_scenario(scenario_id, seed, split, custom_params)
         planner = create_planner(planner_id, custom_params)
         planner.reset()
+        self.last_planner = planner
 
         # Modular Subsystems
         sensor_suite = SensorSuite(seed=seed)

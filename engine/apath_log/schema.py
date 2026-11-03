@@ -16,7 +16,7 @@ class EngineInfo(BaseModel):
 class ScenarioMetadata(BaseModel):
     id: str = Field(..., description="Unique scenario ID, e.g. SCENARIO_5_CATTLE_CROSSING")
     name: str = Field(..., description="Human-readable scenario title")
-    split: Literal["tune", "validate", "frozen_test"] = Field(..., description="Dataset split")
+    split: Literal["tune", "validate", "frozen_test", "val_a", "val_b", "calib"] = Field(..., description="Dataset split")
     seed: int = Field(..., description="Random seed used for deterministic generation")
     params: Dict[str, Any] = Field(default_factory=dict, description="Scenario generation parameters")
 

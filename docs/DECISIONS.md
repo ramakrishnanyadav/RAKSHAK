@@ -31,6 +31,9 @@
 | **DEC-021** | 2026-11-03 | Conformal Score & Prediction Set Consistency via Anisotropic Mahalanobis Calibration: Nonconformity score defined identically to deployed elliptical prediction set; $\beta_{\text{long}}=0.50, \beta_{\text{lat}}=0.35$ established as pre-calibrated tuning split normalizers; separate pointwise and simultaneous trajectory coverage defined. | Conformal Prediction | Final G2 Closure |
 | **DEC-022** | 2026-11-03 | Episode-Level Conformal Aggregation & Inference-Time Feature Parity: Conservative maximum across same-class obstacles ($s_e = \max_j s_{e, j}$); non-target episodes excluded (no zero scores); independent episode count $n_e(c)$ distinguished from observation count $N_{\text{obs}}(c)$; inference inputs ($v_j(t_0), L_j$) strictly defined at query timestamp $t_0$ for calibration and inference parity. | Statistical Rigor | Final G2 Review |
 | **DEC-023** | 2026-11-03 | F4 Conformal Calibration Integration Architecture: Integrated `SplitConformalPredictionCalibrator` with `NonLaneMultiHypothesisPredictor`, eliminating hardcoded analytical power-law heuristic; backwards-compatible schema extension (`semi_axis_x`, `semi_axis_y`, `coverage_guarantee_valid`). | Predictor & Safety | Phase 1 Step 1 |
+| **DEC-024** | 2026-11-03 | Authoritative Metrics Consolidation & Independent Conformal Artifact Generation across Seeds 1500–1539. | Metrics & Calibration | Phase 1 Step 2 |
+| **DEC-025** | 2026-11-03 | Governance Reaffirmation of Five-Way Disjoint Seed Allocation & F3 Correction Design Finalization (Step 3A). | Governance & Design | Phase 1 Step 3A |
+| **DEC-026** | 2026-11-03 | F3 Stationary Persistence Penalty Implementation & Validation B Benchmark Execution across Seeds 2005–2009. | Implementation & Validation | Phase 1 Step 3B |
 
 ---
 
@@ -139,3 +142,19 @@
      - Documented dedicated test suite in `docs/F3_DIAGNOSIS.md` to be implemented and verified strictly on `val_b` (Seeds 2005–2009).
 
 
+
+#### DEC-026: F3 Stationary Persistence Penalty Implementation & Validation B Benchmark Execution (Step 3B)
+- **Context & Problem**: The F3 diagnostic investigation proved that P3 suffered from a persistent stationary livelock under static obstacle corridor blockades (such as Scenario 5 Cattle Crossing), where zero progress costs permitted indefinite stopping without penalty. Furthermore, uncalibrated risk field dilation (`sigma += cone_r * 0.4`) and corridor triggers in `field.py` caused premature replanning loops.
+- **Implementation Highlights**:
+  1. **Stationary Persistence Penalty ($w_{\\text{stall}}=4.00, w_{\\text{prog}}=2.20, t_{\\text{grace}}=1.00\\text{ s}, \\gamma=1.50, J_{\\text{stall\\_max}}=5.00$)**:
+     Implemented stopped-state tracking with hysteresis ($v < 0.20\\text{ m/s}$ accumulates, $0.20 \\le v < 0.50\\text{ m/s}$ holds, $v \\ge 0.50\\text{ m/s}$ resets) and integrated $J_{\\text{persist}}$ into stopped candidate cost.
+  2. **Candidate Rollout Safety & Feasibility**:
+     Enforced candidate-level oriented footprint SAT collision checks against road boundaries ($|y| \\le 4.70\\text{ m}$), static obstacles, and predicted dynamic obstacle occupancy over the entire planning horizon. Fixed bicycle model yaw wrapping to $[-\\pi, \\pi]$ during candidate trajectory generation, resolving lateral trajectory divergence.
+  3. **Risk Field Cleanup**:
+     Removed arbitrary $0.40 \\cdot r_{\\text{cone}}$ dilation from `engine/risk/field.py` lines 69–75 and eliminated uncalibrated corridor bypasses.
+  4. **Validation B Protocol Execution**:
+     Executed 75 closed-loop simulation episodes strictly across Validation B (Seeds 2005–2009 across all 5 scenarios) comparing P3 (Corrected), P3 (Baseline / $w_{\\text{stall}}=0.00$), and B1 (DWA-VO).
+     - Generated `runs/val_b_manifest.json` containing complete per-episode and aggregate metrics.
+     - Scenario 5 (Cattle Crossing) achieved 5/5 (100%) goal completions with 0 collisions in P3 Corrected, compared to 5/5 (100%) collisions in B1 Baseline.
+     - Overall collision rate on Validation B reduced from 60.0% (B1) to 20.0% (P3 Corrected).
+  5. **Verification**: 42/42 unit/regression/recovery tests pass, and 2/2 Hypothesis property tests pass. Zero access to Validation A (Seeds 2000–2004) or Frozen Test (Seeds 3000–3029).

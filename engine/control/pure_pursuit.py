@@ -51,11 +51,16 @@ class PurePursuitController:
         # Calculate adaptive lookahead distance
         lookahead = max(self.min_lookahead_m, min(self.max_lookahead_m, self.k_look * max(0.5, ego_v)))
 
-        # Find target waypoint on trajectory at distance >= lookahead
+        # Find target waypoint on trajectory ahead of ego at distance >= lookahead
         target_pt = trajectory[-1]
+        cos_yaw = math.cos(ego_yaw)
+        sin_yaw = math.sin(ego_yaw)
         for pt in trajectory:
-            dist = math.hypot(pt[0] - ego_x, pt[1] - ego_y)
-            if dist >= lookahead:
+            dx = pt[0] - ego_x
+            dy = pt[1] - ego_y
+            forward_dist = dx * cos_yaw + dy * sin_yaw
+            dist = math.hypot(dx, dy)
+            if forward_dist > 0.0 and dist >= lookahead:
                 target_pt = pt
                 break
 

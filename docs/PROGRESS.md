@@ -56,6 +56,8 @@ Deadline: 2026-11-15
 | 2026-11-03 | Episode-Level Conformal Aggregation & Inference-Time Feature Parity | Conservative max across same-class obstacles ($s_e = \max_j s_{e, j}$); non-target episodes excluded (no zero scores); independent episode count $n_e(c)$ distinguished from observation count $N_{\text{obs}}(c)$; inference inputs ($v_j(t_0), L_j$) strictly defined at query timestamp $t_0$ | DEC-022 / Final G2 Review |
 | 2026-11-03 | F4 Conformal Calibration Integration Architecture | Implemented exact anisotropic Mahalanobis calibrator; finite-sample order statistic $m = \lceil(n_e+1)(1-\alpha)\rceil$; 3.50m fallback strictly marked coverage_guarantee_valid=False; 10/10 tests pass | DEC-023 / Phase 1 Step 1 |
 | 2026-11-03 | Authoritative Metrics Consolidation & Independent Conformal Artifact Generation | Resolved F1 (jerk calculation), F2 (frontend fallbacks), F7 (metrics consolidation); generated independent calibration artifact across Seeds 1500–1539; 145/145 backend and 17/17 studio tests pass | DEC-024 / Phase 1 Step 2 |
+| 2026-11-03 | F3 Correction Design Finalization & Governance Reaffirmation of Seed Splits | Reaffirmed 5-way disjoint split; finalized stationary penalty formulation, hypothesis weighting separation, and risk field dilation cleanup | DEC-025 / Phase 1 Step 3A |
+| 2026-11-03 | F3 Correction Implementation & Validation B Benchmark Execution | Implemented stationary persistence penalty, SAT occupancy checking, risk field cleanup; executed 75 episodes across Validation B (Seeds 2005–2009); 100% completion on Scenario 5; generated `runs/val_b_manifest.json` | DEC-026 / Phase 1 Step 3B |
 
 ## Open questions and risks
 - F4 split-conformal calibration integration will require generating calibration logs across seeds 1500–1539.
@@ -96,10 +98,12 @@ Deadline: 2026-11-15
 - Known demo limitations: Documented in `docs/AUDIT.md` and `docs/DECISIONS.md`
 
 ## Next exact action
-1. Present revised documentation (`docs/METRICS.md`, `docs/RISK_DEFINITION.md`, `docs/SAP.md`, `docs/DECISIONS.md`) for Final Gate G2 Review.
-2. **STOP at G2** and await explicit user approval before beginning any code implementation.
+1. Present Phase 1 Step 3B implementation and Validation B benchmark results (`runs/val_b_manifest.json`) for review.
+2. **STOP** and await user guidance / Gate G3 authorization before touching confirmatory frozen split (Seeds 3000–3029).
 
 ## Handover notes for next session
 - Read standing rules (`ADAPTIVE_PATH_Execution_Package/prompts/00_STANDING_ENGINEERING_RULES.md`).
 - Read this file (`docs/PROGRESS.md`).
-- Stop at G2 and do not execute Step 2 (F4 calibration integration) without explicit approval.
+- Phase 1 Step 3B is complete: F3 stationary persistence penalty, candidate SAT occupancy checking, risk field cleanup implemented and tested (42 unit + 2 property tests passing).
+- Validation B benchmark completed on Seeds 2005–2009 across all 5 scenarios (75 episodes) in `runs/val_b_manifest.json`.
+- Confirmatory frozen split (Seeds 3000–3029) and Validation A (Seeds 2000–2004) remain strictly untouched.
