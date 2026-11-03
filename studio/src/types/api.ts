@@ -94,9 +94,11 @@ export interface RunManifest {
     duration_s: number;
     completed_goal: boolean;
     collision_occurred: boolean;
+    near_miss_count: number;
     min_clearance_m: number;
     mean_speed_m_s: number;
     max_jerk_m_s3: number;
+    mean_jerk_m_s3: number;
     replan_count: number;
     p95_latency_ms: number;
     failure_tag: string | null;

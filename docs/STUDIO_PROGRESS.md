@@ -26,10 +26,14 @@ The Studio UI development workstream focuses on creating a modern, accessible, p
 | 2026-11-03 | Comprehensive Studio Audit | **COMPLETED** | Audited all 18 views, build status, types, i18n, and WCAG accessibility. Identified 6 TypeScript build blockers and excessive academic jargon. |
 | 2026-11-03 | Real Workspace Screenshot Capture | **COMPLETED** | Captured 11 high-res authentic screenshots across all views using headless Playwright (`docs/screenshots/`). |
 | 2026-11-03 | Deliverable Documentation Suite | **COMPLETED** | Generated `STUDIO_PRODUCT_AUDIT.md`, `STUDIO_PAGE_INVENTORY.md`, `STUDIO_COMPONENT_MAP.md`, `STUDIO_API_INTEGRATION_MAP.md`, `STUDIO_LANGUAGE_AUDIT.md`, `STUDIO_GAP_ANALYSIS.md`. |
-| Pending | Audit & Design Review Authorization | **AWAITING APPROVAL** | Paused for user approval before modifying application source code. |
-| Future | Build & Type Repair | Pending Approval | Fix `CompareView.tsx` and `types/api.ts` compile errors to restore clean `npm run build`. |
-| Future | Plain-English UI Implementation | Pending Approval | Implement friendly copy, scenario catalog alignment, and visual canvas legends. |
-| Future | Verification & E2E Validation | Pending Approval | Run Vitest suite, Playwright E2E tests, and verify WCAG 2.2 AA compliance. |
+| 2026-11-03 | Phase 1 Audit Gate Approval | **APPROVED** | Phase 1 audit approved by user at commit `20d68b3`. Phase 2 implementation authorized with strict engine protection invariants. |
+| 2026-11-03 | P0: Production Build & Type Repair | **COMPLETED** | Corrected `CompareView.tsx` result mapping (`'Tie'` -> `'neutral'`) and aligned `api.ts` `RunManifest.metrics` (`near_miss_count`, `mean_jerk_m_s3`) to authoritative schema `engine/apath_log/schema.py`. `npm run build` exits 0. Vitest passes 17/17. |
+| Next | P0: Scenario Synchronization | In Progress | Align `Scenarios.tsx` with the 5 canonical scenarios in `engine/scenarios/registry.py`. |
+| Future | P0: Plain-English UI Implementation | Scheduled | Implement approved positioning and plain-language descriptions across landing and UI. |
+| Future | P0: Visual Canvas Legend | Scheduled | Add permanent visual legend overlay to `ReplayCanvas.tsx`. |
+| Future | P1: Guided Simulation Preparation | Scheduled | 3-step preparation workflow (Scenario -> Strategy -> Review & Start). |
+| Future | P1: Authentic Benchmark Integration | Scheduled | Connect benchmark view to validation artifacts (`val_b_manifest.json`). |
+| Future | P1: 4-Workspace Navigation | Scheduled | Unify navigation into Home, Simulate, Results, Research. |
 
 ---
 

@@ -111,43 +111,43 @@ export const CompareView: React.FC = () => {
   const clearanceDelta = (clearanceA != null && clearanceB != null)
     ? `${(clearanceB - clearanceA) >= 0 ? '+' : ''}${(clearanceB - clearanceA).toFixed(2)} m`
     : '--';
-  const clearanceBetter = (clearanceA != null && clearanceB != null)
-    ? (clearanceB > clearanceA ? 'B' : (clearanceB < clearanceA ? 'A' : 'Tie'))
-    : 'Tie';
+  const clearanceBetter: 'A' | 'B' | 'neutral' = (clearanceA != null && clearanceB != null)
+    ? (clearanceB > clearanceA ? 'B' : (clearanceB < clearanceA ? 'A' : 'neutral'))
+    : 'neutral';
 
   const speedA = metricsA?.mean_speed_m_s;
   const speedB = metricsB?.mean_speed_m_s;
   const speedDelta = (speedA != null && speedB != null)
     ? `${((speedB - speedA) * 3.6) >= 0 ? '+' : ''}${((speedB - speedA) * 3.6).toFixed(1)} km/h`
     : '--';
-  const speedBetter = (speedA != null && speedB != null)
-    ? (speedB > speedA ? 'B' : (speedB < speedA ? 'A' : 'Tie'))
-    : 'Tie';
+  const speedBetter: 'A' | 'B' | 'neutral' = (speedA != null && speedB != null)
+    ? (speedB > speedA ? 'B' : (speedB < speedA ? 'A' : 'neutral'))
+    : 'neutral';
 
   const jerkA = metricsA?.max_jerk_m_s3;
   const jerkB = metricsB?.max_jerk_m_s3;
   const jerkDelta = (jerkA != null && jerkB != null)
     ? `${(jerkB - jerkA) >= 0 ? '+' : ''}${(jerkB - jerkA).toFixed(2)} m/s³`
     : '--';
-  const jerkBetter = (jerkA != null && jerkB != null)
-    ? (jerkB < jerkA ? 'B' : (jerkB > jerkA ? 'A' : 'Tie'))
-    : 'Tie';
+  const jerkBetter: 'A' | 'B' | 'neutral' = (jerkA != null && jerkB != null)
+    ? (jerkB < jerkA ? 'B' : (jerkB > jerkA ? 'A' : 'neutral'))
+    : 'neutral';
 
   const replanA = metricsA?.replan_count;
   const replanB = metricsB?.replan_count;
   const replanDelta = (replanA != null && replanB != null)
     ? `${(replanB - replanA) >= 0 ? '+' : ''}${replanB - replanA} events`
     : '--';
-  const replanBetter = 'Tie';
+  const replanBetter: 'A' | 'B' | 'neutral' = 'neutral';
 
   const collisionA = metricsA?.collision_occurred;
   const collisionB = metricsB?.collision_occurred;
   const collisionDelta = (collisionA != null && collisionB != null)
     ? (collisionA === collisionB ? 'Identical' : (!collisionB && collisionA ? 'Improved' : 'Worse'))
     : '--';
-  const collisionBetter = (collisionA != null && collisionB != null)
-    ? (!collisionB && collisionA ? 'B' : (collisionB && !collisionA ? 'A' : 'Tie'))
-    : 'Tie';
+  const collisionBetter: 'A' | 'B' | 'neutral' = (collisionA != null && collisionB != null)
+    ? (!collisionB && collisionA ? 'B' : (collisionB && !collisionA ? 'A' : 'neutral'))
+    : 'neutral';
 
   // Comparison metrics rows for accessible table
   const comparisonRows: ComparisonMetricRow[] = [
