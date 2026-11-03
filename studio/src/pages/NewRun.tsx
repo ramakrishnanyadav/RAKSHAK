@@ -247,6 +247,40 @@ export const NewRun: React.FC = () => {
               </option>
             ))}
           </select>
+
+          {/* Selected Scenario Context Preview */}
+          {(() => {
+            const currentSc = BENCHMARK_SCENARIOS.find((s) => s.id === scenarioId);
+            if (!currentSc) return null;
+            return (
+              <div
+                style={{
+                  marginTop: '0.65rem',
+                  padding: '0.75rem',
+                  background: 'var(--bg-surface-elevated)',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--border-subtle)',
+                  fontSize: '0.8rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.35rem',
+                }}
+              >
+                <div>
+                  <strong style={{ color: 'var(--text-primary)' }}>Environment:</strong>{' '}
+                  <span style={{ color: 'var(--text-secondary)' }}>{currentSc.environment}</span>
+                </div>
+                <div>
+                  <strong style={{ color: 'var(--text-primary)' }}>Traffic Challenge:</strong>{' '}
+                  <span style={{ color: 'var(--text-secondary)' }}>{currentSc.trafficChallenge}</span>
+                </div>
+                <div>
+                  <strong style={{ color: 'var(--text-primary)' }}>Evaluates:</strong>{' '}
+                  <span style={{ color: 'var(--text-secondary)' }}>{currentSc.evaluates}</span>
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Planner Ablation Selection (Single Mode Only) */}

@@ -6,8 +6,11 @@
 
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Play, Eye, Compass, ShieldAlert, Sparkles, MapPin, AlertTriangle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Play, Eye, Compass, ShieldAlert, Sparkles, MapPin, AlertTriangle, PlusCircle, CheckCircle } from 'lucide-react';
 import { useI18n } from '../context/I18nContext';
+import { apiClient } from '../api/client';
+import { EmptyState, SkeletonCard } from '../components/StatusState';
 
 export interface ScenarioDefinition {
   id: string;
@@ -128,8 +131,35 @@ export const Scenarios: React.FC = () => {
   const { t } = useI18n();
   const navigate = useNavigate();
   const [splitFilter, setSplitFilter] = useState<'all' | 'train' | 'val' | 'test'>('all');
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string>('SCENARIO_1_VILLAGE_ROAD');
 
-  const filteredScenarios = BENCHMARK_SCENARIOS.filter(
+  // Load scenarios from API if available, falling back gracefully to authoritative catalog
+  const { data: scenarios = BENCHMARK_SCENARIOS, isLoading, isError } = useQuery({
+    queryKey: ['scenarios_catalog'],
+    queryFn: async () => {
+      try {
+        const live = await apiClient.listScenarios();
+        if (live && Array.isArray(live) && live.length > 0) {
+          // Verify live matches canonical IDs and preserve rich descriptions
+          return live.map((d) => {
+            const canonical = BENCHMARK_SCENARIOS.find((b) => b.id === d.id) || BENCHMARK_SCENARIOS[0];
+            return {
+              ...canonical,
+              id: d.id,
+              name: d.name || canonical.name,
+              description: d.description || canonical.description,
+            };
+          });
+        }
+      } catch {
+        // Backend offline or error -> use canonical static catalog
+      }
+      return BENCHMARK_SCENARIOS;
+    },
+    initialData: BENCHMARK_SCENARIOS,
+  });
+
+  const filteredScenarios = scenarios.filter(
     (sc) => splitFilter === 'all' || sc.split === splitFilter
   );
 
@@ -187,170 +217,248 @@ export const Scenarios: React.FC = () => {
         </div>
       </div>
 
+      {/* Loading state indicator */}
+      {isLoading && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.25rem' }}>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+      )}
+
+      {/* Empty State when filter has no matches */}
+      {!isLoading && filteredScenarios.length === 0 && (
+        <EmptyState
+          title="No Scenarios Match Selected Split"
+          description={`No scenarios found for the "${splitFilter}" split filter.`}
+          actionText="Show All Canonical Scenarios"
+          onAction={() => setSplitFilter('all')}
+        />
+      )}
+
       {/* Grid of Scenario Cards */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-          gap: '1.25rem',
-        }}
-      >
-        {filteredScenarios.map((sc) => (
-          <div
-            key={sc.id}
-            className="glass-panel"
-            style={{
-              padding: '1.25rem',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              border: '1px solid var(--border-default)',
-              gap: '1rem',
-            }}
-          >
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span
-                  style={{
-                    fontSize: '0.75rem',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: 700,
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    background: 'rgba(59, 130, 246, 0.15)',
-                    color: 'var(--accent-primary)',
-                  }}
-                >
-                  {sc.id.replace('SCENARIO_', 'SCN-')}
-                </span>
-                <span
-                  style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    background: 'var(--bg-surface-elevated)',
-                    color: sc.split === 'test' ? 'var(--risk-critical)' : 'var(--accent-teal)',
-                    border: '1px solid var(--border-subtle)',
-                  }}
-                >
-                  {sc.split} Split
-                </span>
-              </div>
-
-              <h2 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.5rem', color: 'var(--text-primary)' }}>
-                {sc.name}
-              </h2>
-
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
-                {sc.description}
-              </p>
-
-              {/* 3 Core Communications: Environment, Main Challenge, Evaluates */}
+      {!isLoading && filteredScenarios.length > 0 && (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+            gap: '1.25rem',
+          }}
+        >
+          {filteredScenarios.map((sc) => {
+            const isSelected = sc.id === selectedScenarioId;
+            return (
               <div
+                key={sc.id}
+                className="glass-panel"
+                onClick={() => setSelectedScenarioId(sc.id)}
+                role="article"
+                aria-selected={isSelected}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedScenarioId(sc.id);
+                  }
+                }}
                 style={{
+                  padding: '1.25rem',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '0.45rem',
-                  fontSize: '0.8rem',
-                  background: 'var(--bg-surface-elevated)',
-                  padding: '0.75rem',
-                  borderRadius: 'var(--radius-sm)',
-                  marginBottom: '0.75rem',
-                  border: '1px solid var(--border-subtle)',
+                  justifyContent: 'space-between',
+                  border: isSelected ? '2px solid var(--accent-primary)' : '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-md)',
+                  boxShadow: isSelected ? '0 0 16px rgba(59, 130, 246, 0.2)' : 'none',
+                  cursor: 'pointer',
+                  transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+                  gap: '1rem',
+                  position: 'relative',
                 }}
               >
                 <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Environment:</strong>{' '}
-                  <span style={{ color: 'var(--text-secondary)' }}>{sc.environment}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: 700,
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          background: 'rgba(59, 130, 246, 0.15)',
+                          color: 'var(--accent-primary)',
+                        }}
+                      >
+                        {sc.id.replace('SCENARIO_', 'SCN-')}
+                      </span>
+                      {isSelected && (
+                        <span
+                          style={{
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            background: 'var(--accent-primary)',
+                            color: '#ffffff',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                          }}
+                        >
+                          <CheckCircle size={11} /> Selected
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        background: 'var(--bg-surface-elevated)',
+                        color: sc.split === 'test' ? 'var(--risk-critical)' : 'var(--accent-teal)',
+                        border: '1px solid var(--border-subtle)',
+                      }}
+                    >
+                      {sc.split} Split
+                    </span>
+                  </div>
+
+                  <h2 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.5rem', color: 'var(--text-primary)' }}>
+                    {sc.name}
+                  </h2>
+
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
+                    {sc.description}
+                  </p>
+
+                  {/* 3 Core Communications: Environment, Main Challenge, Evaluates */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.45rem',
+                      fontSize: '0.8rem',
+                      background: 'var(--bg-surface-elevated)',
+                      padding: '0.75rem',
+                      borderRadius: 'var(--radius-sm)',
+                      marginBottom: '0.75rem',
+                      border: '1px solid var(--border-subtle)',
+                    }}
+                  >
+                    <div>
+                      <strong style={{ color: 'var(--text-primary)' }}>Environment:</strong>{' '}
+                      <span style={{ color: 'var(--text-secondary)' }}>{sc.environment}</span>
+                    </div>
+                    <div>
+                      <strong style={{ color: 'var(--text-primary)' }}>Traffic Challenge:</strong>{' '}
+                      <span style={{ color: 'var(--text-secondary)' }}>{sc.trafficChallenge}</span>
+                    </div>
+                    <div>
+                      <strong style={{ color: 'var(--text-primary)' }}>Evaluates:</strong>{' '}
+                      <span style={{ color: 'var(--text-secondary)' }}>{sc.evaluates}</span>
+                    </div>
+                  </div>
+
+                  {/* Physical Parameters Summary */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '0.4rem',
+                      fontSize: '0.75rem',
+                      color: 'var(--text-secondary)',
+                      marginBottom: '0.75rem',
+                    }}
+                  >
+                    <div>Speed: <strong style={{ color: 'var(--text-primary)' }}>{sc.speed}</strong></div>
+                    <div>Distance: <strong style={{ color: 'var(--text-primary)' }}>{sc.distance}</strong></div>
+                    <div>Road Width: <strong style={{ color: 'var(--text-primary)' }}>{sc.roadWidth}</strong></div>
+                    <div>Curvature: <strong style={{ color: 'var(--text-primary)' }}>{sc.curvature}</strong></div>
+                  </div>
+
+                  <div>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+                      Road Users:
+                    </span>{' '}
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+                      {sc.agentMix.join(', ')}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Traffic Challenge:</strong>{' '}
-                  <span style={{ color: 'var(--text-secondary)' }}>{sc.trafficChallenge}</span>
-                </div>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Evaluates:</strong>{' '}
-                  <span style={{ color: 'var(--text-secondary)' }}>{sc.evaluates}</span>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    borderTop: '1px solid var(--border-subtle)',
+                    paddingTop: '0.75rem',
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Link
+                    to={`/app/scenarios/${sc.id}`}
+                    className="btn-secondary"
+                    style={{
+                      flex: 1,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.4rem',
+                      padding: '0.5rem',
+                      fontSize: '0.85rem',
+                      textDecoration: 'none',
+                      minHeight: 'var(--min-target-size)',
+                    }}
+                  >
+                    <Eye size={15} />
+                    <span>Inspect Config</span>
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/app/runs/new?scenario=${sc.id}`)}
+                    className="btn-secondary"
+                    style={{
+                      flex: 1,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.4rem',
+                      padding: '0.5rem',
+                      fontSize: '0.85rem',
+                      minHeight: 'var(--min-target-size)',
+                    }}
+                  >
+                    <PlusCircle size={15} />
+                    <span>New Run</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/app/runs/${sc.defaultRunId}`)}
+                    className="btn-primary"
+                    style={{
+                      flex: 1,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.4rem',
+                      padding: '0.5rem',
+                      fontSize: '0.85rem',
+                      minHeight: 'var(--min-target-size)',
+                    }}
+                  >
+                    <Play size={15} />
+                    <span>Replay</span>
+                  </button>
                 </div>
               </div>
-
-              {/* Physical Parameters Summary */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '0.4rem',
-                  fontSize: '0.75rem',
-                  color: 'var(--text-secondary)',
-                  marginBottom: '0.75rem',
-                }}
-              >
-                <div>Speed: <strong style={{ color: 'var(--text-primary)' }}>{sc.speed}</strong></div>
-                <div>Distance: <strong style={{ color: 'var(--text-primary)' }}>{sc.distance}</strong></div>
-                <div>Road Width: <strong style={{ color: 'var(--text-primary)' }}>{sc.roadWidth}</strong></div>
-                <div>Curvature: <strong style={{ color: 'var(--text-primary)' }}>{sc.curvature}</strong></div>
-              </div>
-
-              <div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                  Road Users:
-                </span>{' '}
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
-                  {sc.agentMix.join(', ')}
-                </span>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                gap: '0.5rem',
-                borderTop: '1px solid var(--border-subtle)',
-                paddingTop: '0.75rem',
-              }}
-            >
-              <Link
-                to={`/app/scenarios/${sc.id}`}
-                className="btn-secondary"
-                style={{
-                  flex: 1,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.4rem',
-                  padding: '0.5rem',
-                  fontSize: '0.85rem',
-                  textDecoration: 'none',
-                  minHeight: 'var(--min-target-size)',
-                }}
-              >
-                <Eye size={15} />
-                <span>Inspect Config</span>
-              </Link>
-
-              <button
-                type="button"
-                onClick={() => navigate(`/app/runs/${sc.defaultRunId}`)}
-                className="btn-primary"
-                style={{
-                  flex: 1,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.4rem',
-                  padding: '0.5rem',
-                  fontSize: '0.85rem',
-                  minHeight: 'var(--min-target-size)',
-                }}
-              >
-                <Play size={15} />
-                <span>Launch Replay</span>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

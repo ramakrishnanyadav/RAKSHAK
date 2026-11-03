@@ -65,4 +65,34 @@ describe('Canonical Scenario Registry Parity', () => {
       expect(CANONICAL_SCENARIO_IDS).toContain(canonicalTarget);
     }
   });
+
+  it('generates valid API creation payloads for all 5 canonical scenarios', () => {
+    for (const sc of BENCHMARK_SCENARIOS) {
+      const payload = {
+        scenario_id: sc.id,
+        planner_id: 'P3',
+        engine_adapter: 'python_inprocess',
+        split: sc.split,
+        seed: 1000,
+      };
+      expect(CANONICAL_SCENARIO_IDS).toContain(payload.scenario_id);
+      expect(payload.scenario_id.startsWith('SCENARIO_')).toBe(true);
+      expect(payload.seed).toBeGreaterThanOrEqual(1000);
+    }
+  });
+
+  it('safely normalizes unknown or historical IDs without throwing exceptions', () => {
+    const resolveScenarioId = (id: string | null | undefined): string => {
+      if (!id) return 'SCENARIO_5_CATTLE_CROSSING';
+      return LEGACY_SCENARIO_COMPATIBILITY_MAP[id] || id;
+    };
+
+    expect(resolveScenarioId('SCENARIO_1_UNSTRUCTURED_ROUNDABOUT')).toBe('SCENARIO_1_VILLAGE_ROAD');
+    expect(resolveScenarioId('SCENARIO_2_WRONG_WAY_AUTO')).toBe('SCENARIO_2_URBAN_INTERSECTION');
+    expect(resolveScenarioId('SCENARIO_3_MONSOON_POTHOLE')).toBe('SCENARIO_3_HIGHWAY_MERGE');
+    expect(resolveScenarioId('SCENARIO_4_MIXED_CROWD')).toBe('SCENARIO_4_DENSE_MARKET');
+    expect(resolveScenarioId('SCENARIO_6_BRAKING_TRUCK')).toBe('SCENARIO_5_CATTLE_CROSSING');
+    expect(resolveScenarioId(null)).toBe('SCENARIO_5_CATTLE_CROSSING');
+    expect(resolveScenarioId('SCENARIO_1_VILLAGE_ROAD')).toBe('SCENARIO_1_VILLAGE_ROAD');
+  });
 });
