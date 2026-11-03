@@ -1,9 +1,9 @@
 # ADAPTIVE-PATH — Authoritative Research Metric Definitions
 
-> **Version**: 2.1.0-draft (Final G2 Scientific Revisions)  
+> **Version**: 2.2.0-draft (Final G2 Patch — Scientific & Kinematic Precision)  
 > **Status**: Proposed / Under Final G2 Review  
 > **Date**: 2026-11-03  
-> **Scope**: Authoritative mathematical definitions, units, denominators, discrete temporal sampling bounds, variable-timestep derivatives, edge-case treatments, and step-by-step reproducible test cases for all simulation metrics.  
+> **Scope**: Authoritative mathematical definitions, units, denominators, discrete temporal sampling bounds, variable-timestep derivatives, exact 2D collision kinematics, edge-case treatments, and step-by-step reproducible test cases for all simulation metrics.  
 > **Single Source of Truth**: Evaluated strictly engine-side. Replaces all frontend, API pipeline, and external script metric re-derivations.
 
 ---
@@ -75,42 +75,47 @@ $$d_{\min} = \min_{k=1,\dots,K} \min_{j=1,\dots,M} \text{dist}_{\text{poly}}\Big
 
 ### 2.3 Time-to-Collision (TTC) & Near-Miss Formulation
 
-#### 1. Kinematic Vector Relationships & Constant-Relative-Velocity Assumption
-Let ego vehicle center be $\mathbf{p}_{\text{ego}} = (x_e, y_e)$ with velocity $\mathbf{v}_{\text{ego}} = (v_{x, e}, v_{y, e})$.  
+#### 1. Kinematic Vector Relationships & Coordinate Conventions
+Let ego vehicle center be $\mathbf{p}_{\text{ego}} = (x_e, y_e)$ with velocity $\mathbf{v}_{\text{ego}} = (v_{x, e}, v_{y, e})$ in the global East-North inertial frame.  
 Let obstacle center be $\mathbf{p}_{\text{obs}} = (x_o, y_o)$ with velocity $\mathbf{v}_{\text{obs}} = (v_{x, o}, v_{y, o})$.  
 
-- **Relative position vector (Ego to Obstacle)**:
-  $$\mathbf{r} = \mathbf{p}_{\text{obs}} - \mathbf{p}_{\text{ego}} = \begin{bmatrix} x_o - x_e \\ y_o - y_e \end{bmatrix}, \quad r = \|\mathbf{r}\|_2 = \sqrt{(x_o - x_e)^2 + (y_o - y_e)^2}$$
-- **Relative velocity vector (Ego relative to Obstacle)**:
-  $$\mathbf{v}_{\text{rel}} = \mathbf{v}_{\text{ego}} - \mathbf{v}_{\text{obs}} = \begin{bmatrix} v_{x, e} - v_{x, o} \\ v_{y, e} - v_{y, o} \end{bmatrix}$$
-- **Range rate ($\dot{r}$, rate of change of distance $r$)**:
-  $$\dot{r} = \frac{d}{dt} \|\mathbf{r}\|_2 = \frac{\mathbf{r} \cdot \dot{\mathbf{r}}}{\|\mathbf{r}\|_2} = \frac{\mathbf{r} \cdot (\mathbf{v}_{\text{obs}} - \mathbf{v}_{\text{ego}})}{r} = -\frac{\mathbf{r} \cdot \mathbf{v}_{\text{rel}}}{r}$$
-- **Closing speed ($v_{\text{closing}}$)**:
-  $$v_{\text{closing}} = -\dot{r} = \frac{\mathbf{r} \cdot \mathbf{v}_{\text{rel}}}{r} = \frac{(x_o - x_e)(v_{x, e} - v_{x, o}) + (y_o - y_e)(v_{y, e} - v_{y, o})}{r}$$
+- **Relative displacement vector ($\mathbf{r}$, from Ego to Obstacle)**:
+  $$\mathbf{r}(t) = \mathbf{p}_{\text{obs}}(t) - \mathbf{p}_{\text{ego}}(t) = \begin{bmatrix} x_o(t) - x_e(t) \\ y_o(t) - y_e(t) \end{bmatrix}, \quad r(t) = \|\mathbf{r}(t)\|_2 = \sqrt{(x_o - x_e)^2 + (y_o - y_e)^2}$$
+- **Relative velocity vector ($\mathbf{v}_{\text{rel}}$, Ego closing onto Obstacle)**:
+  $$\mathbf{v}_{\text{rel}} = \mathbf{v}_{\text{ego}} - \mathbf{v}_{\text{obs}} = \begin{bmatrix} v_{x, e} - v_{x, o} \\ v_{y, e} - v_{y, o} \end{bmatrix} = -\dot{\mathbf{r}}(t)$$
+- **Relative-Position Evolution Equation**:
+  Under the **constant-relative-velocity assumption** ($\ddot{\mathbf{r}} = 0$, both vehicles maintaining straight-line paths at constant speed), the relative position vector at future lookahead time $\tau \ge 0$ evolves as:
+  $$\mathbf{r}(\tau) = \mathbf{r}(0) - \mathbf{v}_{\text{rel}} \tau$$
+- **Range Rate ($\dot{r}$) and Closing Speed ($v_{\text{closing}}$)**:
+  $$\dot{r}(t) = \frac{d}{dt} \|\mathbf{r}(t)\|_2 = \frac{\mathbf{r}(t) \cdot \dot{\mathbf{r}}(t)}{r(t)} = -\frac{\mathbf{r}(t) \cdot \mathbf{v}_{\text{rel}}}{r(t)}$$
+  $$v_{\text{closing}} = -\dot{r}(t) = \frac{\mathbf{r}(t) \cdot \mathbf{v}_{\text{rel}}}{r(t)}$$
+  Approaching objects satisfy $\mathbf{r} \cdot \mathbf{v}_{\text{rel}} > 0 \iff \dot{r} < 0 \iff v_{\text{closing}} > 0$.
 
-#### 2. Constant-Relative-Velocity 2D Collision Geometry
-Under the **constant-relative-velocity assumption** ($\ddot{\mathbf{r}} = 0$, both vehicles maintain constant speed and heading):
-The relative position at future time $\tau \ge 0$ is $\mathbf{r}(\tau) = \mathbf{r}(0) - \mathbf{v}_{\text{rel}} \tau$.
-The square of distance between centers is:
-$$\|\mathbf{r}(\tau)\|^2 = \|\mathbf{r}(0)\|^2 - 2 (\mathbf{r} \cdot \mathbf{v}_{\text{rel}}) \tau + \|\mathbf{v}_{\text{rel}}\|^2 \tau^2$$
-- **Time of Closest Point of Approach ($\tau_{\text{CPA}}$)**:
-  $$\tau_{\text{CPA}} = \frac{\mathbf{r} \cdot \mathbf{v}_{\text{rel}}}{\|\mathbf{v}_{\text{rel}}\|^2}$$
-- **Distance at Closest Point of Approach ($d_{\text{CPA}}$)**:
-  $$d_{\text{CPA}} = \sqrt{r^2 - \frac{(\mathbf{r} \cdot \mathbf{v}_{\text{rel}})^2}{\|\mathbf{v}_{\text{rel}}\|^2}}$$
+#### 2. Exact 2D Constant-Relative-Velocity Contact Equation
+Let $R_{\text{ego}}$ and $R_{\text{obs}}$ be the equivalent bounding circle radii, and $R_{\text{eff}} = R_{\text{ego}} + R_{\text{obs}}$.  
+Contact between the bounding envelopes occurs when $\|\mathbf{r}(\tau)\|_2^2 = R_{\text{eff}}^2$:
+$$\|\mathbf{r}(0) - \mathbf{v}_{\text{rel}} \tau\|_2^2 = R_{\text{eff}}^2$$
+$$\iff \|\mathbf{v}_{\text{rel}}\|^2 \tau^2 - 2 (\mathbf{r}(0) \cdot \mathbf{v}_{\text{rel}}) \tau + (\|\mathbf{r}(0)\|^2 - R_{\text{eff}}^2) = 0$$
 
-#### 3. Formal TTC Definition
-Let $R_{\text{eff}} = R_{\text{bounding, ego}} + R_{\text{bounding, obs}}$ be the sum of equivalent bounding radii.
-A collision will occur under constant relative velocity if and only if:
-1. The objects are closing: $\mathbf{r} \cdot \mathbf{v}_{\text{rel}} > 0 \implies \tau_{\text{CPA}} > 0$.
-2. The closest approach intersects the bounding envelope: $d_{\text{CPA}} \le R_{\text{eff}}$.
+This is a standard quadratic equation in $\tau$: $A \tau^2 + B \tau + C = 0$, where:
+$$A = \|\mathbf{v}_{\text{rel}}\|^2$$
+$$B = -2 (\mathbf{r}(0) \cdot \mathbf{v}_{\text{rel}})$$
+$$C = \|\mathbf{r}(0)\|^2 - R_{\text{eff}}^2$$
+The discriminant is:
+$$\mathcal{D} = B^2 - 4AC = 4 (\mathbf{r} \cdot \mathbf{v}_{\text{rel}})^2 - 4 \|\mathbf{v}_{\text{rel}}\|^2 (r^2 - R_{\text{eff}}^2)$$
 
-When both conditions hold, the exact time of contact $\text{TTC}_{\text{2D}}$ is the smaller positive root of $\|\mathbf{r}(\tau)\|^2 = R_{\text{eff}}^2$:
+#### 3. Complete Case-Handling Table
+
+| Condition | Physical Interpretation | Mathematical Result for $\text{TTC}$ |
+| :--- | :--- | :---: |
+| **$C \le 0$** | **Initial Overlap**: Vehicles already in physical contact at $\tau = 0$ ($\|\mathbf{r}(0)\| \le R_{\text{eff}}$). | $\text{TTC} \equiv \mathbf{0.000\text{ s}}$ |
+| **$A = 0$** | **Zero Relative Velocity**: $\|\mathbf{v}_{\text{rel}}\| = 0$ (parallel cruise at identical speeds or both stationary). Distance never changes. | $\text{TTC} \equiv \mathbf{null}$ (`is_closing = False`) |
+| **$\mathbf{r} \cdot \mathbf{v}_{\text{rel}} \le 0$** | **Diverging or Static Range**: Range rate $\dot{r} \ge 0$. Distance is increasing or constant. | $\text{TTC} \equiv \mathbf{null}$ (`is_closing = False`) |
+| **$\mathcal{D} < 0$** | **Lateral Pass (Miss)**: Closest Point of Approach distance $d_{\text{CPA}} > R_{\text{eff}}$. Vehicles close in range but paths do not intersect. | $\text{TTC} \equiv \mathbf{null}$ (`will_intersect = False`) |
+| **$\mathcal{D} \ge 0 \land \mathbf{r} \cdot \mathbf{v}_{\text{rel}} > 0 \land C > 0$** | **Future Contact**: Collision occurs under constant velocity at the smaller positive root. | $\text{TTC}_{\text{2D}} = \frac{-B - \sqrt{\mathcal{D}}}{2A}$ |
+
+Evaluating the positive contact root explicitly:
 $$\text{TTC}_{\text{2D}} = \frac{(\mathbf{r} \cdot \mathbf{v}_{\text{rel}}) - \sqrt{(\mathbf{r} \cdot \mathbf{v}_{\text{rel}})^2 - \|\mathbf{v}_{\text{rel}}\|^2 (r^2 - R_{\text{eff}}^2)}}{\|\mathbf{v}_{\text{rel}}\|^2}$$
-
-- **Non-Closing or Missing Objects**:
-  If $\mathbf{r} \cdot \mathbf{v}_{\text{rel}} \le 0$ (diverging or stationary) OR $d_{\text{CPA}} > R_{\text{eff}}$ (trajectories miss without collision):
-  $$\text{TTC} \equiv \texttt{null} \quad (\text{flagged with } \texttt{is\_closing = False})$$
-  Zero arbitrary numerical constants (e.g. $99.0\text{ s}$) are used.
 
 #### 4. Near-Miss Predicate
 $$\text{NearMiss}_i = \mathbb{I}\left(\text{CollisionFree}_i \land \left(d_{\min} < d_{\text{near}} \lor \min_{k: \text{TTC}_k \neq \texttt{null}} \text{TTC}(t_k) < \text{TTC}_{\text{near}}\right)\right)$$
@@ -119,8 +124,8 @@ $$\text{NearMiss}_i = \mathbb{I}\left(\text{CollisionFree}_i \land \left(d_{\min
   - Distance threshold: $d_{\text{near}} = 1.00\text{ m}$.
   - Time-to-Collision threshold: $\text{TTC}_{\text{near}} = 1.20\text{ s}$.
 - **Pre-Specified Sensitivity Thresholds**:
-  - Tight safety envelope: $d_{\text{near}} = 0.50\text{ m}$, $\text{TTC}_{\text{near}} = 0.80\text{ s}$.
-  - Wide safety envelope: $d_{\text{near}} = 1.50\text{ m}$, $\text{TTC}_{\text{near}} = 1.80\text{ s}$.
+  - Tight envelope: $d_{\text{near}} = 0.50\text{ m}$, $\text{TTC}_{\text{near}} = 0.80\text{ s}$.
+  - Wide envelope: $d_{\text{near}} = 1.50\text{ m}$, $\text{TTC}_{\text{near}} = 1.80\text{ s}$.
 
 ---
 
@@ -223,24 +228,24 @@ $$\|j_k\| = \sqrt{j_{x, k}^2 + j_{y, k}^2}$$
   - $j_2 = \frac{-4.000 - (-2.000)}{0.125} = \frac{-2.000}{0.125} = \mathbf{-16.000\text{ m/s}^3}$
   - $|j_2| = \mathbf{16.000\text{ m/s}^3}$
 
-### Test Case 2: 2D Time-to-Collision (Closing Head-On vs. Diverging vs. Passing Miss)
+### Test Case 2: 2D Time-to-Collision (Head-On Contact vs. Diverging vs. Passing Miss)
 - **Scenario A (Direct Head-On Closing)**:
   - Ego: $\mathbf{p}_e = (10.00, 0.00)\text{ m}, \mathbf{v}_e = (8.00, 0.00)\text{ m/s}, R_e = 2.10\text{ m}$
   - Cow: $\mathbf{p}_o = (25.00, 0.00)\text{ m}, \mathbf{v}_o = (0.00, 0.00)\text{ m/s}, R_o = 1.10\text{ m}$
-  - Displacement: $\mathbf{r} = (15.00, 0.00)\text{ m}$, $r = 15.00\text{ m}$
-  - Relative velocity: $\mathbf{v}_{\text{rel}} = (8.00, 0.00)\text{ m/s}$, $\|\mathbf{v}_{\text{rel}}\| = 8.00\text{ m/s}$
+  - Relative displacement: $\mathbf{r} = (15.00, 0.00)\text{ m}$, $r = 15.00\text{ m}$
+  - Relative velocity: $\mathbf{v}_{\text{rel}} = (8.00, 0.00)\text{ m/s}$, $\|\mathbf{v}_{\text{rel}}\|^2 = 64.00\text{ m}^2/\text{s}^2$
   - Scalar product: $\mathbf{r} \cdot \mathbf{v}_{\text{rel}} = (15.00)(8.00) + 0 = 120.00\text{ m}^2/\text{s} > 0$
   - Effective radius: $R_{\text{eff}} = 2.10 + 1.10 = 3.20\text{ m}$, $R_{\text{eff}}^2 = 10.24\text{ m}^2$
   - Closest approach distance:
-    $$d_{\text{CPA}} = \sqrt{15.00^2 - \frac{120.00^2}{8.00^2}} = \sqrt{225.00 - 225.00} = 0.00\text{ m} \le 3.20\text{ m} \quad (\text{Direct Impact})$$
+    $$d_{\text{CPA}} = \sqrt{15.00^2 - \frac{120.00^2}{64.00}} = \sqrt{225.00 - 225.00} = 0.00\text{ m} \le 3.20\text{ m} \quad (\text{Direct Impact})$$
+  - Quadratic Coefficients: $A = 64.00$, $B = -240.00$, $C = 225.00 - 10.24 = 214.76$
+  - Discriminant: $\mathcal{D} = (-240.00)^2 - 4(64.00)(214.76) = 57600.00 - 54978.56 = 2621.44 \ge 0$
+  - $\sqrt{\mathcal{D}} = \sqrt{2621.44} = 51.20$
   - Exact 2D Contact Time:
-    $$\text{TTC}_{\text{2D}} = \frac{120.00 - \sqrt{120.00^2 - (8.00)^2 [225.00 - 10.24]}}{64.00}$$
-    $$\text{TTC}_{\text{2D}} = \frac{120.00 - \sqrt{14400.00 - 64.00(214.76)}}{64.00} = \frac{120.00 - \sqrt{14400.00 - 13744.64}}{64.00}$$
-    $$\text{TTC}_{\text{2D}} = \frac{120.00 - \sqrt{655.36}}{64.00} = \frac{120.00 - 25.60}{64.00} = \frac{94.40}{64.00} = \mathbf{1.475\text{ s}}$$
+    $$\text{TTC}_{\text{2D}} = \frac{240.00 - 51.20}{2 \times 64.00} = \frac{188.80}{128.00} = \mathbf{1.475\text{ s}}$$
 - **Scenario B (Parallel Diverging Vehicles)**:
   - Ego: $\mathbf{p}_e = (10.00, 0.00)\text{ m}, \mathbf{v}_e = (4.00, 0.00)\text{ m/s}$
   - Lead Vehicle: $\mathbf{p}_o = (25.00, 0.00)\text{ m}, \mathbf{v}_o = (7.00, 0.00)\text{ m/s}$
-  - Displacement: $\mathbf{r} = (15.00, 0.00)\text{ m}$
   - Relative velocity: $\mathbf{v}_{\text{rel}} = (4.00 - 7.00, 0) = (-3.00, 0.00)\text{ m/s}$
   - Scalar product: $\mathbf{r} \cdot \mathbf{v}_{\text{rel}} = (15.00)(-3.00) = -45.00\text{ m}^2/\text{s} < 0$ (Diverging)
   - Result: $\text{TTC} \equiv \mathbf{null}$ (`is_closing = False`).

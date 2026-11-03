@@ -22,28 +22,31 @@
 | **DEC-012** | 2026-11-03 | Strongest-Baseline Selection Isolated to `val_a`: Evaluated on Seeds 2000–2004, completely decoupled from P3 algorithm tuning in `val_b` (Seeds 2005–2009). | Statistical Rigor | Final G2 Review |
 | **DEC-013** | 2026-11-03 | 2D Anisotropic Conformal Uncertainty Covariance Inflation: Spatial dispersion inflated along both body axes ($\beta_{\text{long}} = 0.50, \beta_{\text{lat}} = 0.35$) using calibrated empirical error quantiles. | Risk & Prediction | Final G2 Review |
 | **DEC-014** | 2026-11-03 | Multi-Agent Independent Union Aggregation: Multi-agent dynamic potentials aggregated via $1 - \prod (1 - R_j)$ after individual saturation clipping $\min(1.0, \dots)$. | Risk Mathematics | Final G2 Review |
-| **DEC-015** | 2026-11-03 | Full Vehicle Footprint Lateral Shoulder Limits: $W_{\text{veh}} = 1.80\text{ m}$ footprint constrains vehicle center to $|y_{\text{ego}}| \le 3.80\text{ m}$ ($4.70 - 0.90\text{ m}$); values $> 3.80\text{ m}$ represent hard barrier violations. | Road Geometry | Final G2 Review |
+| **DEC-015** | 2026-11-03 | Full Vehicle Footprint Lateral Shoulder Limits: Rectangular footprint ($4.2\text{ m} \times 1.8\text{ m}$) under yaw $\psi$ constrains vehicle center to $|y| + W_{\text{eff}}(\psi) \le 4.70\text{ m}$. | Road Geometry | Final G2 Review |
 | **DEC-016** | 2026-11-03 | Bootstrap Sample Expansion: Increase final confirmatory bootstrap resamples from 1,000 to 10,000 with BCa and percentile intervals to ensure stable 95% tails. | Statistical Rigor | Final G2 Review |
+| **DEC-017** | 2026-11-03 | Exact 2D Constant-Relative-Velocity Quadratic TTC with CPA and Comprehensive Boundary Case Handling ($C \le 0 \implies 0$, $A=0 \implies \texttt{null}$, $\mathcal{D} < 0 \implies \texttt{null}$). | Metric Precision | Final G2 Patch |
+| **DEC-018** | 2026-11-03 | Oriented Rectangular Vehicle-Footprint Invariant throughout Turning and Lateral Creep ($W_{\text{eff}}(\psi) = \frac{L}{2}|\sin\psi| + \frac{W}{2}|\cos\psi|$ enforced at every step). | Dynamics & Safety | Final G2 Patch |
+| **DEC-019** | 2026-11-03 | Statistical Independence Qualification for Multi-Agent Union Aggregation: Formally qualified as a monotonic, bounded upper-bound approximation under positive cluster correlation. | Probability Theory | Final G2 Patch |
+| **DEC-020** | 2026-11-03 | Exact McNemar Power Verification ($95.40\%$) and Preservation of $N=150$: Re-evaluated asymptotic ($95.93\%$, $92.58\%$ cc) vs exact power; established discordance sensitivity table. | Statistical Power | Final G2 Patch |
 
 ---
 
 ### Detailed Scientific Decision Records
 
-#### DEC-007 & DEC-012: Separation of Validation Sub-Splits
-- **Decision**: The validation seed space $[2000, 2009]$ is partitioned into two independent sub-splits:
-  - `val_a` (Seeds 2000–2004, $25$ episodes): Dedicated strictly to benchmarking baselines B0, B1, B2 and identifying the single strongest comparator $B^*$.
-  - `val_b` (Seeds 2005–2009, $25$ episodes): Dedicated strictly to tuning P3 parameters (progress rewards, stationary penalties, lateral crawl speeds).
-- **Rationale**: Completely prevents tuning P3 on the same episodes used to select the comparator baseline, guaranteeing strict methodological separation prior to frozen evaluation.
+#### DEC-017: Exact 2D Quadratic TTC Formulation
+- **Decision**: Time-to-Collision is computed via the exact quadratic intersection of relative position evolution $\mathbf{r}(\tau) = \mathbf{r}(0) - \mathbf{v}_{\text{rel}} \tau$ with effective bounding circle $R_{\text{eff}} = R_{\text{ego}} + R_{\text{obs}}$.
+- **Edge Cases**:
+  - Initial overlap $C \le 0 \implies \text{TTC} = 0.000\text{ s}$.
+  - Zero relative velocity $A = 0 \implies \text{TTC} = \texttt{null}$.
+  - Diverging $\mathbf{r} \cdot \mathbf{v}_{\text{rel}} \le 0 \implies \text{TTC} = \texttt{null}$.
+  - Miss $\mathcal{D} < 0 \implies \text{TTC} = \texttt{null}$.
+  - Valid intersection $\implies \tau = \frac{(\mathbf{r}\cdot\mathbf{v}_{\text{rel}}) - \sqrt{\mathcal{D}}}{\|\mathbf{v}_{\text{rel}}\|^2}$.
 
-#### DEC-013: Two-Dimensional Anisotropic Conformal Covariance Inflation
-- **Decision**: The 2D Gaussian spatial covariance matrix $\mathbf{\Sigma}_j(t)$ in the obstacle body frame is inflated additively along both axes by the calibrated split-conformal quantile $r_{\text{conf}}(c, t)$:
-  $$\sigma_{\text{long}}^2(t) = (\sigma_{\text{long}} + 0.50 \cdot r_{\text{conf}})^2, \quad \sigma_{\text{lat}}^2(t) = (\sigma_{\text{lat}} + 0.35 \cdot r_{\text{conf}})^2$$
-- **Rationale**: Respects the physical anisotropy of non-holonomic vehicle tracking errors on unstructured roads while providing a mathematically sound 2D uncertainty envelope.
+#### DEC-018: Oriented Rectangular Vehicle Footprint Feasibility
+- **Decision**: Road shoulder feasibility is evaluated using the full oriented rectangle:
+  $$|y| + \left(\frac{L_{\text{veh}}}{2}|\sin\psi| + \frac{W_{\text{veh}}}{2}|\cos\psi|\right) \le 4.70\text{ m}$$
+- **Rationale**: When turning at yaw angle $\psi = 20^\circ$, the effective half-width expands from $0.90\text{ m}$ to $1.564\text{ m}$. Centerline coordinate limits tighten from $3.80\text{ m}$ to $3.136\text{ m}$. Applying this invariant prevents corner clipping into roadside ditches during evasive swerves.
 
-#### DEC-014: Multi-Agent Risk Aggregation via Independent Union
-- **Decision**: Individual agent potentials $R_j(x, y, t)$ are individually saturated to $[0.0, 1.0]$ and aggregated using the probabilistic independent union:
-  $$R_{\text{dynamic, total}} = 1.0 - \prod_{j=1}^M \Big(1.0 - R_j(x, y, t)\Big)$$
-- **Rationale**: Monotonic, mathematically bounded in $[0.0, 1.0]$, and prevents artificial risk explosion when multiple vehicles or pedestrians cluster in dense traffic.
-
-#### DEC-015: Full Vehicle Footprint Lateral Clearance
-- **Decision**: Vehicle lateral feasibility must account for the full rectangular width ($W_{\text{veh}} = 1.80\text{ m}$). Center coordinates $|y_{\text{ego}}| > 3.80\text{ m}$ result in the outer tire encroaching into the roadside ditch ($Y_{\text{ditch}} = 4.70\text{ m}$) and are enforced as hard infinite cost barriers.
+#### DEC-020: Exact McNemar Power Verification for $N = 150$
+- **Verification**: Exact power calculation by binomial enumeration confirmed that $N = 150$ achieves **$95.40\%$ exact power** for target effect ($p_{10} = 0.25, p_{01} = 0.08, \Delta = 0.17$). Asymptotic power is $95.93\%$ without continuity correction and $92.58\%$ with continuity correction.
+- **Sensitivity Invariant**: If empirical validation reveals $\psi < 2.2$ or $\Delta < 0.12$, power drops below $75\%$, requiring sample expansion before unblinding the frozen split at Gate G3.

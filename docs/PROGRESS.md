@@ -1,14 +1,14 @@
 # ADAPTIVE-PATH — Progress and Session Continuity
 
-Last updated: 2026-11-03 12:28 +0530  
+Last updated: 2026-11-03 12:41 +0530  
 Current branch: `research/phase-0-audit`  
 Baseline tag/commit: `baseline-v0` (Git initial baseline commit `4538e6c`)  
-Current phase: Phase 1 — Research Correctness & Definitions (Final G2 Review)  
+Current phase: Phase 1 — Research Correctness & Definitions (Final G2 Patch)  
 Deadline: 2026-11-15  
 
 ## Gate status
 - G1 repository audit: **APPROVED** (2026-11-03 11:59)
-- G2 research definitions: **WAITING (Final G2 Scientific Revisions Complete; Awaiting Approval)**
+- G2 research definitions: **WAITING (Final G2 Patch Complete; Awaiting Approval)**
 - G3 frozen-test run: NOT STARTED
 
 ## Completed
@@ -21,15 +21,15 @@ Deadline: 2026-11-15
 | Step 4: Dynamics Audit | Completed in `docs/DYNAMICS.md` | DONE |
 | Step 5: Realistic Schedule to Nov 15 | Established in `docs/AUDIT.md` | DONE |
 | Gate G1 User Sign-Off | Explicit user approval received | DONE |
-| Phase 1 Step 1: Research Metric Definitions (v2.1) | Revised in `docs/METRICS.md` with 2D TTC, SAT bounds & test cases | DONE (Final G2 Pending) |
-| Phase 1 Step 1: Formal Risk Field Definition (v2.1) | Revised in `docs/RISK_DEFINITION.md` with 2D covariance inflation, multi-agent union & creep label | DONE (Final G2 Pending) |
-| Phase 1 Step 1: Statistical Analysis Plan (v2.1) | Revised in `docs/SAP.md` with 5-way splits, nested validation, 10k bootstrap | DONE (Final G2 Pending) |
-| Architecture & Decisions Record (v2.1) | Updated `docs/DECISIONS.md` with DEC-001 through DEC-016 | DONE |
+| Phase 1 Step 1: Research Metric Definitions (v2.2) | Revised in `docs/METRICS.md` with exact 2D quadratic TTC & edge cases | DONE (Final G2 Pending) |
+| Phase 1 Step 1: Formal Risk Field Definition (v2.2) | Revised in `docs/RISK_DEFINITION.md` with oriented footprint & union qualification | DONE (Final G2 Pending) |
+| Phase 1 Step 1: Statistical Analysis Plan (v2.2) | Revised in `docs/SAP.md` with exact McNemar power (95.40%) & sensitivity table | DONE (Final G2 Pending) |
+| Architecture & Decisions Record (v2.2) | Updated `docs/DECISIONS.md` with DEC-001 through DEC-020 | DONE |
 
 ## In progress
 | Item | Owner/agent | Files | Next action | Blocker |
 |---|---|---|---|---|
-| Final Gate G2 User Sign-Off | User / Antigravity | `docs/METRICS.md`, `docs/RISK_DEFINITION.md`, `docs/SAP.md` | Awaiting final review approval | Waiting for G2 |
+| Final Gate G2 User Sign-Off | User / Antigravity | `docs/METRICS.md`, `docs/RISK_DEFINITION.md`, `docs/SAP.md` | Awaiting final G2 review approval | Waiting for G2 |
 | Workstream B: Demo Fallback Track | Antigravity | `studio/`, `scripts/` | Coordinated cattle-crossing fallback demo | Waiting for G2 |
 
 ## Decisions made
@@ -41,12 +41,12 @@ Deadline: 2026-11-15
 | 2026-11-03 | Critical Ordering Rule: F4 calibration integration must precede F3 progress tuning | Conformal cones alter risk and replan triggers | DEC-004 / Phase 1 |
 | 2026-11-03 | Five-way disjoint seed allocation (Tuning, Calibration, Val-A, Val-B, Frozen) | Strict anti-leakage protection & nested validation | DEC-007, DEC-012 / Final G2 |
 | 2026-11-03 | Exploratory Lateral Creep explicitly labelled Unvalidated Candidate Correction | Resolves root cause of F3 without violating hard constraints | DEC-008 / Final G2 |
-| 2026-11-03 | Exact 2D constant-relative-velocity TTC with closest point of approach | Precise physics-based kinematics | DEC-009 / Final G2 |
+| 2026-11-03 | Exact 2D Quadratic TTC with CPA ($C \le 0 \implies 0, A=0 \implies \text{null}, \mathcal{D}<0 \implies \text{null}$) | Rigorous physical kinematics | DEC-009, DEC-017 / Final G2 |
 | 2026-11-03 | Discrete SAT $10\text{ Hz}$ Sampling Limitations & Projected Geometry ($2.40\text{ m}$) | Rigorous physical boundary documentation | DEC-010 / Final G2 |
 | 2026-11-03 | 2D Anisotropic Conformal Uncertainty Covariance Inflation ($\beta_{\text{long}}=0.50, \beta_{\text{lat}}=0.35$) | Mathematically supported 2D uncertainty | DEC-013 / Final G2 |
-| 2026-11-03 | Multi-agent risk aggregated via Probabilistic Independent Union after individual clipping | Monotonic, bounded risk landscape | DEC-014 / Final G2 |
-| 2026-11-03 | Full vehicle footprint lateral shoulder limits ($|y_{\text{ego}}| \le 3.80\text{ m}$) | Physical feasibility of rectangular chassis | DEC-015 / Final G2 |
-| 2026-11-03 | 10,000 paired bootstrap resamples for final confirmatory analysis | Tail stability of 95% confidence intervals | DEC-016 / Final G2 |
+| 2026-11-03 | Multi-agent risk aggregated via Probabilistic Independent Union after individual clipping | Monotonic, bounded risk landscape | DEC-014, DEC-019 / Final G2 |
+| 2026-11-03 | Oriented rectangular footprint lateral constraint ($|y| + W_{\text{eff}}(\psi) \le 4.70\text{ m}$) | Physical feasibility of rectangular chassis under yaw | DEC-015, DEC-018 / Final G2 |
+| 2026-11-03 | Exact McNemar Power Verification ($95.40\%$) and preservation of $N=150$ | Verified exact vs asymptotic power & sensitivity | DEC-016, DEC-020 / Final G2 |
 
 ## Open questions and risks
 - F4 split-conformal calibration integration will require generating calibration logs across seeds 1500–1539.
@@ -60,7 +60,7 @@ Deadline: 2026-11-15
 | `git checkout -b research/phase-0-audit` | Switched to `research/phase-0-audit` | Task 137 |
 | `python -m pytest` | 216 passed, 9 warnings in 47.09s | Task 148 |
 | `cd studio; npm test` | 5 test files, 17 tests passed in 4.51s | Task 163 |
-| `git add docs/...; git commit ...` | Committed baseline and revised documentation | Task 265, 309, 321, 340 |
+| `git add docs/...; git commit ...` | Committed baseline and revised documentation | Task 265, 309, 321, 340, 359 |
 
 ## Tests
 - Baseline: Python: 216 passed; Studio: 17 passed
@@ -72,10 +72,10 @@ Deadline: 2026-11-15
 ## Research integrity
 - Existing exposed frozen results labelled exploratory: Permanently documented in SAP Section 3
 - New frozen seed list disjointness verified: Mathematically proven in SAP Section 3
-- SAP status: Revised v2.1 submitted for Final Gate G2 Review (`docs/SAP.md`)
+- SAP status: Revised v2.2 submitted for Final Gate G2 Review (`docs/SAP.md`)
 - Dirty-tree status: Clean on `research/phase-0-audit`
 - Run classes implemented: Specified in `docs/METRICS.md` & `docs/SAP.md`
-- Metric-definition version: `2.1.0-draft` (`docs/METRICS.md`)
+- Metric-definition version: `2.2.0-draft` (`docs/METRICS.md`)
 
 ## Demo status
 - Real engine launch: Verified working in demo bundle

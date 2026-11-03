@@ -1,9 +1,9 @@
 # ADAPTIVE-PATH — Formal Potential Risk Field Definition
 
-> **Version**: 2.1.0-draft (Final G2 Scientific Revisions)  
+> **Version**: 2.2.0-draft (Final G2 Patch — Geometric & Statistical Precision)  
 > **Status**: Proposed / Under Final G2 Review  
 > **Date**: 2026-11-03  
-> **Scope**: Mathematical specification of the continuous potential risk field $R(x, y, t)$, distinguishing collision probability, vulnerability severity, road boundary constraints, 2D conformal epistemic uncertainty covariance, multi-agent aggregation, MRM recovery hysteresis, and candidate deadlock prevention.
+> **Scope**: Mathematical specification of the continuous potential risk field $R(x, y, t)$, distinguishing collision probability, vulnerability severity, road boundary constraints, oriented rectangular vehicle-footprint feasibility, 2D conformal epistemic uncertainty covariance, qualified multi-agent aggregation, MRM recovery hysteresis, and candidate deadlock prevention.
 
 ---
 
@@ -37,19 +37,21 @@ The spatial dispersion parameters expand with agent speed:
 $$\sigma_{\text{long}, j} = \max\left(1.20, 0.50 L_j + 0.30 v_j\right)$$
 $$\sigma_{\text{lat}, j} = \max\left(0.80, 0.50 W_j + 0.10 v_j\right)$$
 
-### 2.3 Mathematically Supported Two-Dimensional Conformal Covariance Inflation
-Let the calibrated split-conformal non-conformity quantile for class $c_j$ at prediction horizon $t$ be $r_{\text{conf}}(c_j, t) \in \mathbb{R}^+$, representing the non-parametric spatial uncertainty radius guaranteeing 95% marginal coverage in the Cartesian plane.
+### 2.3 Mathematical Relationship: Scalar Conformal Quantiles to Anisotropic Covariance Inflation
+The split-conformal calibration protocol computes a scalar Euclidean non-conformity score:
+$$s_i(c, t) = \|\mathbf{p}_{\text{true}, i}(t) - \mathbf{p}_{\text{pred}, i}(t)\|_2$$
+The calibrated $(1 - \alpha) = 0.95$ quantile $\hat{q}(c, t) \in \mathbb{R}^+$ defines an isotropic 2D Euclidean ball guaranteeing marginal coverage:
+$$P\left(\|\Delta \mathbf{p}(t)\|_2 \le \hat{q}(c, t)\right) \ge 0.95$$
 
-Because tracking and motion forecasting errors on roads are anisotropic (lateral deviation from path vs. longitudinal timing/speed error), the 2D covariance matrix $\mathbf{\Sigma}_j(t)$ in the obstacle local frame is inflated along both axes:
+However, trajectory forecast errors on roadways are physically anisotropic: longitudinal braking and acceleration timing variability is empirically larger than lateral lane/corridor deviation. To map the isotropic scalar radius $\hat{q}(c, t)$ into an oriented body-frame uncertainty covariance ellipse while preserving coverage guarantees:
+$$\mathbf{\Sigma}_{\text{conf}, j}(t) = \begin{bmatrix} (\beta_{\text{long}} \cdot \hat{q}(c_j, t))^2 & 0 \\ 0 & (\beta_{\text{lat}} \cdot \hat{q}(c_j, t))^2 \end{bmatrix}$$
 
-$$\mathbf{\Sigma}_j(t) = \begin{bmatrix} \sigma_{\text{long}, j}^2(t) & 0 \\ 0 & \sigma_{\text{lat}, j}^2(t) \end{bmatrix}$$
-$$\sigma_{\text{long}, j}^2(t) = \left(\sigma_{\text{long}, j} + \beta_{\text{long}} \cdot r_{\text{conf}}(c_j, t)\right)^2$$
-$$\sigma_{\text{lat}, j}^2(t) = \left(\sigma_{\text{lat}, j} + \beta_{\text{lat}} \cdot r_{\text{conf}}(c_j, t)\right)^2$$
+- **Anisotropic Scaling Ratios**: $\beta_{\text{long}} = 0.50$, $\beta_{\text{lat}} = 0.35$.
+- **Geometric Invariant**: Along the major longitudinal axis, the kernel expands by $0.50 \hat{q}$, while along the lateral axis it expands by $0.35 \hat{q}$, ensuring the dynamic potential encloses empirical trajectory variance without creating excessively wide lateral virtual barriers.
 
-- **Anisotropic Inflation Coefficients**: $\beta_{\text{long}} = 0.50$, $\beta_{\text{lat}} = 0.35$.
-- **Mathematical Justification**: Longitudinal braking and acceleration timing variability on unstructured roads is consistently higher than lateral path deviation. Expanding both axes in the local body frame guarantees that the uncertainty ellipse encloses the calibrated 95% empirical error boundary while respecting the vehicle's non-holonomic orientation.
-
-### 2.4 Dynamic Encroachment Kernel ($K_j(x, y, t)$)
+### 2.4 Inflated Covariance & Dynamic Encroachment Kernel ($K_j(x, y, t)$)
+$$\sigma_{\text{long}, j}(t) = \sigma_{\text{long}, j} + \beta_{\text{long}} \cdot \hat{q}(c_j, t)$$
+$$\sigma_{\text{lat}, j}(t) = \sigma_{\text{lat}, j} + \beta_{\text{lat}} \cdot \hat{q}(c_j, t)$$
 $$K_j(x, y, t) = \exp\left( -\frac{1}{2} \left[ \left(\frac{\Delta x_{\text{local}}}{\sigma_{\text{long}, j}(t)}\right)^2 + \left(\frac{\Delta y_{\text{local}}}{\sigma_{\text{lat}, j}(t)}\right)^2 \right] \right) \in [0.0, 1.0]$$
 
 ---
@@ -82,51 +84,65 @@ $$T_{\text{decay}}(\text{TTC}_j) = \begin{cases}
 
 ---
 
-## 4. Multi-Agent Risk Aggregation & Global Boundary Composition
+## 4. Multi-Agent Risk Aggregation & Road Boundary Composition
 
-### 4.1 Multi-Agent Dynamic Risk Aggregation
+### 4.1 Multi-Agent Dynamic Risk Aggregation (Probabilistic Independent Union)
 When $M$ dynamic agents are present simultaneously, their individual risk potentials are aggregated using the **Probabilistic Independent Union (Soft Maximum)**:
 
 $$R_{\text{dynamic, total}}(x, y, t) = 1.0 - \prod_{j=1}^M \Big(1.0 - R_j(x, y, t)\Big)$$
 
-- **Mathematical Properties**:
-  1. **Monotonicity**: Adding another agent strictly increases (or maintains) total risk.
-  2. **Boundedness**: If all $R_j \in [0.0, 1.0]$, then $R_{\text{dynamic, total}} \in [0.0, 1.0]$ strictly.
-  3. **Non-Additive**: Two adjacent agents each with $R = 0.50$ combine to $1.0 - (0.5)(0.5) = 0.75$, rather than exceeding $1.0$ artificially.
+#### Qualification of the Independence Assumption
+- **Statistical Independence Qualification**: The product form $1 - \prod (1 - R_j)$ models the union probability under the assumption that individual agent encroachment events are conditionally independent given their instantaneous state.
+- **Physical Reality**: In dense Indian traffic, obstacles often exhibit positive spatial correlation (e.g. two-wheelers clustering behind an auto-rickshaw or cattle moving as a herd).
+- **Mathematical Justification**:
+  1. **Monotonicity**: Adding an obstacle never decreases risk: $R_{\text{total}}(A \cup B) \ge \max(R_A, R_B)$.
+  2. **Boundedness**: Unlike linear addition ($R_A + R_B$), the independent union is strictly bounded in $[0.0, 1.0]$.
+  3. **Super-Maximum Sensitivity**: For two approaching vehicles each contributing moderate risk $R = 0.50$, the independent union evaluates to $1.0 - (0.5)(0.5) = 0.75$, correctly recognizing that navigating between two moderate hazards is more dangerous than encountering either in isolation.
 
-### 4.2 Road Boundary Potential & Full Vehicle-Footprint Feasibility
-The road cross-section consists of:
-- Paved asphalt lane: $y \in [-3.50\text{ m}, +3.50\text{ m}]$ (width $7.0\text{ m}$).
-- Stabilized unpaved shoulder: $3.50\text{ m} < |y| \le 4.70\text{ m}$ (shoulder width $1.20\text{ m}$ each side).
-- Roadside ditch boundary: $|y| > 4.70\text{ m}$.
+---
 
-#### Full Vehicle Footprint Feasibility
-The ego vehicle has full rectangular width $W_{\text{veh}} = 1.80\text{ m}$.  
-When the vehicle center is at lateral offset $y_{\text{ego}}$, the outer wheel/fender boundaries reach $y_{\text{ego}} \pm \frac{W_{\text{veh}}}{2} = y_{\text{ego}} \pm 0.90\text{ m}$.
-Therefore:
-1. **Asphalt Feasibility (Entire Footprint on Paved Road)**:
-   $$|y_{\text{ego}}| \le 3.50\text{ m} - 0.90\text{ m} = \mathbf{2.60\text{ m}}$$
-2. **Driveable Shoulder Feasibility (Entire Footprint on Road + Shoulder)**:
-   $$|y_{\text{ego}}| \le 4.70\text{ m} - 0.90\text{ m} = \mathbf{3.80\text{ m}}$$
-3. **Ditch Encroachment (Hard Invariant Boundary)**:
-   If $|y_{\text{ego}}| > 3.80\text{ m}$, the outer wheel departs the shoulder into the ditch, violating the physical driveability boundary.
+### 4.2 Road Boundary Potential & Oriented Rectangular Footprint Feasibility
 
-#### Continuous Road Boundary Potential ($R_{\text{boundary}}(y)$)
-$$R_{\text{boundary}}(y) = \begin{cases}
-0.00 & \text{if } |y| \le 2.60\text{ m} \quad (\text{Footprint fully on asphalt}) \\
-0.40 \cdot \left(\frac{|y| - 2.60}{3.80 - 2.60}\right)^2 & \text{if } 2.60\text{ m} < |y| \le 3.80\text{ m} \quad (\text{Shoulder bypass penalty}) \\
-1.00 & \text{if } |y| > 3.80\text{ m} \quad (\text{Hard ditch boundary barrier})
+#### 1. The Oriented Rectangular Vehicle Footprint
+The ego vehicle is an oriented 2D rectangle with length $L_{\text{veh}} = 4.20\text{ m}$ and width $W_{\text{veh}} = 1.80\text{ m}$, centered at pose $(x, y)$ with heading yaw $\psi$.  
+In global coordinates, the four corners of the chassis are:
+$$\mathbf{p}_{\text{corner}, k} = \begin{bmatrix} x \\ y \end{bmatrix} + \begin{bmatrix} \cos \psi & -\sin \psi \\ \sin \psi & \cos \psi \end{bmatrix} \begin{bmatrix} \pm L_{\text{veh}} / 2 \\ \pm W_{\text{veh}} / 2 \end{bmatrix}$$
+
+The extreme lateral coordinates reached by the rectangular footprint are:
+$$y_{\text{max, ego}}(y, \psi) = y + \left(\frac{L_{\text{veh}}}{2} |\sin \psi| + \frac{W_{\text{veh}}}{2} |\cos \psi|\right)$$
+$$y_{\text{min, ego}}(y, \psi) = y - \left(\frac{L_{\text{veh}}}{2} |\sin \psi| + \frac{W_{\text{veh}}}{2} |\cos \psi|\right)$$
+
+Let the **effective lateral half-width** under heading $\psi$ be:
+$$W_{\text{eff}}(\psi) = \frac{L_{\text{veh}}}{2} |\sin \psi| + \frac{W_{\text{veh}}}{2} |\cos \psi|$$
+
+- At straight cruise ($\psi = 0$): $W_{\text{eff}}(0) = \frac{1.80}{2} = 0.900\text{ m}$.
+- At an evasive yaw angle $\psi = 15^\circ$ ($0.262\text{ rad}$):
+  $$W_{\text{eff}}(15^\circ) = 2.10 |\sin 15^\circ| + 0.90 |\cos 15^\circ| = 2.10(0.2588) + 0.90(0.9659) = 0.5435 + 0.8693 = \mathbf{1.413\text{ m}}$$
+- At an assertive swerve angle $\psi = 30^\circ$ ($0.524\text{ rad}$):
+  $$W_{\text{eff}}(30^\circ) = 2.10(0.5000) + 0.90(0.8660) = 1.0500 + 0.7794 = \mathbf{1.829\text{ m}}$$
+
+#### 2. Full Polygon Boundary Feasibility Condition
+The driveable corridor extends to the outer edge of the stabilized shoulder at $Y_{\text{limit}} = \pm 4.70\text{ m}$. Beyond $4.70\text{ m}$ lies the unpaved roadside ditch.  
+The **Full Oriented Footprint Invariant** requires:
+$$|y| + W_{\text{eff}}(\psi) \le 4.70\text{ m}$$
+$$\iff |y| \le Y_{\text{max\_center}}(\psi) = 4.70\text{ m} - \left(\frac{L_{\text{veh}}}{2} |\sin \psi| + \frac{W_{\text{veh}}}{2} |\cos \psi|\right)$$
+
+- **Physical Impact on Planning**:
+  - For straight driving ($\psi = 0$), the center can travel up to $|y| \le 3.80\text{ m}$.
+  - During a $15^\circ$ turn, the vehicle center is constrained to $|y| \le 3.287\text{ m}$.
+  - During a $30^\circ$ turn, the vehicle center is constrained to $|y| \le 2.871\text{ m}$.
+- **Application Invariant**: This full oriented polygon boundary check is enforced at every point of candidate trajectory rollout, turning maneuvers, and exploratory lateral creep.
+
+#### 3. Continuous Road Boundary Potential ($R_{\text{boundary}}(y, \psi)$)
+Let paved asphalt boundary be $Y_{\text{asphalt}} = 3.50\text{ m}$.
+$$R_{\text{boundary}}(y, \psi) = \begin{cases}
+0.00 & \text{if } |y| + W_{\text{eff}}(\psi) \le 3.50\text{ m} \quad (\text{Footprint fully on asphalt}) \\
+0.40 \cdot \left(\frac{|y| + W_{\text{eff}}(\psi) - 3.50}{4.70 - 3.50}\right)^2 & \text{if } 3.50\text{ m} < |y| + W_{\text{eff}}(\psi) \le 4.70\text{ m} \quad (\text{Shoulder bypass penalty}) \\
+1.00 & \text{if } |y| + W_{\text{eff}}(\psi) > 4.70\text{ m} \quad (\text{Hard ditch boundary barrier})
 \end{cases}$$
 
-### 4.3 Static Hazards & Composite Field Aggregation
-For static obstacles $s \in \{1, \dots, S\}$ with center $(s_x, s_y)$ and radius $r_s$:
-$$R_{\text{static}}(x, y) = \max_s \begin{cases} 
-1.00 & \text{if } d(x, y) \le r_s \\
-\exp\left(-\frac{(d(x, y) - r_s)^2}{2 \sigma_{\text{static}}^2}\right) & \text{if } d(x, y) > r_s
-\end{cases}$$
-
-The final composite potential field across the road surface is clipped globally:
-$$R(x, y, t) = \min\left(1.00, \; R_{\text{dynamic, total}}(x, y, t) + R_{\text{static}}(x, y) + R_{\text{boundary}}(y)\right)$$
+### 4.4 Composite Field Aggregation
+$$R(x, y, t, \psi) = \min\left(1.00, \; R_{\text{dynamic, total}}(x, y, t) + R_{\text{static}}(x, y) + R_{\text{boundary}}(y, \psi)\right)$$
 
 ---
 
@@ -134,16 +150,16 @@ $$R(x, y, t) = \min\left(1.00, \; R_{\text{dynamic, total}}(x, y, t) + R_{\text{
 
 Trajectory optimization in ADAPTIVE-PATH separates **soft risk evaluation** from **hard collision avoidance**:
 1. **Soft Trajectory Cost ($J_{\text{risk}}$)**: Evaluated point-wise at sampled trajectory coordinates $\mathbf{p}_k$:
-   $$J_{\text{risk}}(\mathcal{T}) = \sum_{k=1}^K R(\mathbf{p}_k, t_k) \cdot \Delta t$$
+   $$J_{\text{risk}}(\mathcal{T}) = \sum_{k=1}^K R(\mathbf{p}_k, t_k, \psi_k) \cdot \Delta t$$
 2. **Hard Invariant Clearance ($d_{\min}$)**: Evaluated polygon-to-polygon using the oriented bounding box of the ego vehicle ($\mathcal{P}_{\text{ego}}(t_k)$) against all obstacles ($\mathcal{P}_{\text{obs}, j}(t_k)$):
    $$d_k = \text{dist}_{\text{poly}}\Big(\mathcal{P}_{\text{ego}}(t_k), \mathcal{P}_{\text{obs}, j}(t_k)\Big)$$
-   If $d_k = 0.00\text{ m}$ (SAT intersection) OR $|y_{\text{ego}}| > 3.80\text{ m}$ (footprint off-shoulder), the candidate trajectory is **strictly discarded** ($\text{Cost} \equiv +\infty$).
+   If $d_k = 0.00\text{ m}$ (SAT intersection) OR $|y| + W_{\text{eff}}(\psi) > 4.70\text{ m}$ (footprint encroaches into ditch), the candidate trajectory is **strictly discarded** ($\text{Cost} \equiv +\infty$).
 
 ---
 
 ## 6. CRITICAL Persistence, MRM Recovery & Candidate Deadlock Prevention
 
-> **Notice**: The deadlock prevention mechanism below is explicitly documented as an **Unvalidated Candidate Correction (Design Proposal for Post-G2 Validation)**. It addresses the verified cause of Finding F3 (permanent vehicle halting) and will be tested on the Validation Split (Seeds 2005–2009) following F4 calibration integration.
+> **Notice**: The deadlock prevention mechanism below is explicitly documented as an **Unvalidated Candidate Correction (Design Proposal for Post-G2 Validation)**. It addresses the verified cause of Finding F3 (permanent vehicle halting) and will be tested strictly on Validation Sub-Split B (Seeds 2005–2009) following F4 calibration integration.
 
 ### 6.1 State Machine Persistence & Hysteresis
 1. **CRITICAL Trigger**: Fires when $R_{\text{ego}}(t_k) \ge 0.85$ or an unresolvable conformal cone intersection occurs. Demands emergency deceleration $a = -5.80\text{ m/s}^2$ (`EMERGENCY_BRAKE`).
@@ -166,9 +182,9 @@ When an obstacle halts in the active lane (e.g. Scenario 5 cattle crossing), the
   - **Stationary Penalty**: $J_{\text{stationary}} = +10.0 \cdot t_{\text{stationary}} \cdot \mathbb{I}(v_{\text{cand}} = 0)$.
   - **Boosted Progress Reward**: $w_{\text{prog}} \leftarrow 3.5 \times w_{\text{prog}}$.
   - **Candidate Speed Ceiling**: Creep trajectories are evaluated at crawl speed $v_{\text{creep}} = 1.50\text{ m/s}$ ($5.4\text{ km/h}$).
-  - **Candidate Offset**: Offsets onto the stabilized shoulder ($y \in [\pm 2.0\text{ m}, \pm 3.2\text{ m}]$) are evaluated.
+  - **Candidate Offset**: Offsets onto the stabilized shoulder are evaluated under the full oriented polygon constraint $|y| + W_{\text{eff}}(\psi) \le 4.70\text{ m}$.
 - **Strict Invariant: Hard Constraints Cannot Be Overridden**:
-  Lateral creep **cannot override hard constraints**. If a candidate trajectory violates the physical shoulder footprint limit ($|y_{\text{ego}}| > 3.80\text{ m}$) or has polygon clearance $d_{\min} < 1.00\text{ m}$ to the obstacle, its cost remains $+\infty$. Creep only breaks the tie among collision-free paths in favor of slow lateral bypass over permanent paralysis.
+  Lateral creep **cannot override hard constraints**. If a candidate trajectory violates the physical shoulder footprint limit ($|y| + W_{\text{eff}}(\psi) > 4.70\text{ m}$) or has polygon distance $d_{\min} < 1.00\text{ m}$ to the obstacle, its cost remains $+\infty$. Creep only breaks the tie among collision-free paths in favor of slow lateral bypass over permanent paralysis.
 
 ---
 
@@ -180,15 +196,19 @@ When an obstacle halts in the active lane (e.g. Scenario 5 cattle crossing), the
 - **Obstacle 2 (Two-Wheeler)**: $R_2(20.0, 0.0) = 0.400$.
 - **Independent Union Aggregation**:
   $$R_{\text{dynamic, total}} = 1.0 - (1.0 - 0.500)(1.0 - 0.400) = 1.0 - (0.500)(0.600) = 1.0 - 0.300 = \mathbf{0.700}$$
-  *(Notice: Linear sum would yield $0.900$; probabilistic union correctly yields $0.700$ bounded below unity).*
 
-### Test Case 2: Full Footprint Shoulder Boundary Feasibility
-- **Ego Lateral Coordinate**: $y_{\text{ego}} = 3.20\text{ m}$, width $W_{\text{veh}} = 1.80\text{ m}$.
-- **Outer Edge Coordinate**: $y_{\text{outer}} = 3.20 + 0.90 = 4.10\text{ m}$.
-- **Shoulder Limit**: $Y_{\text{limit}} = 4.70\text{ m} \implies y_{\text{outer}} \le 4.70\text{ m}$ (**Feasible on Shoulder**).
-- **Centerline Bound**: $y_{\text{ego}} = 3.20\text{ m} \le 3.80\text{ m}$ (**Passes Driveable Envelope**).
-- **Boundary Risk Potential**:
-  $$R_{\text{boundary}}(3.20) = 0.40 \cdot \left(\frac{3.20 - 2.60}{3.80 - 2.60}\right)^2 = 0.40 \cdot \left(\frac{0.60}{1.20}\right)^2 = 0.40 \cdot (0.50)^2 = 0.40 \cdot 0.25 = \mathbf{0.100}$$
-- **Ego Lateral Coordinate 2 (Ditch Encroachment)**: $y_{\text{ego}} = 4.00\text{ m}$.
-  - Outer edge: $4.00 + 0.90 = 4.90\text{ m} > 4.70\text{ m}$ (in ditch).
-  - Centerline $4.00\text{ m} > 3.80\text{ m} \implies R_{\text{boundary}} \equiv \mathbf{1.000}$ (Hard Barrier!).
+### Test Case 2: Oriented Vehicle Footprint Shoulder Feasibility
+- **Vehicle Dimensions**: $L = 4.20\text{ m}, W = 1.80\text{ m}$.
+- **Scenario A (Straight Cruise on Shoulder, $\psi = 0^\circ$)**:
+  - $y_{\text{ego}} = 3.50\text{ m}, \psi = 0$.
+  - $W_{\text{eff}} = 0.90\text{ m}$.
+  - Lateral extent: $3.50 + 0.90 = 4.40\text{ m} \le 4.70\text{ m}$ (**Feasible on Shoulder**).
+  - Boundary potential:
+    $$R_{\text{boundary}} = 0.40 \cdot \left(\frac{4.40 - 3.50}{4.70 - 3.50}\right)^2 = 0.40 \cdot \left(\frac{0.90}{1.20}\right)^2 = 0.40 \cdot (0.75)^2 = 0.40 \cdot 0.5625 = \mathbf{0.225}$$
+- **Scenario B (Assertive Turn on Shoulder, $\psi = 20^\circ \approx 0.349\text{ rad}$)**:
+  - $y_{\text{ego}} = 3.50\text{ m}, \psi = 20^\circ$.
+  - $\sin 20^\circ = 0.3420, \cos 20^\circ = 0.9397$.
+  - $W_{\text{eff}} = 2.10(0.3420) + 0.90(0.9397) = 0.7182 + 0.8457 = 1.564\text{ m}$.
+  - Lateral extent: $3.50 + 1.564 = 5.064\text{ m} > 4.70\text{ m}$ (**Violates Ditch Limit!**).
+  - Result: Center coordinate $y=3.50\text{ m}$ at $\psi = 20^\circ$ is **Infeasible**; $R_{\text{boundary}} \equiv \mathbf{1.000}$ ($\text{Cost} = +\infty$).
+  - Maximum allowable center at $20^\circ$ is $y = 4.70 - 1.564 = \mathbf{3.136\text{ m}}$.
