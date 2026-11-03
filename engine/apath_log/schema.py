@@ -84,6 +84,9 @@ class ConformalConePoint(BaseModel):
     t_rel: float
     radius_m: float
     coverage_p: float = 0.95
+    semi_axis_x: Optional[float] = None
+    semi_axis_y: Optional[float] = None
+    coverage_guarantee_valid: bool = True
 
 
 class AgentTrack(BaseModel):

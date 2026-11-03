@@ -148,6 +148,8 @@ class SimulationRunner:
                         yaw=track.yaw,
                         vx=track.vx,
                         vy=track.vy,
+                        length=track.length,
+                        width=track.width,
                     )
 
                 agent_tracks.append(

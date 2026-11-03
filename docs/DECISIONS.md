@@ -30,6 +30,7 @@
 | **DEC-020** | 2026-11-03 | Exact McNemar Power Verification ($95.40\%$) and Preservation of $N=150$: Re-evaluated asymptotic ($95.93\%$, $92.58\%$ cc) vs exact power; established discordance sensitivity table. | Statistical Power | Final G2 Patch |
 | **DEC-021** | 2026-11-03 | Conformal Score & Prediction Set Consistency via Anisotropic Mahalanobis Calibration: Nonconformity score defined identically to deployed elliptical prediction set; $\beta_{\text{long}}=0.50, \beta_{\text{lat}}=0.35$ established as pre-calibrated tuning split normalizers; separate pointwise and simultaneous trajectory coverage defined. | Conformal Prediction | Final G2 Closure |
 | **DEC-022** | 2026-11-03 | Episode-Level Conformal Aggregation & Inference-Time Feature Parity: Conservative maximum across same-class obstacles ($s_e = \max_j s_{e, j}$); non-target episodes excluded (no zero scores); independent episode count $n_e(c)$ distinguished from observation count $N_{\text{obs}}(c)$; inference inputs ($v_j(t_0), L_j$) strictly defined at query timestamp $t_0$ for calibration and inference parity. | Statistical Rigor | Final G2 Review |
+| **DEC-023** | 2026-11-03 | F4 Conformal Calibration Integration Architecture: Integrated `SplitConformalPredictionCalibrator` with `NonLaneMultiHypothesisPredictor`, eliminating hardcoded analytical power-law heuristic; backwards-compatible schema extension (`semi_axis_x`, `semi_axis_y`, `coverage_guarantee_valid`). | Predictor & Safety | Phase 1 Step 1 |
 
 ---
 
@@ -81,3 +82,11 @@
   3. **Sample Unit Accounting**: Effective sample size is $n_e(c) = |\{ e \in \mathcal{S}_{\text{calib}} : |\mathcal{J}_e(c)| \ge 1 \}|$, strictly distinguished from observation count $N_{\text{obs}}(c) \ge n_e(c)$. Conformal quantiles are computed on $n_e(c)$ independent episode scores using $m = \lceil (n_e(c) + 1)(1 - \alpha) \rceil$.
   4. **Inference-Time Normalizer Inputs**: The speed argument $v_j(t_0) = \sqrt{v_x(t_0)^2 + v_y(t_0)^2}$ is strictly defined as the instantaneous observed scalar speed at forecast timestamp $t_0$ from the perception tracker. Bounding length $L_j$ is a static bounding dimension from track classification at $t_0$.
   5. **Calibration-Inference Parity**: Identical feature inputs $(v_j(t_0), L_j)$ are used in both offline calibration and real-time online deployment. Realized future steps are used solely to compute tracking displacement errors $[\Delta x, \Delta y]^T$.
+
+#### DEC-023: F4 Conformal Calibration Integration Architecture
+- **Context & Problem**: Audit finding F4 revealed that `NonLaneMultiHypothesisPredictor` hardcoded analytical power-law expansions ($R(t) = s_0 + \kappa t^{1.2}$) while falsely labeling `coverage_p = 0.95`.
+- **Decision & Mathematical Resolution**:
+  1. Created `engine/prediction/conformal_calibrator.py` implementing `SplitConformalPredictionCalibrator` with exact anisotropic Mahalanobis scores and finite-sample order statistics $m = \lceil (n_e + 1)(1 - \alpha) \rceil$.
+  2. Integrated calibrator into `NonLaneMultiHypothesisPredictor`. When uncalibrated or $n_e < 40$, predictor falls back to $3.50\text{ m}$ with `coverage_guarantee_valid = False` without claiming coverage.
+  3. Extended `ConformalConePoint` schema with optional `semi_axis_x`, `semi_axis_y`, and `coverage_guarantee_valid` for full backwards compatibility across all runner and frontend schemas.
+  4. Tested with 10 unit/integration tests in `tests/test_conformal_calibrator.py` (100% pass, 135/135 backend tests pass).

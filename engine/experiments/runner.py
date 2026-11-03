@@ -114,6 +114,8 @@ class ValidationExperimentRunner:
                     vx=item["measured_vx"],
                     vy=item["measured_vy"],
                     observed_intent=ag.intent,
+                    length=ag.profile.length,
+                    width=ag.profile.width,
                 )
                 agent_tracks.append(
                     AgentTrack(

@@ -1,14 +1,14 @@
 # ADAPTIVE-PATH — Progress and Session Continuity
 
-Last updated: 2026-11-03 13:05 +0530  
+Last updated: 2026-11-03 13:25 +0530  
 Current branch: `research/phase-0-audit`  
 Baseline tag/commit: `baseline-v0` (Git initial baseline commit `4538e6c`)  
-Current phase: Phase 1 — Research Correctness & Definitions (Final G2 Review — Episode Aggregation & Inference Parity)  
+Current phase: Phase 1 — Research Correctness & Empirical Validation (F4 Integrated & Tested)  
 Deadline: 2026-11-15  
 
 ## Gate status
 - G1 repository audit: **APPROVED** (2026-11-03 11:59)
-- G2 research definitions: **WAITING (G2 Final Review Complete at commit `87f4a25`; Awaiting Approval)**
+- G2 research definitions: **APPROVED** (2026-11-03 13:10)
 - G3 frozen-test run: NOT STARTED
 
 ## Completed
@@ -24,13 +24,15 @@ Deadline: 2026-11-15
 | Phase 1 Step 1: Research Metric Definitions (v2.2) | Revised in `docs/METRICS.md` with exact 2D quadratic TTC & edge cases | DONE |
 | Phase 1 Step 1: Formal Risk Field Definition (v2.3) | Revised in `docs/RISK_DEFINITION.md` with Mahalanobis conformal score/set consistency, episode-max aggregation & inference-time input parity | DONE |
 | Phase 1 Step 1: Statistical Analysis Plan (v2.3) | Revised in `docs/SAP.md` with episode-level calibration scores, non-target exclusion, independent episode accounting, and inference input parity | DONE |
-| Architecture & Decisions Record (v2.3) | Updated `docs/DECISIONS.md` with DEC-001 through DEC-022 | DONE |
+| Architecture & Decisions Record (v2.3) | Updated `docs/DECISIONS.md` with DEC-001 through DEC-023 | DONE |
+| Gate G2 User Sign-Off | Explicit user approval received | DONE |
+| Phase 1 Step 1: F4 Conformal Calibration Integration | `engine/prediction/conformal_calibrator.py`, `engine/prediction/predictor.py`, `tests/test_conformal_calibrator.py` (10/10 passed, 135/135 full suite passed) | DONE |
 
 ## In progress
 | Item | Owner/agent | Files | Next action | Blocker |
 |---|---|---|---|---|
-| Final Gate G2 User Sign-Off | User / Antigravity | `docs/METRICS.md`, `docs/RISK_DEFINITION.md`, `docs/SAP.md` | Awaiting final G2 review approval | Waiting for G2 |
-| Workstream B: Demo Fallback Track | Antigravity | `studio/`, `scripts/` | Coordinated cattle-crossing fallback demo | Waiting for G2 |
+| Phase 1 Step 2: F3 Diagnosis & Correction | Antigravity | `engine/planners/`, `engine/risk/` | Diagnose and correct P3 livelock using validation split only | Awaiting user review of F4 |
+| Workstream B: Demo Fallback Track | Antigravity | `studio/`, `scripts/` | Coordinated cattle-crossing fallback demo | Parallel workstream |
 
 ## Decisions made
 | Date | Decision | Rationale | Approved by / gate |
@@ -49,6 +51,7 @@ Deadline: 2026-11-15
 | 2026-11-03 | Exact McNemar Power Verification ($95.40\%$) and preservation of $N=150$ | Verified exact vs asymptotic power & sensitivity | DEC-016, DEC-020 / Final G2 |
 | 2026-11-03 | Conformal Score & Prediction Set Consistency via Anisotropic Mahalanobis Calibration Level Sets | Deployed set matches score level set; $\beta_{\text{long}}=0.50, \beta_{\text{lat}}=0.35$ pre-calibrated on tuning split; pointwise vs simultaneous coverage defined | DEC-021 / Final G2 Closure |
 | 2026-11-03 | Episode-Level Conformal Aggregation & Inference-Time Feature Parity | Conservative max across same-class obstacles ($s_e = \max_j s_{e, j}$); non-target episodes excluded (no zero scores); independent episode count $n_e(c)$ distinguished from observation count $N_{\text{obs}}(c)$; inference inputs ($v_j(t_0), L_j$) strictly defined at query timestamp $t_0$ | DEC-022 / Final G2 Review |
+| 2026-11-03 | F4 Conformal Calibration Integration Architecture | Implemented exact anisotropic Mahalanobis calibrator; finite-sample order statistic $m = \lceil(n_e+1)(1-\alpha)\rceil$; 3.50m fallback strictly marked coverage_guarantee_valid=False; 10/10 tests pass | DEC-023 / Phase 1 Step 1 |
 
 ## Open questions and risks
 - F4 split-conformal calibration integration will require generating calibration logs across seeds 1500–1539.
