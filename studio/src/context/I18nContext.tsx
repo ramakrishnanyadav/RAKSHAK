@@ -17,7 +17,11 @@ interface Translations {
 }
 
 const DICTIONARY: Translations = {
-  // Navigation
+  // Navigation & 4-Workspace Architecture
+  workspace_home: { en: 'Home', hi: 'होम', te: 'హోమ్' },
+  workspace_simulate: { en: 'Simulate', hi: 'सिमुलेट', te: 'సిమ్యులేట్' },
+  workspace_results: { en: 'Results', hi: 'परिणाम', te: 'ఫలితాలు' },
+  workspace_research: { en: 'Research', hi: 'अनुसंधान', te: 'పరిశోధన' },
   nav_overview: { en: 'Dashboard', hi: 'डैशबोर्ड', te: 'డ్యాష్‌బోర్డ్' },
   nav_scenarios: { en: 'Scenarios', hi: 'परिदृश्य', te: 'సన్నివేశాలు' },
   nav_new_run: { en: 'Start Simulation', hi: 'सिमुलेशन शुरू करें', te: 'రన్ ప్రారంభించండి' },
