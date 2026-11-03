@@ -58,6 +58,7 @@ Deadline: 2026-11-15
 | 2026-11-03 | Authoritative Metrics Consolidation & Independent Conformal Artifact Generation | Resolved F1 (jerk calculation), F2 (frontend fallbacks), F7 (metrics consolidation); generated independent calibration artifact across Seeds 1500–1539; 145/145 backend and 17/17 studio tests pass | DEC-024 / Phase 1 Step 2 |
 | 2026-11-03 | F3 Correction Design Finalization & Governance Reaffirmation of Seed Splits | Reaffirmed 5-way disjoint split; finalized stationary penalty formulation, hypothesis weighting separation, and risk field dilation cleanup | DEC-025 / Phase 1 Step 3A |
 | 2026-11-03 | F3 Correction Implementation & Validation B Benchmark Execution | Implemented stationary persistence penalty, SAT occupancy checking, risk field cleanup; executed 75 episodes across Validation B (Seeds 2005–2009); 100% completion on Scenario 5; generated `runs/val_b_manifest.json` | DEC-026 / Phase 1 Step 3B |
+| 2026-11-03 | Gate G3 Step 3B Independent Evidence Verification | Completed independent audit across Checks 1–5; verified footprint containment, SAT predicted occupancy, near-miss/MRM dynamics, and seed governance; classified Step 3B as Verified with Documented Limitations (`docs/G3_VERIFICATION_REPORT.md`) | Gate G3 Verification |
 
 ## Open questions and risks
 - F4 split-conformal calibration integration will require generating calibration logs across seeds 1500–1539.
@@ -98,12 +99,13 @@ Deadline: 2026-11-15
 - Known demo limitations: Documented in `docs/AUDIT.md` and `docs/DECISIONS.md`
 
 ## Next exact action
-1. Present Phase 1 Step 3B implementation and Validation B benchmark results (`runs/val_b_manifest.json`) for review.
-2. **STOP** and await user guidance / Gate G3 authorization before touching confirmatory frozen split (Seeds 3000–3029).
+1. Await user review of `docs/G3_VERIFICATION_REPORT.md` and authorization for next research phase (e.g. baseline selection on Validation A or confirmatory frozen testing Gate G4/G5).
+2. **STOP** and do not access Validation A (2000–2004) or Confirmatory Frozen split (3000–3029) without explicit approval.
 
 ## Handover notes for next session
 - Read standing rules (`ADAPTIVE_PATH_Execution_Package/prompts/00_STANDING_ENGINEERING_RULES.md`).
 - Read this file (`docs/PROGRESS.md`).
-- Phase 1 Step 3B is complete: F3 stationary persistence penalty, candidate SAT occupancy checking, risk field cleanup implemented and tested (42 unit + 2 property tests passing).
-- Validation B benchmark completed on Seeds 2005–2009 across all 5 scenarios (75 episodes) in `runs/val_b_manifest.json`.
+- Independent verification for Gate G3 is complete: `docs/G3_VERIFICATION_REPORT.md`.
+- All checks classified and documented: Step 3B verified with documented limitations.
+- Working tree clean; all tests passing (42 unit/regression + 2 property).
 - Confirmatory frozen split (Seeds 3000–3029) and Validation A (Seeds 2000–2004) remain strictly untouched.
