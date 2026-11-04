@@ -127,3 +127,4 @@ export const HowItWorksStrip: React.FC = () => {
     </section>
   );
 };
+

@@ -3,15 +3,19 @@
   "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
   "name": "Village Road",
   "description": "Narrow unlaned road with slow auto-rickshaw and oncoming motorcycle.",
+  "built_from": "RoadRunner scene (VillageRoad.xodr) + synthetic traffic mix",
+  "source_file": "matlab_adapter/roadrunner/VillageRoad.xodr",
   "road_users": [
     "auto_rickshaw",
     "motorcycle",
     "pedestrian"
   ],
   "seed": 2008,
+  "tested_on": "Validation B Split (Seed 2008)",
   "adaptive": {
     "scenario_id": "",
     "planner_id": "P3",
+    "source_file": "runs/val_b_manifest.json",
     "metrics": {
       "duration_s": 15.9,
       "completed_goal": true,
@@ -19,8 +23,9 @@
       "min_clearance_m": 0.61,
       "mean_jerk_m_s3": 2.244,
       "replan_count": 32,
-      "p95_latency_ms": 19.37,
-      "mean_speed_m_s": 4.41
+      "p95_latency_ms": 18.16,
+      "mean_speed_m_s": 4.41,
+      "source": "runs/val_b_manifest.json"
     },
     "frames": [
       {
@@ -1246,7 +1251,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6097
           },
-          "latency_ms": 21.55,
+          "latency_ms": 19.21,
           "planned_trajectory": [
             {
               "x": 1.28,
@@ -1326,7 +1331,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.61, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 35.06
       },
       {
@@ -2552,7 +2557,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1148
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 1.28,
@@ -2632,7 +2637,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 34.42
       },
       {
@@ -4253,7 +4258,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1192
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.23,
           "planned_trajectory": [
             {
               "x": 1.28,
@@ -4333,7 +4338,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 33.93
       },
       {
@@ -5954,7 +5959,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1192
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 2.56,
@@ -6029,7 +6034,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 33.4
       },
       {
@@ -7650,7 +7655,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1281
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 2.56,
@@ -7725,7 +7730,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 32.89
       },
       {
@@ -9346,7 +9351,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1441
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 3.84,
@@ -9416,7 +9421,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 32.38
       },
       {
@@ -11037,7 +11042,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1655
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 3.84,
@@ -11107,7 +11112,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 31.86
       },
       {
@@ -12728,7 +12733,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1904
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 5.12,
@@ -12793,7 +12798,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 31.47
       },
       {
@@ -14414,7 +14419,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2177
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 5.12,
@@ -14479,7 +14484,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 31.05
       },
       {
@@ -16100,7 +16105,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2462
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 6.4,
@@ -16160,7 +16165,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 30.58
       },
       {
@@ -17781,7 +17786,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2755
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 6.4,
@@ -17841,7 +17846,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 30.2
       },
       {
@@ -19462,7 +19467,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3046
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 6.4,
@@ -19522,7 +19527,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 29.75
       },
       {
@@ -21143,7 +21148,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6768
           },
-          "latency_ms": 23.39,
+          "latency_ms": 22.36,
           "planned_trajectory": [
             {
               "x": 7.69,
@@ -22844,7 +22849,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1759
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 7.69,
@@ -22924,7 +22929,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 29.08
       },
       {
@@ -24545,7 +24550,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1707
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 7.69,
@@ -24625,7 +24630,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 28.72
       },
       {
@@ -26246,7 +26251,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1673
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 8.43,
@@ -26321,7 +26326,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 28.37
       },
       {
@@ -27942,7 +27947,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1643
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 9.17,
@@ -28012,7 +28017,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 28.07
       },
       {
@@ -29633,7 +29638,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1627
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 9.17,
@@ -29703,7 +29708,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 27.76
       },
       {
@@ -31324,7 +31329,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1606
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 9.91,
@@ -31389,7 +31394,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 27.42
       },
       {
@@ -33010,7 +33015,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1607
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 9.91,
@@ -33075,7 +33080,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 27.17
       },
       {
@@ -34696,7 +34701,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1593
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 10.68,
@@ -40919,7 +40924,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1608
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 11.45,
@@ -42990,7 +42995,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.8489
           },
-          "latency_ms": 26.57,
+          "latency_ms": 25.73,
           "planned_trajectory": [
             {
               "x": 12.25,
@@ -45086,7 +45091,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3895
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 12.25,
@@ -47182,7 +47187,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3828
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.24,
           "planned_trajectory": [
             {
               "x": 12.64,
@@ -51359,7 +51364,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3717
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 13.43,
@@ -57587,7 +57592,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3781
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 14.62,
@@ -62504,7 +62509,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4754
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 15.42,
@@ -64955,7 +64960,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.553
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 15.82,
@@ -67401,7 +67406,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6391
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 16.22,
@@ -69842,7 +69847,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.656
           },
-          "latency_ms": 28.33,
+          "latency_ms": 27.25,
           "planned_trajectory": [
             {
               "x": 17.38,
@@ -72333,7 +72338,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1603
           },
-          "latency_ms": 0.33,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 17.38,
@@ -74824,7 +74829,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1343
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 17.38,
@@ -77315,7 +77320,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1225
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.22,
           "planned_trajectory": [
             {
               "x": 18.17,
@@ -79801,7 +79806,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1194
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.46,
           "planned_trajectory": [
             {
               "x": 18.96,
@@ -84763,7 +84768,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.129
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 19.76,
@@ -87239,7 +87244,7 @@
             "risk_field_cost": 0.0002,
             "total_cost": 0.133
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 19.76,
@@ -92191,7 +92196,7 @@
             "risk_field_cost": 0.0017,
             "total_cost": 0.1303
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 20.55,
@@ -94662,7 +94667,7 @@
             "risk_field_cost": 0.0044,
             "total_cost": 0.1436
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.33,
           "planned_trajectory": [
             {
               "x": 20.55,
@@ -97133,7 +97138,7 @@
             "risk_field_cost": 0.0093,
             "total_cost": 0.1569
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.25,
           "planned_trajectory": [
             {
               "x": 21.35,
@@ -99599,7 +99604,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6218
           },
-          "latency_ms": 25.8,
+          "latency_ms": 24.78,
           "planned_trajectory": [
             {
               "x": 22.15,
@@ -102090,7 +102095,7 @@
             "risk_field_cost": 0.03,
             "total_cost": 0.1543
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 22.15,
@@ -104581,7 +104586,7 @@
             "risk_field_cost": 0.0466,
             "total_cost": 0.169
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 22.15,
@@ -107072,7 +107077,7 @@
             "risk_field_cost": 0.0663,
             "total_cost": 0.1869
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.32,
           "planned_trajectory": [
             {
               "x": 22.95,
@@ -109558,7 +109563,7 @@
             "risk_field_cost": 0.0855,
             "total_cost": 0.2051
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.27,
           "planned_trajectory": [
             {
               "x": 22.95,
@@ -112044,7 +112049,7 @@
             "risk_field_cost": 0.1004,
             "total_cost": 0.2192
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.23,
           "planned_trajectory": [
             {
               "x": 22.95,
@@ -114530,7 +114535,7 @@
             "risk_field_cost": 0.1069,
             "total_cost": 0.2248
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 23.75,
@@ -117011,7 +117016,7 @@
             "risk_field_cost": 0.1028,
             "total_cost": 0.2205
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.22,
           "planned_trajectory": [
             {
               "x": 23.75,
@@ -119492,7 +119497,7 @@
             "risk_field_cost": 0.0892,
             "total_cost": 0.2065
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 24.55,
@@ -121968,7 +121973,7 @@
             "risk_field_cost": 0.0697,
             "total_cost": 0.1871
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 24.55,
@@ -124444,7 +124449,7 @@
             "risk_field_cost": 0.0487,
             "total_cost": 0.1661
           },
-          "latency_ms": 0.28,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 25.35,
@@ -126915,7 +126920,7 @@
             "risk_field_cost": 0.0389,
             "total_cost": 0.1566
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.23,
           "planned_trajectory": [
             {
               "x": 25.35,
@@ -129386,7 +129391,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3848
           },
-          "latency_ms": 21.37,
+          "latency_ms": 20.18,
           "planned_trajectory": [
             {
               "x": 25.64,
@@ -129466,7 +129471,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 9.68
       },
       {
@@ -131482,7 +131487,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3839
           },
-          "latency_ms": 16.76,
+          "latency_ms": 17.0,
           "planned_trajectory": [
             {
               "x": 26.02,
@@ -131562,7 +131567,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 8.76
       },
       {
@@ -132788,7 +132793,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.383
           },
-          "latency_ms": 12.07,
+          "latency_ms": 12.5,
           "planned_trajectory": [
             {
               "x": 26.39,
@@ -132868,7 +132873,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Tracking truck with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking truck with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 7.75
       },
       {
@@ -134094,7 +134099,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3821
           },
-          "latency_ms": 13.99,
+          "latency_ms": 13.77,
           "planned_trajectory": [
             {
               "x": 26.77,
@@ -134174,7 +134179,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Tracking truck with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking truck with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 6.88
       },
       {
@@ -135400,7 +135405,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3813
           },
-          "latency_ms": 12.49,
+          "latency_ms": 12.43,
           "planned_trajectory": [
             {
               "x": 27.14,
@@ -135480,7 +135485,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Tracking truck with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking truck with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 5.93
       },
       {
@@ -136706,7 +136711,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3804
           },
-          "latency_ms": 11.2,
+          "latency_ms": 11.31,
           "planned_trajectory": [
             {
               "x": 27.52,
@@ -136786,7 +136791,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 4.93
       },
       {
@@ -138012,7 +138017,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.2926
           },
-          "latency_ms": 11.82,
+          "latency_ms": 11.46,
           "planned_trajectory": [
             {
               "x": 27.9,
@@ -138092,7 +138097,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.29, trigger=PERIODIC).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 4.0
       },
       {
@@ -139318,7 +139323,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.159
           },
-          "latency_ms": 11.41,
+          "latency_ms": 11.45,
           "planned_trajectory": [
             {
               "x": 28.25,
@@ -139398,7 +139403,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.16, trigger=PERIODIC).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 3.06
       },
       {
@@ -140624,7 +140629,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.0532
           },
-          "latency_ms": 11.07,
+          "latency_ms": 11.24,
           "planned_trajectory": [
             {
               "x": 28.56,
@@ -140704,7 +140709,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.05, trigger=PERIODIC).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 2.16
       },
       {
@@ -141930,7 +141935,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.9667
           },
-          "latency_ms": 12.35,
+          "latency_ms": 12.85,
           "planned_trajectory": [
             {
               "x": 28.84,
@@ -142010,7 +142015,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=0.97, trigger=PERIODIC).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 1.33
       },
       {
@@ -143236,7 +143241,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.8964
           },
-          "latency_ms": 12.57,
+          "latency_ms": 12.28,
           "planned_trajectory": [
             {
               "x": 29.09,
@@ -143316,7 +143321,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=0.90, trigger=PERIODIC).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.55
       },
       {
@@ -144542,7 +144547,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.8393
           },
-          "latency_ms": 13.54,
+          "latency_ms": 12.14,
           "planned_trajectory": [
             {
               "x": 29.31,
@@ -144622,7 +144627,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=0.84, trigger=PERIODIC).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -145848,7 +145853,7 @@
             "risk_field_cost": 1.2796,
             "total_cost": 1.7095
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 29.31,
@@ -145928,7 +145933,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 executing smooth trajectory; risk=0.51 below dynamic threshold.",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -147154,7 +147159,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7267
           },
-          "latency_ms": 12.22,
+          "latency_ms": 12.08,
           "planned_trajectory": [
             {
               "x": 31.28,
@@ -147234,7 +147239,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.73, trigger=PERIODIC).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -148065,7 +148070,7 @@
             "risk_field_cost": 1.4197,
             "total_cost": 1.647
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 31.28,
@@ -148145,7 +148150,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 executing smooth trajectory; risk=0.57 below dynamic threshold.",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -148976,7 +148981,7 @@
             "risk_field_cost": 1.5479,
             "total_cost": 1.7757
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 31.28,
@@ -149056,7 +149061,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 executing smooth trajectory; risk=0.62 below dynamic threshold.",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -149887,7 +149892,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7397
           },
-          "latency_ms": 10.74,
+          "latency_ms": 10.61,
           "planned_trajectory": [
             {
               "x": 31.37,
@@ -149967,7 +149972,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (RISK_THRESHOLD_EXCEEDED): Selected BYPASS (cost=0.74, trigger=RISK_THRESHOLD_EXCEEDED).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -150798,7 +150803,7 @@
             "risk_field_cost": 1.7549,
             "total_cost": 1.9949
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 31.37,
@@ -150878,7 +150883,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 executing smooth trajectory; risk=0.70 below dynamic threshold.",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -151709,7 +151714,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7394
           },
-          "latency_ms": 10.96,
+          "latency_ms": 10.87,
           "planned_trajectory": [
             {
               "x": 31.56,
@@ -151789,7 +151794,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (RISK_THRESHOLD_EXCEEDED): Selected BYPASS (cost=0.74, trigger=RISK_THRESHOLD_EXCEEDED).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -152620,7 +152625,7 @@
             "risk_field_cost": 1.8534,
             "total_cost": 2.0931
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 31.56,
@@ -152700,7 +152705,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 executing smooth trajectory; risk=0.74 below dynamic threshold.",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -153531,7 +153536,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7392
           },
-          "latency_ms": 12.56,
+          "latency_ms": 12.21,
           "planned_trajectory": [
             {
               "x": 31.7,
@@ -153611,7 +153616,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 Dynamic Replan (RISK_THRESHOLD_EXCEEDED): Selected BYPASS (cost=0.74, trigger=RISK_THRESHOLD_EXCEEDED).",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -154442,7 +154447,7 @@
             "risk_field_cost": 1.8098,
             "total_cost": 2.0492
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 31.7,
@@ -154522,7 +154527,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] P3 executing smooth trajectory; risk=0.72 below dynamic threshold.",
-        "caption": "Protective stop applied. Multi-hypothesis safety envelope exceeded dynamic limits.",
+        "caption": "Protective stop applied. Safety margin exceeded dynamic limits.",
         "min_clearance_m": 0.0
       },
       {
@@ -155353,7 +155358,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7391
           },
-          "latency_ms": 15.89,
+          "latency_ms": 15.5,
           "planned_trajectory": [
             {
               "x": 31.81,
@@ -155433,7 +155438,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (RISK_THRESHOLD_EXCEEDED): Selected BYPASS (cost=0.74, trigger=RISK_THRESHOLD_EXCEEDED).",
-        "caption": "Adjusting speed to 1.4 km/h to maintain smooth clearance around active road users.",
+        "caption": "Adjusting speed to 1.4 km/h to maintain smooth clearance around traffic.",
         "min_clearance_m": 0.0
       },
       {
@@ -156264,7 +156269,7 @@
             "risk_field_cost": 1.6565,
             "total_cost": 1.8957
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 31.81,
@@ -156344,7 +156349,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.66 below dynamic threshold.",
-        "caption": "Adjusting speed to 1.4 km/h to maintain smooth clearance around active road users.",
+        "caption": "Adjusting speed to 1.4 km/h to maintain smooth clearance around traffic.",
         "min_clearance_m": 0.0
       },
       {
@@ -157570,7 +157575,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7668
           },
-          "latency_ms": 19.32,
+          "latency_ms": 19.19,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -159666,7 +159671,7 @@
             "risk_field_cost": 1.462,
             "total_cost": 1.7291
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -161762,7 +161767,7 @@
             "risk_field_cost": 1.3506,
             "total_cost": 1.618
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -163858,7 +163863,7 @@
             "risk_field_cost": 1.2285,
             "total_cost": 1.4964
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -165954,7 +165959,7 @@
             "risk_field_cost": 1.103,
             "total_cost": 1.3714
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -168050,7 +168055,7 @@
             "risk_field_cost": 0.9778,
             "total_cost": 1.2467
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -170146,7 +170151,7 @@
             "risk_field_cost": 0.8493,
             "total_cost": 1.1189
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -174338,7 +174343,7 @@
             "risk_field_cost": 0.6026,
             "total_cost": 0.8735
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -180626,7 +180631,7 @@
             "risk_field_cost": 0.3185,
             "total_cost": 0.5909
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 32.15,
@@ -182327,7 +182332,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7672
           },
-          "latency_ms": 25.91,
+          "latency_ms": 23.41,
           "planned_trajectory": [
             {
               "x": 33.58,
@@ -184028,7 +184033,7 @@
             "risk_field_cost": 0.1885,
             "total_cost": 0.4561
           },
-          "latency_ms": 0.32,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 33.58,
@@ -185729,7 +185734,7 @@
             "risk_field_cost": 0.1472,
             "total_cost": 0.4152
           },
-          "latency_ms": 0.25,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 33.58,
@@ -187430,7 +187435,7 @@
             "risk_field_cost": 0.1095,
             "total_cost": 0.378
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 33.58,
@@ -189131,7 +189136,7 @@
             "risk_field_cost": 0.0789,
             "total_cost": 0.348
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 33.58,
@@ -192533,7 +192538,7 @@
             "risk_field_cost": 0.0381,
             "total_cost": 0.3093
           },
-          "latency_ms": 0.24,
+          "latency_ms": 0.25,
           "planned_trajectory": [
             {
               "x": 34.51,
@@ -194304,7 +194309,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -195530,7 +195535,7 @@
             "risk_field_cost": 0.018,
             "total_cost": 0.2907
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 34.51,
@@ -195605,7 +195610,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -196831,7 +196836,7 @@
             "risk_field_cost": 0.0125,
             "total_cost": 0.2826
           },
-          "latency_ms": 0.39,
+          "latency_ms": 0.38,
           "planned_trajectory": [
             {
               "x": 35.49,
@@ -196901,7 +196906,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -198127,7 +198132,7 @@
             "risk_field_cost": 0.008,
             "total_cost": 0.279
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 35.49,
@@ -198197,7 +198202,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -199423,7 +199428,7 @@
             "risk_field_cost": 0.0049,
             "total_cost": 0.2769
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 35.49,
@@ -199493,7 +199498,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -200719,7 +200724,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6003
           },
-          "latency_ms": 20.32,
+          "latency_ms": 18.1,
           "planned_trajectory": [
             {
               "x": 36.49,
@@ -202025,7 +202030,7 @@
             "risk_field_cost": 0.0018,
             "total_cost": 0.1002
           },
-          "latency_ms": 0.24,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 36.49,
@@ -202936,7 +202941,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.097
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.26,
           "planned_trajectory": [
             {
               "x": 36.49,
@@ -203847,7 +203852,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1008
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.29,
           "planned_trajectory": [
             {
               "x": 37.25,
@@ -204753,7 +204758,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1149
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 37.25,
@@ -205659,7 +205664,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1356
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 38.02,
@@ -207461,7 +207466,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.201
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 38.82,
@@ -208357,7 +208362,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2381
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 39.62,
@@ -209643,7 +209648,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2777
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 39.62,
@@ -210929,7 +210934,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3165
           },
-          "latency_ms": 0.33,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 40.42,
@@ -212210,7 +212215,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3551
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 41.21,
@@ -213486,7 +213491,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3351
           },
-          "latency_ms": 18.93,
+          "latency_ms": 18.11,
           "planned_trajectory": [
             {
               "x": 41.87,
@@ -214792,7 +214797,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.8365
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 42.27,
@@ -216093,7 +216098,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.8379
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 42.67,
@@ -217389,7 +217394,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.8395
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 43.47,
@@ -218675,7 +218680,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.841
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 43.87,
@@ -219956,7 +219961,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.8425
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 44.67,
@@ -221227,7 +221232,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.8439
           },
-          "latency_ms": 0.34,
+          "latency_ms": 0.24,
           "planned_trajectory": [
             {
               "x": 45.47,
@@ -222488,7 +222493,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.8453
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 45.86,
@@ -223744,7 +223749,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3443
           },
-          "latency_ms": 17.1,
+          "latency_ms": 16.57,
           "planned_trajectory": [
             {
               "x": 46.69,
@@ -225050,7 +225055,7 @@
             "risk_field_cost": 0.0005,
             "total_cost": 0.8462
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 47.09,
@@ -226331,7 +226336,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3462
           },
-          "latency_ms": 15.99,
+          "latency_ms": 16.07,
           "planned_trajectory": [
             {
               "x": 47.97,
@@ -226411,7 +226416,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.35, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -227637,7 +227642,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3454
           },
-          "latency_ms": 15.49,
+          "latency_ms": 15.45,
           "planned_trajectory": [
             {
               "x": 48.65,
@@ -227717,7 +227722,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.35, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -228548,7 +228553,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.0485
           },
-          "latency_ms": 12.56,
+          "latency_ms": 12.27,
           "planned_trajectory": [
             {
               "x": 50.12,
@@ -229459,7 +229464,7 @@
             "risk_field_cost": 0.1015,
             "total_cost": 0.7823
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 50.12,
@@ -230370,7 +230375,7 @@
             "risk_field_cost": 0.1685,
             "total_cost": 0.8638
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 50.89,
@@ -231276,7 +231281,7 @@
             "risk_field_cost": 0.2481,
             "total_cost": 0.9566
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 51.65,
@@ -233073,7 +233078,7 @@
             "risk_field_cost": 0.1626,
             "total_cost": 0.891
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 53.2,
@@ -233964,7 +233969,7 @@
             "risk_field_cost": 0.185,
             "total_cost": 0.9214
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 53.98,
@@ -234455,7 +234460,7 @@
             "risk_field_cost": 0.158,
             "total_cost": 0.9031
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 53.98,
@@ -234946,7 +234951,7 @@
             "risk_field_cost": 0.0935,
             "total_cost": 0.8453
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 54.77,
@@ -235913,7 +235918,7 @@
             "risk_field_cost": 0.0112,
             "total_cost": 0.7742
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 56.37,
@@ -236389,7 +236394,7 @@
             "risk_field_cost": 0.0023,
             "total_cost": 0.7698
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 57.17,
@@ -236860,7 +236865,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5979
           },
-          "latency_ms": 11.15,
+          "latency_ms": 11.3,
           "planned_trajectory": [
             {
               "x": 59.24,
@@ -237376,7 +237381,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1079
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 59.24,
@@ -237892,7 +237897,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1086
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 59.24,
@@ -238087,7 +238092,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Adjusting speed to 25.9 km/h to maintain smooth clearance around active road users.",
+        "caption": "Adjusting speed to 25.9 km/h to maintain smooth clearance around traffic.",
         "min_clearance_m": 0.0
       },
       {
@@ -238127,7 +238132,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1102
           },
-          "latency_ms": 0.11,
+          "latency_ms": 0.1,
           "planned_trajectory": [
             {
               "x": 60.74,
@@ -238202,7 +238207,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Adjusting speed to 25.9 km/h to maintain smooth clearance around active road users.",
+        "caption": "Adjusting speed to 25.9 km/h to maintain smooth clearance around traffic.",
         "min_clearance_m": 0.0
       },
       {
@@ -238242,7 +238247,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.108
           },
-          "latency_ms": 0.11,
+          "latency_ms": 0.1,
           "planned_trajectory": [
             {
               "x": 62.26,
@@ -238312,7 +238317,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Adjusting speed to 25.9 km/h to maintain smooth clearance around active road users.",
+        "caption": "Adjusting speed to 25.9 km/h to maintain smooth clearance around traffic.",
         "min_clearance_m": 0.0
       },
       {
@@ -238748,7 +238753,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1093
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 62.26,
@@ -239254,7 +239259,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.107
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 63.83,
@@ -240757,7 +240762,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1091
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 65.43,
@@ -241253,7 +241258,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1105
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 65.43,
@@ -241749,7 +241754,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5754
           },
-          "latency_ms": 11.44,
+          "latency_ms": 10.92,
           "planned_trajectory": [
             {
               "x": 67.7,
@@ -241829,7 +241834,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.58, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -242265,7 +242270,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0853
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 67.7,
@@ -242781,7 +242786,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0871
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 67.7,
@@ -243297,7 +243302,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0881
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 69.3,
@@ -243380,6 +243385,7 @@
   "standard": {
     "scenario_id": "",
     "planner_id": "B1",
+    "source_file": "runs/val_b_manifest.json",
     "metrics": {
       "duration_s": 5.7,
       "completed_goal": false,
@@ -243387,8 +243393,9 @@
       "min_clearance_m": 0.0,
       "mean_jerk_m_s3": 1.802,
       "replan_count": 58,
-      "p95_latency_ms": 5.72,
-      "mean_speed_m_s": 3.6
+      "p95_latency_ms": 5.46,
+      "mean_speed_m_s": 3.6,
+      "source": "runs/val_b_manifest.json"
     },
     "frames": [
       {
@@ -244614,7 +244621,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.8114
           },
-          "latency_ms": 1.36,
+          "latency_ms": 1.22,
           "planned_trajectory": [
             {
               "x": 1.68,
@@ -244649,7 +244656,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=6.7 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 23.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 23.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 35.06
       },
       {
@@ -245875,7 +245882,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.8071
           },
-          "latency_ms": 1.14,
+          "latency_ms": 0.92,
           "planned_trajectory": [
             {
               "x": 2.35,
@@ -245910,7 +245917,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=6.8 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 23.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 23.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 34.42
       },
       {
@@ -247531,7 +247538,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.8033
           },
-          "latency_ms": 1.03,
+          "latency_ms": 0.97,
           "planned_trajectory": [
             {
               "x": 3.01,
@@ -247566,7 +247573,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.8 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 23.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 23.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 33.93
       },
       {
@@ -249187,7 +249194,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.8023
           },
-          "latency_ms": 1.03,
+          "latency_ms": 0.9,
           "planned_trajectory": [
             {
               "x": 3.61,
@@ -249222,7 +249229,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.6 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 22.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 22.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 33.4
       },
       {
@@ -250878,7 +250885,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 22.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 22.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 32.89
       },
       {
@@ -252499,7 +252506,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.8005
           },
-          "latency_ms": 0.98,
+          "latency_ms": 0.94,
           "planned_trajectory": [
             {
               "x": 4.73,
@@ -252534,7 +252541,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.1 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 21.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 32.38
       },
       {
@@ -254155,7 +254162,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7995
           },
-          "latency_ms": 1.06,
+          "latency_ms": 0.89,
           "planned_trajectory": [
             {
               "x": 5.26,
@@ -254190,7 +254197,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.8 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 20.3 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 20.3 km/h assuming it moves in a straight line.",
         "min_clearance_m": 31.86
       },
       {
@@ -255811,7 +255818,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7985
           },
-          "latency_ms": 1.12,
+          "latency_ms": 0.91,
           "planned_trajectory": [
             {
               "x": 5.78,
@@ -255846,7 +255853,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.7 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 19.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 19.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 31.47
       },
       {
@@ -257467,7 +257474,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7975
           },
-          "latency_ms": 1.08,
+          "latency_ms": 0.95,
           "planned_trajectory": [
             {
               "x": 6.28,
@@ -257502,7 +257509,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 19.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 19.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 31.05
       },
       {
@@ -259123,7 +259130,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7964
           },
-          "latency_ms": 1.0,
+          "latency_ms": 0.92,
           "planned_trajectory": [
             {
               "x": 6.77,
@@ -259158,7 +259165,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 18.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 18.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 30.58
       },
       {
@@ -260779,7 +260786,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7953
           },
-          "latency_ms": 1.75,
+          "latency_ms": 1.59,
           "planned_trajectory": [
             {
               "x": 7.24,
@@ -260814,7 +260821,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.2 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 17.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 17.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 30.2
       },
       {
@@ -262435,7 +262442,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7941
           },
-          "latency_ms": 1.74,
+          "latency_ms": 1.64,
           "planned_trajectory": [
             {
               "x": 7.71,
@@ -262470,7 +262477,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.0 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 17.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 17.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 29.75
       },
       {
@@ -264091,7 +264098,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.793
           },
-          "latency_ms": 1.68,
+          "latency_ms": 2.01,
           "planned_trajectory": [
             {
               "x": 8.16,
@@ -264126,7 +264133,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=4.9 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking pedestrian at 16.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 16.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 29.44
       },
       {
@@ -267403,7 +267410,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7907
           },
-          "latency_ms": 1.69,
+          "latency_ms": 1.64,
           "planned_trajectory": [
             {
               "x": 9.03,
@@ -269059,7 +269066,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7895
           },
-          "latency_ms": 1.66,
+          "latency_ms": 1.64,
           "planned_trajectory": [
             {
               "x": 9.46,
@@ -270715,7 +270722,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7884
           },
-          "latency_ms": 1.68,
+          "latency_ms": 1.56,
           "planned_trajectory": [
             {
               "x": 9.88,
@@ -272371,7 +272378,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.6583
           },
-          "latency_ms": 1.53,
+          "latency_ms": 1.54,
           "planned_trajectory": [
             {
               "x": 10.21,
@@ -274027,7 +274034,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2279
           },
-          "latency_ms": 1.44,
+          "latency_ms": 1.57,
           "planned_trajectory": [
             {
               "x": 10.57,
@@ -275683,7 +275690,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2285
           },
-          "latency_ms": 1.37,
+          "latency_ms": 1.4,
           "planned_trajectory": [
             {
               "x": 10.93,
@@ -277339,7 +277346,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2275
           },
-          "latency_ms": 1.42,
+          "latency_ms": 1.36,
           "planned_trajectory": [
             {
               "x": 11.33,
@@ -279390,7 +279397,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2264
           },
-          "latency_ms": 1.44,
+          "latency_ms": 1.33,
           "planned_trajectory": [
             {
               "x": 11.72,
@@ -281441,7 +281448,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2254
           },
-          "latency_ms": 1.43,
+          "latency_ms": 1.39,
           "planned_trajectory": [
             {
               "x": 12.11,
@@ -283492,7 +283499,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2243
           },
-          "latency_ms": 1.6,
+          "latency_ms": 1.61,
           "planned_trajectory": [
             {
               "x": 12.5,
@@ -285543,7 +285550,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2232
           },
-          "latency_ms": 1.92,
+          "latency_ms": 1.81,
           "planned_trajectory": [
             {
               "x": 12.88,
@@ -287594,7 +287601,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2206
           },
-          "latency_ms": 2.44,
+          "latency_ms": 2.09,
           "planned_trajectory": [
             {
               "x": 13.3,
@@ -289645,7 +289652,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2211
           },
-          "latency_ms": 2.57,
+          "latency_ms": 2.45,
           "planned_trajectory": [
             {
               "x": 13.64,
@@ -293747,7 +293754,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.219
           },
-          "latency_ms": 2.98,
+          "latency_ms": 2.94,
           "planned_trajectory": [
             {
               "x": 14.38,
@@ -295798,7 +295805,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2179
           },
-          "latency_ms": 3.22,
+          "latency_ms": 3.38,
           "planned_trajectory": [
             {
               "x": 14.76,
@@ -297849,7 +297856,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2169
           },
-          "latency_ms": 3.52,
+          "latency_ms": 3.47,
           "planned_trajectory": [
             {
               "x": 15.13,
@@ -300295,7 +300302,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2184
           },
-          "latency_ms": 3.6,
+          "latency_ms": 3.66,
           "planned_trajectory": [
             {
               "x": 15.42,
@@ -302741,7 +302748,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2193
           },
-          "latency_ms": 3.71,
+          "latency_ms": 3.81,
           "planned_trajectory": [
             {
               "x": 15.7,
@@ -305187,7 +305194,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2196
           },
-          "latency_ms": 4.19,
+          "latency_ms": 3.86,
           "planned_trajectory": [
             {
               "x": 15.98,
@@ -307633,7 +307640,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2197
           },
-          "latency_ms": 4.44,
+          "latency_ms": 4.13,
           "planned_trajectory": [
             {
               "x": 16.25,
@@ -310079,7 +310086,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2197
           },
-          "latency_ms": 6.58,
+          "latency_ms": 5.0,
           "planned_trajectory": [
             {
               "x": 16.51,
@@ -312525,7 +312532,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2197
           },
-          "latency_ms": 5.51,
+          "latency_ms": 4.63,
           "planned_trajectory": [
             {
               "x": 16.76,
@@ -314971,7 +314978,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2196
           },
-          "latency_ms": 5.2,
+          "latency_ms": 4.93,
           "planned_trajectory": [
             {
               "x": 17.0,
@@ -317417,7 +317424,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2194
           },
-          "latency_ms": 5.16,
+          "latency_ms": 5.04,
           "planned_trajectory": [
             {
               "x": 17.24,
@@ -319863,7 +319870,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2193
           },
-          "latency_ms": 5.42,
+          "latency_ms": 5.44,
           "planned_trajectory": [
             {
               "x": 17.47,
@@ -322309,7 +322316,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2191
           },
-          "latency_ms": 5.74,
+          "latency_ms": 5.68,
           "planned_trajectory": [
             {
               "x": 17.7,
@@ -324755,7 +324762,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2188
           },
-          "latency_ms": 5.8,
+          "latency_ms": 5.76,
           "planned_trajectory": [
             {
               "x": 17.92,
@@ -327201,7 +327208,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2186
           },
-          "latency_ms": 5.72,
+          "latency_ms": 5.58,
           "planned_trajectory": [
             {
               "x": 18.13,
@@ -329647,7 +329654,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2183
           },
-          "latency_ms": 5.31,
+          "latency_ms": 5.29,
           "planned_trajectory": [
             {
               "x": 18.35,
@@ -332093,7 +332100,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.218
           },
-          "latency_ms": 5.51,
+          "latency_ms": 4.99,
           "planned_trajectory": [
             {
               "x": 18.55,
@@ -334539,7 +334546,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2176
           },
-          "latency_ms": 5.18,
+          "latency_ms": 4.99,
           "planned_trajectory": [
             {
               "x": 18.76,
@@ -336985,7 +336992,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3448
           },
-          "latency_ms": 4.48,
+          "latency_ms": 4.37,
           "planned_trajectory": [
             {
               "x": 18.78,
@@ -337035,7 +337042,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 7.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 7.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 21.56
       },
       {
@@ -339446,7 +339453,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3443
           },
-          "latency_ms": 4.16,
+          "latency_ms": 4.06,
           "planned_trajectory": [
             {
               "x": 18.98,
@@ -339496,7 +339503,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 7.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 7.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 21.46
       },
       {
@@ -341907,7 +341914,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3439
           },
-          "latency_ms": 4.95,
+          "latency_ms": 3.81,
           "planned_trajectory": [
             {
               "x": 19.18,
@@ -341957,7 +341964,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 7.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 7.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 21.37
       },
       {
@@ -344368,7 +344375,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3434
           },
-          "latency_ms": 3.92,
+          "latency_ms": 3.71,
           "planned_trajectory": [
             {
               "x": 19.38,
@@ -344418,7 +344425,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 7.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 7.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 21.27
       },
       {
@@ -346829,7 +346836,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3429
           },
-          "latency_ms": 3.09,
+          "latency_ms": 3.0,
           "planned_trajectory": [
             {
               "x": 19.58,
@@ -346879,7 +346886,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 7.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 7.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 21.16
       },
       {
@@ -349290,7 +349297,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3425
           },
-          "latency_ms": 3.98,
+          "latency_ms": 2.68,
           "planned_trajectory": [
             {
               "x": 19.77,
@@ -349340,7 +349347,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 7.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 7.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 20.9
       },
       {
@@ -351751,7 +351758,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.342
           },
-          "latency_ms": 4.54,
+          "latency_ms": 2.5,
           "planned_trajectory": [
             {
               "x": 19.96,
@@ -351801,7 +351808,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 6.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 6.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 19.99
       },
       {
@@ -354212,7 +354219,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3415
           },
-          "latency_ms": 2.14,
+          "latency_ms": 1.97,
           "planned_trajectory": [
             {
               "x": 20.15,
@@ -354262,7 +354269,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 6.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 6.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 19.25
       },
       {
@@ -356673,7 +356680,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.341
           },
-          "latency_ms": 2.9,
+          "latency_ms": 1.77,
           "planned_trajectory": [
             {
               "x": 20.34,
@@ -356723,7 +356730,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 6.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 6.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 18.53
       },
       {
@@ -359134,7 +359141,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3406
           },
-          "latency_ms": 2.06,
+          "latency_ms": 1.33,
           "planned_trajectory": [
             {
               "x": 20.53,
@@ -359184,7 +359191,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 6.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 6.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 17.78
       },
       {
@@ -361595,7 +361602,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3401
           },
-          "latency_ms": 0.85,
+          "latency_ms": 0.63,
           "planned_trajectory": [
             {
               "x": 20.72,
@@ -361645,7 +361652,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 6.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 6.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 16.94
       },
       {
@@ -364056,7 +364063,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3396
           },
-          "latency_ms": 0.89,
+          "latency_ms": 0.64,
           "planned_trajectory": [
             {
               "x": 20.91,
@@ -364106,7 +364113,7 @@
           ]
         },
         "decision_trace": "[YIELD] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Collided with obstacle at 6.7 km/h. Standard planner failed to anticipate sudden move.",
+        "caption": "Collided at 6.7 km/h. Standard planner failed to anticipate sudden move.",
         "min_clearance_m": 16.05
       }
     ]

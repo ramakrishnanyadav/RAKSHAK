@@ -181,6 +181,49 @@ describe('Showcase Landing Page Integration Test', () => {
               }),
           });
         }
+        if (url.includes('provenance.json')) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                generated_at: '2026-11-04T00:00:00Z',
+                scan_summary: {
+                  real_trajectories_count: 0,
+                  simulated_trajectories_count: 75,
+                  real_share_pct: 0.0,
+                  simulated_share_pct: 100.0,
+                  accounting_note: 'Calculated by physical scan of repo files.',
+                },
+                datasets: [
+                  {
+                    id: 'idd',
+                    name: 'Indian Driving Dataset (IDD)',
+                    url: 'https://idd.insaan.iiit.ac.in/',
+                    status: 'Adapter only (no data loaded)',
+                    badge_tone: 'amber',
+                    summary: 'LiDAR and dashcam dataset.',
+                    used_for: 'Perception testing.',
+                    item_count: 0,
+                    unit: 'sequences',
+                    licence: 'CC BY-NC-SA 4.0',
+                    attribution: 'IDD project',
+                  },
+                ],
+                split_protocol: {
+                  strategy: 'Partitioned by sequence.',
+                  splits: [{ name: 'train', share_pct: 60, purpose: 'Optimization' }],
+                },
+                reconciliation: {
+                  title: 'Ablation Reconciliation',
+                  frozen_test_p3_completion: 0.0,
+                  frozen_test_reason: 'w_stall = 0.0',
+                  val_b_p3_completion: 56.0,
+                  val_b_reason: 'w_stall = 4.0',
+                  source_files: ['runs/val_b_manifest.json'],
+                },
+              }),
+          });
+        }
         return Promise.resolve({
           ok: true,
           json: () =>
@@ -256,3 +299,4 @@ describe('Showcase Landing Page Integration Test', () => {
     expect(screen.getByText('python scripts/reproduce_all.py')).not.toBeNull();
   });
 });
+

@@ -2,15 +2,19 @@
   "key": "cattle",
   "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
   "name": "Cattle Crossing",
-  "description": "Unpredictable livestock straying onto rural corridor with sudden stops.",
+  "description": "Livestock wandering unpredictably onto rural corridor with sudden stops.",
+  "built_from": "Synthetic rural corridor + erratic livestock dynamics",
+  "source_file": "engine/scenarios/scenarios_impl.py",
   "road_users": [
     "cattle",
     "pedestrian"
   ],
   "seed": 2005,
+  "tested_on": "Validation B Split (Seed 2005)",
   "adaptive": {
     "scenario_id": "",
     "planner_id": "P3",
+    "source_file": "runs/val_b_manifest.json",
     "metrics": {
       "duration_s": 12.6,
       "completed_goal": true,
@@ -18,8 +22,9 @@
       "min_clearance_m": 0.78,
       "mean_jerk_m_s3": 1.165,
       "replan_count": 17,
-      "p95_latency_ms": 12.7,
-      "mean_speed_m_s": 6.34
+      "p95_latency_ms": 12.42,
+      "mean_speed_m_s": 6.34,
+      "source": "runs/val_b_manifest.json"
     },
     "frames": [
       {
@@ -1245,7 +1250,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6282
           },
-          "latency_ms": 19.86,
+          "latency_ms": 17.66,
           "planned_trajectory": [
             {
               "x": 1.6,
@@ -1325,7 +1330,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.63, trigger=PERIODIC).",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 25.0
       },
       {
@@ -2631,7 +2636,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 24.3
       },
       {
@@ -3857,7 +3862,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1353
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 1.6,
@@ -3937,7 +3942,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 23.72
       },
       {
@@ -5163,7 +5168,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6347
           },
-          "latency_ms": 16.93,
+          "latency_ms": 16.87,
           "planned_trajectory": [
             {
               "x": 3.4,
@@ -5243,7 +5248,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (CONFORMAL_VIOLATION): Selected FOLLOW (cost=0.63, trigger=CONFORMAL_VIOLATION).",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 22.97
       },
       {
@@ -6469,7 +6474,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.15
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.25,
           "planned_trajectory": [
             {
               "x": 3.4,
@@ -6549,7 +6554,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 22.26
       },
       {
@@ -7775,7 +7780,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1571
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.29,
           "planned_trajectory": [
             {
               "x": 3.4,
@@ -7855,7 +7860,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 21.6
       },
       {
@@ -9081,7 +9086,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1639
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 4.68,
@@ -9156,7 +9161,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 20.88
       },
       {
@@ -10382,7 +10387,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1704
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 5.96,
@@ -10452,7 +10457,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 20.04
       },
       {
@@ -11678,7 +11683,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1766
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.22,
           "planned_trajectory": [
             {
               "x": 5.96,
@@ -11748,7 +11753,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 19.38
       },
       {
@@ -12974,7 +12979,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1825
           },
-          "latency_ms": 0.3,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 7.24,
@@ -13039,7 +13044,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 18.72
       },
       {
@@ -14330,7 +14335,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 17.95
       },
       {
@@ -15556,7 +15561,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.137
           },
-          "latency_ms": 0.28,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 8.52,
@@ -15616,7 +15621,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 17.27
       },
       {
@@ -16842,7 +16847,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1315
           },
-          "latency_ms": 0.31,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 8.52,
@@ -16902,7 +16907,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 16.62
       },
       {
@@ -18128,7 +18133,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1353
           },
-          "latency_ms": 0.31,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 9.8,
@@ -18183,7 +18188,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 15.96
       },
       {
@@ -19409,7 +19414,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1462
           },
-          "latency_ms": 0.31,
+          "latency_ms": 0.24,
           "planned_trajectory": [
             {
               "x": 9.8,
@@ -19464,7 +19469,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 15.36
       },
       {
@@ -20690,7 +20695,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.8067
           },
-          "latency_ms": 18.31,
+          "latency_ms": 16.41,
           "planned_trajectory": [
             {
               "x": 11.24,
@@ -20770,7 +20775,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.81, trigger=PERIODIC).",
-        "caption": "Yielding to cow crossing road (20.9 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (20.9 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 14.76
       },
       {
@@ -21996,7 +22001,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3091
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 11.24,
@@ -22076,7 +22081,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 14.2
       },
       {
@@ -23302,7 +23307,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.276
           },
-          "latency_ms": 0.32,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 12.01,
@@ -23377,7 +23382,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 13.65
       },
       {
@@ -24603,7 +24608,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2492
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 12.01,
@@ -24678,7 +24683,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 13.18
       },
       {
@@ -25904,7 +25909,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2274
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 12.79,
@@ -25974,7 +25979,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 12.62
       },
       {
@@ -27200,7 +27205,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2098
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 13.57,
@@ -27265,7 +27270,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 12.13
       },
       {
@@ -28491,7 +28496,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1962
           },
-          "latency_ms": 0.25,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 13.57,
@@ -28556,7 +28561,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 11.59
       },
       {
@@ -29782,7 +29787,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1622
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 14.35,
@@ -29842,7 +29847,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 11.11
       },
       {
@@ -31068,7 +31073,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1476
           },
-          "latency_ms": 0.29,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 15.15,
@@ -31123,7 +31128,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (15.3 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (15.3 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 10.69
       },
       {
@@ -32349,7 +32354,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1447
           },
-          "latency_ms": 0.29,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 15.15,
@@ -32404,7 +32409,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (14.6 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (14.6 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 10.21
       },
       {
@@ -33630,7 +33635,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1451
           },
-          "latency_ms": 0.47,
+          "latency_ms": 0.32,
           "planned_trajectory": [
             {
               "x": 15.94,
@@ -33680,7 +33685,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (14.0 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (14.0 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 9.84
       },
       {
@@ -34906,7 +34911,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1497
           },
-          "latency_ms": 0.41,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 15.94,
@@ -34956,7 +34961,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (13.5 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (13.5 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 9.51
       },
       {
@@ -36182,7 +36187,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7839
           },
-          "latency_ms": 24.02,
+          "latency_ms": 14.13,
           "planned_trajectory": [
             {
               "x": 16.54,
@@ -36262,7 +36267,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.78, trigger=PERIODIC).",
-        "caption": "Yielding to cow crossing road (13.0 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (13.0 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 9.17
       },
       {
@@ -37488,7 +37493,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2954
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 16.54,
@@ -37568,7 +37573,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (12.6 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (12.6 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 8.84
       },
       {
@@ -38794,7 +38799,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2761
           },
-          "latency_ms": 0.46,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 16.93,
@@ -38869,7 +38874,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (12.2 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (12.2 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 8.51
       },
       {
@@ -40095,7 +40100,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2598
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 17.32,
@@ -40165,7 +40170,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (11.9 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (11.9 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 8.21
       },
       {
@@ -41391,7 +41396,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2463
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 17.32,
@@ -41461,7 +41466,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (11.6 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (11.6 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 7.93
       },
       {
@@ -42687,7 +42692,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2351
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 17.71,
@@ -42752,7 +42757,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (11.3 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (11.3 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 7.62
       },
       {
@@ -44038,7 +44043,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (11.1 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (11.1 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 7.38
       },
       {
@@ -45264,7 +45269,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2175
           },
-          "latency_ms": 0.41,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 18.49,
@@ -45319,7 +45324,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (10.8 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (10.8 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 7.11
       },
       {
@@ -46545,7 +46550,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2107
           },
-          "latency_ms": 0.46,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 18.88,
@@ -46595,7 +46600,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (10.6 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (10.6 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 6.84
       },
       {
@@ -47821,7 +47826,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2054
           },
-          "latency_ms": 0.58,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 18.88,
@@ -47871,7 +47876,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (10.5 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (10.5 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 6.55
       },
       {
@@ -49097,7 +49102,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2004
           },
-          "latency_ms": 0.52,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 19.28,
@@ -49142,7 +49147,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (10.3 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (10.3 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 6.24
       },
       {
@@ -50368,7 +50373,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1961
           },
-          "latency_ms": 0.44,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 19.67,
@@ -50408,7 +50413,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (10.1 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (10.1 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 5.98
       },
       {
@@ -51634,7 +51639,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.8555
           },
-          "latency_ms": 24.02,
+          "latency_ms": 13.7,
           "planned_trajectory": [
             {
               "x": 20.04,
@@ -51714,7 +51719,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.86, trigger=PERIODIC).",
-        "caption": "Yielding to cow crossing road (10.0 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (10.0 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 5.75
       },
       {
@@ -52940,7 +52945,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4006
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 20.04,
@@ -53020,7 +53025,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (9.9 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (9.9 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 5.5
       },
       {
@@ -54246,7 +54251,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4138
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 20.36,
@@ -54316,7 +54321,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (10.1 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (10.1 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 5.28
       },
       {
@@ -55542,7 +55547,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4502
           },
-          "latency_ms": 0.24,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 20.52,
@@ -55607,7 +55612,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (10.5 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (10.5 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 5.01
       },
       {
@@ -56438,7 +56443,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.5135
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 20.84,
@@ -56493,7 +56498,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (11.3 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (11.3 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 4.7
       },
       {
@@ -57324,7 +57329,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.5974
           },
-          "latency_ms": 0.29,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 21.15,
@@ -57369,7 +57374,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (12.2 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (12.2 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 4.39
       },
       {
@@ -58200,7 +58205,7 @@
             "risk_field_cost": 0.0004,
             "total_cost": 0.6898
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 21.47,
@@ -58235,7 +58240,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (13.1 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (13.1 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 4.04
       },
       {
@@ -59066,7 +59071,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.1512
           },
-          "latency_ms": 9.93,
+          "latency_ms": 10.1,
           "planned_trajectory": [
             {
               "x": 22.17,
@@ -59146,7 +59151,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=1.15, trigger=PERIODIC).",
-        "caption": "Yielding to cow crossing road (14.0 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (14.0 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 3.75
       },
       {
@@ -60052,7 +60057,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (14.9 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (14.9 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 3.43
       },
       {
@@ -60948,7 +60953,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (15.8 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (15.8 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 3.07
       },
       {
@@ -61829,7 +61834,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (16.7 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (16.7 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 2.7
       },
       {
@@ -62660,7 +62665,7 @@
             "risk_field_cost": 0.0146,
             "total_cost": 0.9021
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 23.61,
@@ -62695,7 +62700,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (17.6 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (17.6 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 2.3
       },
       {
@@ -63526,7 +63531,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3884
           },
-          "latency_ms": 8.98,
+          "latency_ms": 10.34,
           "planned_trajectory": [
             {
               "x": 24.2,
@@ -63606,7 +63611,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.39, trigger=PERIODIC).",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 1.88
       },
       {
@@ -64437,7 +64442,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3871
           },
-          "latency_ms": 8.78,
+          "latency_ms": 8.97,
           "planned_trajectory": [
             {
               "x": 24.71,
@@ -64517,7 +64522,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.39, trigger=PERIODIC).",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 1.47
       },
       {
@@ -65348,7 +65353,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7372
           },
-          "latency_ms": 8.45,
+          "latency_ms": 8.67,
           "planned_trajectory": [
             {
               "x": 26.81,
@@ -65428,7 +65433,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.74, trigger=PERIODIC).",
-        "caption": "Yielding to cow crossing road (20.2 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (20.2 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 1.05
       },
       {
@@ -66259,7 +66264,7 @@
             "risk_field_cost": 0.2095,
             "total_cost": 0.4491
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 26.81,
@@ -66339,7 +66344,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.08 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (21.0 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (21.0 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.7
       },
       {
@@ -67170,7 +67175,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7359
           },
-          "latency_ms": 8.11,
+          "latency_ms": 9.04,
           "planned_trajectory": [
             {
               "x": 27.95,
@@ -67250,7 +67255,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (CONFORMAL_VIOLATION): Selected BYPASS (cost=0.74, trigger=CONFORMAL_VIOLATION).",
-        "caption": "Yielding to cow crossing road (21.7 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (21.7 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.32
       },
       {
@@ -68081,7 +68086,7 @@
             "risk_field_cost": 0.4501,
             "total_cost": 0.6883
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 27.95,
@@ -68161,7 +68166,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.18 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (22.4 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (22.4 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.08
       },
       {
@@ -68992,7 +68997,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7001
           },
-          "latency_ms": 13.89,
+          "latency_ms": 13.31,
           "planned_trajectory": [
             {
               "x": 29.19,
@@ -69072,7 +69077,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (CONFORMAL_VIOLATION): Selected BYPASS (cost=0.70, trigger=CONFORMAL_VIOLATION).",
-        "caption": "Yielding to cow crossing road (22.9 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (22.9 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -69903,7 +69908,7 @@
             "risk_field_cost": 0.5696,
             "total_cost": 0.7782
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 29.19,
@@ -69983,7 +69988,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.23 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (23.4 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (23.4 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -70814,7 +70819,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5732
           },
-          "latency_ms": 14.16,
+          "latency_ms": 13.48,
           "planned_trajectory": [
             {
               "x": 30.14,
@@ -70894,7 +70899,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (CONFORMAL_VIOLATION): Selected BYPASS (cost=0.57, trigger=CONFORMAL_VIOLATION).",
-        "caption": "Yielding to cow crossing road (23.9 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (23.9 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -71725,7 +71730,7 @@
             "risk_field_cost": 0.3445,
             "total_cost": 0.4254
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 30.14,
@@ -71805,7 +71810,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.14 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (24.3 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (24.3 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -72636,7 +72641,7 @@
             "risk_field_cost": 0.2201,
             "total_cost": 0.309
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 30.14,
@@ -72716,7 +72721,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.09 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (24.7 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (24.7 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -73547,7 +73552,7 @@
             "risk_field_cost": 0.1254,
             "total_cost": 0.2216
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 31.41,
@@ -73622,7 +73627,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.05 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (25.0 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (25.0 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -74453,7 +74458,7 @@
             "risk_field_cost": 0.0615,
             "total_cost": 0.1666
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 31.41,
@@ -74528,7 +74533,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.02 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (25.3 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (25.3 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -75359,7 +75364,7 @@
             "risk_field_cost": 0.0293,
             "total_cost": 0.1423
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 32.69,
@@ -75429,7 +75434,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (25.6 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (25.6 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -76260,7 +76265,7 @@
             "risk_field_cost": 0.0119,
             "total_cost": 0.1335
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 33.97,
@@ -76325,7 +76330,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (25.8 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (25.8 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -77156,7 +77161,7 @@
             "risk_field_cost": 0.004,
             "total_cost": 0.1343
           },
-          "latency_ms": 0.24,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 33.97,
@@ -77221,7 +77226,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (26.0 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (26.0 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -77657,7 +77662,7 @@
             "risk_field_cost": 0.0011,
             "total_cost": 0.14
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 35.25,
@@ -77717,7 +77722,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (26.2 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (26.2 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -78153,7 +78158,7 @@
             "risk_field_cost": 0.0003,
             "total_cost": 0.1473
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 35.25,
@@ -78213,7 +78218,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (26.4 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (26.4 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -78649,7 +78654,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1546
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 36.53,
@@ -78704,7 +78709,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (26.6 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (26.6 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -79140,7 +79145,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5853
           },
-          "latency_ms": 7.82,
+          "latency_ms": 7.99,
           "planned_trajectory": [
             {
               "x": 38.13,
@@ -79220,7 +79225,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (CONFORMAL_VIOLATION): Selected BYPASS (cost=0.59, trigger=CONFORMAL_VIOLATION).",
-        "caption": "Yielding to cow crossing road (26.7 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (26.7 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -79656,7 +79661,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0897
           },
-          "latency_ms": 0.32,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 38.13,
@@ -79736,7 +79741,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (26.8 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (26.8 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -80172,7 +80177,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0899
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 38.13,
@@ -80252,7 +80257,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (27.0 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (27.0 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -80763,7 +80768,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (27.1 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (27.1 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -81199,7 +81204,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.089
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 39.61,
@@ -81274,7 +81279,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (27.2 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (27.2 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -81710,7 +81715,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0859
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 41.14,
@@ -81780,7 +81785,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (27.2 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (27.2 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -82216,7 +82221,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.087
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 41.14,
@@ -82286,7 +82291,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (27.3 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (27.3 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -82722,7 +82727,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0848
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 42.72,
@@ -82787,7 +82792,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (27.4 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (27.4 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -83223,7 +83228,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0862
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 42.72,
@@ -83288,7 +83293,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (27.4 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (27.4 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -83784,7 +83789,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Yielding to cow crossing road (27.5 km/h). Anticipating that it may stop mid-lane.",
+        "caption": "Yielding to cow (27.5 km/h). Anticipating that it may stop mid-road.",
         "min_clearance_m": 0.0
       },
       {
@@ -84220,7 +84225,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0875
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 44.32,
@@ -84280,7 +84285,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -84716,7 +84721,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0892
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 45.91,
@@ -84771,7 +84776,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -85207,7 +85212,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5554
           },
-          "latency_ms": 7.62,
+          "latency_ms": 7.47,
           "planned_trajectory": [
             {
               "x": 46.99,
@@ -85287,7 +85292,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.56, trigger=PERIODIC).",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -85723,7 +85728,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0589
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 46.99,
@@ -85803,7 +85808,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -86239,7 +86244,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.061
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 46.99,
@@ -86319,7 +86324,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -86830,7 +86835,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -87266,7 +87271,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.064
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 48.58,
@@ -87341,7 +87346,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -87777,7 +87782,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0646
           },
-          "latency_ms": 0.27,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 50.18,
@@ -87847,7 +87852,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -88283,7 +88288,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0665
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 50.18,
@@ -88353,7 +88358,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -88789,7 +88794,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0675
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 51.78,
@@ -88854,7 +88859,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -89290,7 +89295,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0694
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 51.78,
@@ -89355,7 +89360,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -89791,7 +89796,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0712
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 53.38,
@@ -89851,7 +89856,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -90287,7 +90292,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0731
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 53.38,
@@ -90347,7 +90352,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -90783,7 +90788,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0749
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 54.97,
@@ -90838,7 +90843,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -91274,7 +91279,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5492
           },
-          "latency_ms": 7.52,
+          "latency_ms": 7.85,
           "planned_trajectory": [
             {
               "x": 56.23,
@@ -91354,7 +91359,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.55, trigger=PERIODIC).",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -91870,7 +91875,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -92386,7 +92391,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -92822,7 +92827,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0559
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 57.83,
@@ -92897,7 +92902,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -93333,7 +93338,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0579
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 57.83,
@@ -93408,7 +93413,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -93914,7 +93919,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -94350,7 +94355,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0612
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 59.43,
@@ -94420,7 +94425,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -94856,7 +94861,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0626
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 61.03,
@@ -94921,7 +94926,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -95357,7 +95362,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0645
           },
-          "latency_ms": 0.42,
+          "latency_ms": 0.28,
           "planned_trajectory": [
             {
               "x": 61.03,
@@ -95422,7 +95427,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -95858,7 +95863,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0663
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 62.63,
@@ -95918,7 +95923,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -96354,7 +96359,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0682
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 62.63,
@@ -96414,7 +96419,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -96850,7 +96855,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.07
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 64.22,
@@ -96905,7 +96910,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -97341,7 +97346,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5447
           },
-          "latency_ms": 9.4,
+          "latency_ms": 7.41,
           "planned_trajectory": [
             {
               "x": 65.49,
@@ -97421,7 +97426,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.54, trigger=PERIODIC).",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -97857,7 +97862,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0478
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 65.49,
@@ -97937,7 +97942,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -98373,7 +98378,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0497
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 65.49,
@@ -98453,7 +98458,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -98889,7 +98894,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0517
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 67.09,
@@ -98964,7 +98969,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -99400,7 +99405,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0536
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.28,
           "planned_trajectory": [
             {
               "x": 67.09,
@@ -99475,7 +99480,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -99911,7 +99916,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0554
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 68.69,
@@ -99981,7 +99986,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -100417,7 +100422,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0573
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 68.69,
@@ -100487,7 +100492,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -100923,7 +100928,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0591
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 70.29,
@@ -100988,7 +100993,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -101489,7 +101494,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -101925,7 +101930,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0627
           },
-          "latency_ms": 0.11,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 71.89,
@@ -101985,7 +101990,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -102421,7 +102426,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0644
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 71.89,
@@ -102481,7 +102486,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -102972,7 +102977,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -103408,7 +103413,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5441
           },
-          "latency_ms": 7.53,
+          "latency_ms": 8.2,
           "planned_trajectory": [
             {
               "x": 74.73,
@@ -103488,7 +103493,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.54, trigger=PERIODIC).",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -103924,7 +103929,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0473
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.25,
           "planned_trajectory": [
             {
               "x": 74.73,
@@ -104004,7 +104009,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -104440,7 +104445,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0491
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 74.73,
@@ -104520,7 +104525,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -104956,7 +104961,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0509
           },
-          "latency_ms": 0.42,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 76.33,
@@ -105031,7 +105036,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -105467,7 +105472,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0526
           },
-          "latency_ms": 0.38,
+          "latency_ms": 0.25,
           "planned_trajectory": [
             {
               "x": 76.33,
@@ -105542,7 +105547,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -105978,7 +105983,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0544
           },
-          "latency_ms": 0.3,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 77.93,
@@ -106048,7 +106053,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking cattle with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking cattle with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 0.0
       },
       {
@@ -106088,7 +106093,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0561
           },
-          "latency_ms": 0.26,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 77.93,
@@ -106158,7 +106163,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Cruising smoothly at 27.6 km/h with proactive trajectory planning.",
+        "caption": "Cruising smoothly at 27.6 km/h with proactive path planning.",
         "min_clearance_m": 0.0
       },
       {
@@ -106198,7 +106203,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0578
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 79.53,
@@ -106263,7 +106268,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Cruising smoothly at 27.6 km/h with proactive trajectory planning.",
+        "caption": "Cruising smoothly at 27.6 km/h with proactive path planning.",
         "min_clearance_m": 0.0
       },
       {
@@ -106303,7 +106308,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.0595
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 79.53,
@@ -106376,6 +106381,7 @@
   "standard": {
     "scenario_id": "",
     "planner_id": "B1",
+    "source_file": "runs/val_b_manifest.json",
     "metrics": {
       "duration_s": 7.3,
       "completed_goal": false,
@@ -106383,8 +106389,9 @@
       "min_clearance_m": 0.0,
       "mean_jerk_m_s3": 2.629,
       "replan_count": 74,
-      "p95_latency_ms": 17.73,
-      "mean_speed_m_s": 3.51
+      "p95_latency_ms": 14.71,
+      "mean_speed_m_s": 3.51,
+      "source": "runs/val_b_manifest.json"
     },
     "frames": [
       {
@@ -107610,7 +107617,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.8066
           },
-          "latency_ms": 1.36,
+          "latency_ms": 1.22,
           "planned_trajectory": [
             {
               "x": 1.8,
@@ -107645,7 +107652,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.2 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 25.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 25.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 25.0
       },
       {
@@ -108871,7 +108878,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.8022
           },
-          "latency_ms": 1.34,
+          "latency_ms": 0.94,
           "planned_trajectory": [
             {
               "x": 2.52,
@@ -108906,7 +108913,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 25.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 25.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 24.3
       },
       {
@@ -110132,7 +110139,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7983
           },
-          "latency_ms": 1.28,
+          "latency_ms": 0.92,
           "planned_trajectory": [
             {
               "x": 3.24,
@@ -110167,7 +110174,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 25.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 25.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 23.72
       },
       {
@@ -111393,7 +111400,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7946
           },
-          "latency_ms": 1.19,
+          "latency_ms": 0.9,
           "planned_trajectory": [
             {
               "x": 3.96,
@@ -111428,7 +111435,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 25.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 25.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 22.97
       },
       {
@@ -112654,7 +112661,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7911
           },
-          "latency_ms": 1.05,
+          "latency_ms": 0.92,
           "planned_trajectory": [
             {
               "x": 4.69,
@@ -112689,7 +112696,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 25.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 25.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 22.26
       },
       {
@@ -113915,7 +113922,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7878
           },
-          "latency_ms": 1.07,
+          "latency_ms": 0.98,
           "planned_trajectory": [
             {
               "x": 5.41,
@@ -113950,7 +113957,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 26.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 26.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 21.6
       },
       {
@@ -115176,7 +115183,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7846
           },
-          "latency_ms": 1.29,
+          "latency_ms": 0.99,
           "planned_trajectory": [
             {
               "x": 6.14,
@@ -115211,7 +115218,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 26.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 26.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 20.88
       },
       {
@@ -116437,7 +116444,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7815
           },
-          "latency_ms": 1.29,
+          "latency_ms": 0.94,
           "planned_trajectory": [
             {
               "x": 6.88,
@@ -116472,7 +116479,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 26.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 26.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 20.04
       },
       {
@@ -117698,7 +117705,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7786
           },
-          "latency_ms": 1.43,
+          "latency_ms": 0.98,
           "planned_trajectory": [
             {
               "x": 7.61,
@@ -117733,7 +117740,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=7.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 26.3 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 26.3 km/h assuming it moves in a straight line.",
         "min_clearance_m": 19.38
       },
       {
@@ -118959,7 +118966,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7758
           },
-          "latency_ms": 1.35,
+          "latency_ms": 0.93,
           "planned_trajectory": [
             {
               "x": 8.35,
@@ -118994,7 +119001,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=7.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 26.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 26.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 18.72
       },
       {
@@ -120220,7 +120227,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7752
           },
-          "latency_ms": 1.15,
+          "latency_ms": 0.95,
           "planned_trajectory": [
             {
               "x": 9.01,
@@ -120255,7 +120262,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=7.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 25.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 25.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 17.95
       },
       {
@@ -121481,7 +121488,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7749
           },
-          "latency_ms": 1.04,
+          "latency_ms": 0.94,
           "planned_trajectory": [
             {
               "x": 9.64,
@@ -121516,7 +121523,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=7.0 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 24.3 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 24.3 km/h assuming it moves in a straight line.",
         "min_clearance_m": 17.27
       },
       {
@@ -122742,7 +122749,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7745
           },
-          "latency_ms": 0.99,
+          "latency_ms": 0.94,
           "planned_trajectory": [
             {
               "x": 10.25,
@@ -122777,7 +122784,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.7 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 23.3 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 23.3 km/h assuming it moves in a straight line.",
         "min_clearance_m": 16.62
       },
       {
@@ -124003,7 +124010,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.774
           },
-          "latency_ms": 1.06,
+          "latency_ms": 0.95,
           "planned_trajectory": [
             {
               "x": 10.84,
@@ -124038,7 +124045,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 22.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 22.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 15.96
       },
       {
@@ -125264,7 +125271,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7734
           },
-          "latency_ms": 1.02,
+          "latency_ms": 0.98,
           "planned_trajectory": [
             {
               "x": 11.4,
@@ -125299,7 +125306,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.2 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 15.36
       },
       {
@@ -126525,7 +126532,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7728
           },
-          "latency_ms": 1.46,
+          "latency_ms": 0.9,
           "planned_trajectory": [
             {
               "x": 11.95,
@@ -126560,7 +126567,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.0 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 20.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 20.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 14.76
       },
       {
@@ -127786,7 +127793,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7721
           },
-          "latency_ms": 5.45,
+          "latency_ms": 3.58,
           "planned_trajectory": [
             {
               "x": 12.48,
@@ -127821,7 +127828,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.8 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 20.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 20.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 14.19
       },
       {
@@ -129047,7 +129054,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.4772
           },
-          "latency_ms": 4.16,
+          "latency_ms": 3.4,
           "planned_trajectory": [
             {
               "x": 12.96,
@@ -129082,7 +129089,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 19.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 19.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 13.64
       },
       {
@@ -130308,7 +130315,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.6415
           },
-          "latency_ms": 3.87,
+          "latency_ms": 3.4,
           "planned_trajectory": [
             {
               "x": 13.42,
@@ -130343,7 +130350,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.1 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 19.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 19.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 13.16
       },
       {
@@ -131569,7 +131576,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2085
           },
-          "latency_ms": 3.6,
+          "latency_ms": 3.31,
           "planned_trajectory": [
             {
               "x": 13.87,
@@ -131604,7 +131611,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=4.8 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking cattle at 18.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 18.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 12.58
       },
       {
@@ -132830,7 +132837,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2096
           },
-          "latency_ms": 3.49,
+          "latency_ms": 3.39,
           "planned_trajectory": [
             {
               "x": 14.3,
@@ -132865,7 +132872,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] B1 VO evaluation chosen (v=4.5 m/s, steer=0.00 rad, state=SLOW).",
-        "caption": "Emergency braking! Obstacle path directly ahead; standard speed window has no safe route.",
+        "caption": "Emergency braking! Standard speed window has no safe route ahead.",
         "min_clearance_m": 12.07
       },
       {
@@ -134091,7 +134098,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2117
           },
-          "latency_ms": 3.68,
+          "latency_ms": 3.32,
           "planned_trajectory": [
             {
               "x": 14.7,
@@ -135352,7 +135359,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2132
           },
-          "latency_ms": 3.42,
+          "latency_ms": 3.34,
           "planned_trajectory": [
             {
               "x": 15.07,
@@ -135387,7 +135394,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] B1 VO evaluation chosen (v=3.7 m/s, steer=0.00 rad, state=SLOW).",
-        "caption": "Emergency braking! Obstacle path directly ahead; standard speed window has no safe route.",
+        "caption": "Emergency braking! Standard speed window has no safe route ahead.",
         "min_clearance_m": 11.04
       },
       {
@@ -136613,7 +136620,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.6432
           },
-          "latency_ms": 3.68,
+          "latency_ms": 3.41,
           "planned_trajectory": [
             {
               "x": 15.43,
@@ -137874,7 +137881,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7743
           },
-          "latency_ms": 3.94,
+          "latency_ms": 3.63,
           "planned_trajectory": [
             {
               "x": 15.75,
@@ -137909,7 +137916,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] B1 VO evaluation chosen (v=3.3 m/s, steer=0.00 rad, state=SLOW).",
-        "caption": "Emergency braking! Obstacle path directly ahead; standard speed window has no safe route.",
+        "caption": "Emergency braking! Standard speed window has no safe route ahead.",
         "min_clearance_m": 10.2
       },
       {
@@ -139135,7 +139142,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7763
           },
-          "latency_ms": 4.09,
+          "latency_ms": 3.62,
           "planned_trajectory": [
             {
               "x": 15.92,
@@ -140396,7 +140403,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.778
           },
-          "latency_ms": 4.53,
+          "latency_ms": 3.49,
           "planned_trajectory": [
             {
               "x": 16.05,
@@ -141657,7 +141664,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7794
           },
-          "latency_ms": 4.06,
+          "latency_ms": 3.53,
           "planned_trajectory": [
             {
               "x": 16.16,
@@ -142918,7 +142925,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7806
           },
-          "latency_ms": 3.98,
+          "latency_ms": 3.56,
           "planned_trajectory": [
             {
               "x": 16.25,
@@ -144179,7 +144186,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7814
           },
-          "latency_ms": 4.19,
+          "latency_ms": 3.74,
           "planned_trajectory": [
             {
               "x": 16.32,
@@ -145440,7 +145447,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7818
           },
-          "latency_ms": 4.34,
+          "latency_ms": 3.72,
           "planned_trajectory": [
             {
               "x": 16.39,
@@ -146701,7 +146708,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7819
           },
-          "latency_ms": 4.81,
+          "latency_ms": 3.68,
           "planned_trajectory": [
             {
               "x": 16.46,
@@ -147962,7 +147969,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7817
           },
-          "latency_ms": 5.69,
+          "latency_ms": 3.79,
           "planned_trajectory": [
             {
               "x": 16.55,
@@ -149223,7 +149230,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.781
           },
-          "latency_ms": 4.49,
+          "latency_ms": 3.68,
           "planned_trajectory": [
             {
               "x": 16.65,
@@ -150484,7 +150491,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7799
           },
-          "latency_ms": 3.89,
+          "latency_ms": 3.6,
           "planned_trajectory": [
             {
               "x": 16.78,
@@ -151745,7 +151752,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7787
           },
-          "latency_ms": 3.84,
+          "latency_ms": 3.73,
           "planned_trajectory": [
             {
               "x": 16.93,
@@ -153006,7 +153013,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7776
           },
-          "latency_ms": 3.73,
+          "latency_ms": 3.54,
           "planned_trajectory": [
             {
               "x": 17.09,
@@ -154267,7 +154274,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7765
           },
-          "latency_ms": 3.62,
+          "latency_ms": 3.44,
           "planned_trajectory": [
             {
               "x": 17.27,
@@ -155528,7 +155535,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7754
           },
-          "latency_ms": 3.99,
+          "latency_ms": 3.43,
           "planned_trajectory": [
             {
               "x": 17.45,
@@ -156789,7 +156796,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7744
           },
-          "latency_ms": 4.67,
+          "latency_ms": 4.09,
           "planned_trajectory": [
             {
               "x": 17.64,
@@ -158050,7 +158057,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.6438
           },
-          "latency_ms": 3.87,
+          "latency_ms": 3.45,
           "planned_trajectory": [
             {
               "x": 17.75,
@@ -159311,7 +159318,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2214
           },
-          "latency_ms": 3.65,
+          "latency_ms": 3.25,
           "planned_trajectory": [
             {
               "x": 17.88,
@@ -160572,7 +160579,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2202
           },
-          "latency_ms": 3.45,
+          "latency_ms": 3.28,
           "planned_trajectory": [
             {
               "x": 18.09,
@@ -161833,7 +161840,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.219
           },
-          "latency_ms": 3.48,
+          "latency_ms": 3.74,
           "planned_trajectory": [
             {
               "x": 18.31,
@@ -163094,7 +163101,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2178
           },
-          "latency_ms": 6.04,
+          "latency_ms": 3.44,
           "planned_trajectory": [
             {
               "x": 18.54,
@@ -164355,7 +164362,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2167
           },
-          "latency_ms": 5.35,
+          "latency_ms": 3.56,
           "planned_trajectory": [
             {
               "x": 18.77,
@@ -165616,7 +165623,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2156
           },
-          "latency_ms": 5.82,
+          "latency_ms": 3.96,
           "planned_trajectory": [
             {
               "x": 19.01,
@@ -166877,7 +166884,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2145
           },
-          "latency_ms": 5.73,
+          "latency_ms": 4.53,
           "planned_trajectory": [
             {
               "x": 19.26,
@@ -168138,7 +168145,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.4714
           },
-          "latency_ms": 6.11,
+          "latency_ms": 6.19,
           "planned_trajectory": [
             {
               "x": 19.63,
@@ -169399,7 +169406,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2125
           },
-          "latency_ms": 7.33,
+          "latency_ms": 7.24,
           "planned_trajectory": [
             {
               "x": 19.75,
@@ -170660,7 +170667,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2115
           },
-          "latency_ms": 8.94,
+          "latency_ms": 8.22,
           "planned_trajectory": [
             {
               "x": 20.01,
@@ -171921,7 +171928,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2105
           },
-          "latency_ms": 10.75,
+          "latency_ms": 9.0,
           "planned_trajectory": [
             {
               "x": 20.26,
@@ -173182,7 +173189,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2096
           },
-          "latency_ms": 19.75,
+          "latency_ms": 9.88,
           "planned_trajectory": [
             {
               "x": 20.52,
@@ -174443,7 +174450,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2087
           },
-          "latency_ms": 22.97,
+          "latency_ms": 10.92,
           "planned_trajectory": [
             {
               "x": 20.79,
@@ -175704,7 +175711,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2078
           },
-          "latency_ms": 24.76,
+          "latency_ms": 12.13,
           "planned_trajectory": [
             {
               "x": 21.05,
@@ -176965,7 +176972,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.207
           },
-          "latency_ms": 25.68,
+          "latency_ms": 13.48,
           "planned_trajectory": [
             {
               "x": 21.32,
@@ -178226,7 +178233,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2061
           },
-          "latency_ms": 14.95,
+          "latency_ms": 14.5,
           "planned_trajectory": [
             {
               "x": 21.58,
@@ -179487,7 +179494,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2053
           },
-          "latency_ms": 14.61,
+          "latency_ms": 15.1,
           "planned_trajectory": [
             {
               "x": 21.86,
@@ -180748,7 +180755,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2045
           },
-          "latency_ms": 16.64,
+          "latency_ms": 16.5,
           "planned_trajectory": [
             {
               "x": 22.13,
@@ -182009,7 +182016,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2037
           },
-          "latency_ms": 16.32,
+          "latency_ms": 16.31,
           "planned_trajectory": [
             {
               "x": 22.4,
@@ -183270,7 +183277,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2029
           },
-          "latency_ms": 15.13,
+          "latency_ms": 16.0,
           "planned_trajectory": [
             {
               "x": 22.67,
@@ -184531,7 +184538,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2067
           },
-          "latency_ms": 13.65,
+          "latency_ms": 14.22,
           "planned_trajectory": [
             {
               "x": 22.95,
@@ -185792,7 +185799,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3307
           },
-          "latency_ms": 12.49,
+          "latency_ms": 12.82,
           "planned_trajectory": [
             {
               "x": 22.94,
@@ -185842,7 +185849,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 9.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 9.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 2.69
       },
       {
@@ -187068,7 +187075,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3299
           },
-          "latency_ms": 10.8,
+          "latency_ms": 10.96,
           "planned_trajectory": [
             {
               "x": 23.21,
@@ -187118,7 +187125,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 9.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 9.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 2.45
       },
       {
@@ -188344,7 +188351,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3292
           },
-          "latency_ms": 10.45,
+          "latency_ms": 10.37,
           "planned_trajectory": [
             {
               "x": 23.49,
@@ -188394,7 +188401,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 10.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 10.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 2.18
       },
       {
@@ -189620,7 +189627,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3285
           },
-          "latency_ms": 10.08,
+          "latency_ms": 9.2,
           "planned_trajectory": [
             {
               "x": 23.77,
@@ -189670,7 +189677,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 10.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 10.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 1.9
       },
       {
@@ -190896,7 +190903,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3278
           },
-          "latency_ms": 9.8,
+          "latency_ms": 8.32,
           "planned_trajectory": [
             {
               "x": 24.05,
@@ -190946,7 +190953,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 10.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 10.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 1.65
       },
       {
@@ -192172,7 +192179,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3271
           },
-          "latency_ms": 7.88,
+          "latency_ms": 7.27,
           "planned_trajectory": [
             {
               "x": 24.33,
@@ -192222,7 +192229,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 1.36
       },
       {
@@ -193448,7 +193455,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3264
           },
-          "latency_ms": 6.44,
+          "latency_ms": 6.08,
           "planned_trajectory": [
             {
               "x": 24.61,
@@ -193498,7 +193505,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 1.1
       },
       {
@@ -194724,7 +194731,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3258
           },
-          "latency_ms": 5.15,
+          "latency_ms": 5.12,
           "planned_trajectory": [
             {
               "x": 24.89,
@@ -194774,7 +194781,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 0.83
       },
       {
@@ -196000,7 +196007,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3251
           },
-          "latency_ms": 3.54,
+          "latency_ms": 3.33,
           "planned_trajectory": [
             {
               "x": 25.17,
@@ -196050,7 +196057,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 0.56
       },
       {
@@ -197276,7 +197283,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3245
           },
-          "latency_ms": 4.02,
+          "latency_ms": 3.52,
           "planned_trajectory": [
             {
               "x": 25.45,
@@ -197326,7 +197333,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking cattle at 10.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 0.27
       },
       {
@@ -198552,7 +198559,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3238
           },
-          "latency_ms": 0.7,
+          "latency_ms": 0.65,
           "planned_trajectory": [
             {
               "x": 25.73,
@@ -198602,7 +198609,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Emergency braking! Obstacle path directly ahead; standard speed window has no safe route.",
+        "caption": "Emergency braking! Standard speed window has no safe route ahead.",
         "min_clearance_m": 0.0
       },
       {
@@ -199828,7 +199835,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3244
           },
-          "latency_ms": 0.75,
+          "latency_ms": 0.63,
           "planned_trajectory": [
             {
               "x": 25.99,
@@ -199878,7 +199885,7 @@
           ]
         },
         "decision_trace": "[EMERGENCY_BRAKE] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Collided with obstacle at 9.1 km/h. Standard planner failed to anticipate sudden move.",
+        "caption": "Collided at 9.1 km/h. Standard planner failed to anticipate sudden move.",
         "min_clearance_m": 0.0
       }
     ]

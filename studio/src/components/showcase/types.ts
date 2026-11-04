@@ -69,11 +69,13 @@ export interface ShowcaseRunMetrics {
   replan_count: number;
   p95_latency_ms: number;
   mean_speed_m_s: number;
+  source?: string;
 }
 
 export interface ShowcaseRunData {
   scenario_id: string;
   planner_id: string;
+  source_file?: string;
   metrics: ShowcaseRunMetrics;
   frames: ShowcaseFrame[];
 }
@@ -83,8 +85,11 @@ export interface ShowcaseScenarioFile {
   scenario_id: string;
   name: string;
   description: string;
+  built_from: string;
+  source_file: string;
   road_users: string[];
   seed: number;
+  tested_on: string;
   adaptive: ShowcaseRunData;
   standard: ShowcaseRunData;
 }
@@ -97,6 +102,7 @@ export interface HeadlineMetric {
   delta: string;
   delta_label: string;
   higher_is_better: boolean;
+  source_file: string;
 }
 
 export interface ScenarioBenchmarkSummary {
@@ -105,7 +111,10 @@ export interface ScenarioBenchmarkSummary {
   name: string;
   flagship?: boolean;
   is_weak_spot?: boolean;
+  built_from: string;
+  source_file: string;
   description: string;
+  tested_on: string;
   adaptive: {
     completion_rate: number;
     collision_rate: number;
@@ -129,6 +138,7 @@ export interface ShowcaseSummary {
     split: string;
     seeds: number[];
     total_episodes_per_planner: number;
+    source_file: string;
     disclaimer: string;
   };
   headline_metrics: {
@@ -142,5 +152,50 @@ export interface ShowcaseSummary {
     scenario: string;
     why: string;
     future_work: string;
+    source_file: string;
+  };
+}
+
+export interface DatasetItem {
+  id: string;
+  name: string;
+  url: string;
+  status: 'In use' | 'Adapter only (no data loaded)' | 'Not yet ingested' | string;
+  badge_tone: 'teal' | 'amber' | 'slate';
+  summary: string;
+  used_for: string;
+  item_count: number;
+  unit: string;
+  licence: string;
+  attribution: string;
+  adapter_file?: string | null;
+  mapped_classes?: string[];
+  steps_to_add?: string[];
+  loaded_by?: string[];
+  scenarios?: string[];
+  audit_note: string;
+}
+
+export interface ProvenancePayload {
+  generated_at: string;
+  scan_summary: {
+    real_trajectories_count: number;
+    simulated_trajectories_count: number;
+    real_share_pct: number;
+    simulated_share_pct: number;
+    accounting_note: string;
+  };
+  datasets: DatasetItem[];
+  split_protocol: {
+    strategy: string;
+    splits: Array<{ name: string; share_pct: number; purpose: string }>;
+  };
+  reconciliation: {
+    title: string;
+    frozen_test_p3_completion: number;
+    frozen_test_reason: string;
+    val_b_p3_completion: number;
+    val_b_reason: string;
+    source_files: string[];
   };
 }

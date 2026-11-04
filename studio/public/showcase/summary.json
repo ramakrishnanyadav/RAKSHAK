@@ -13,6 +13,7 @@
       2009
     ],
     "total_episodes_per_planner": 25,
+    "source_file": "runs/val_b_manifest.json",
     "disclaimer": "Simulation only. Not road-ready."
   },
   "headline_metrics": {
@@ -23,7 +24,8 @@
       "unit": "%",
       "delta": "+16.0%",
       "delta_label": "1.4x higher goal completion",
-      "higher_is_better": true
+      "higher_is_better": true,
+      "source_file": "runs/val_b_manifest.json#L31"
     },
     "collision_rate": {
       "label": "Crash Rate",
@@ -32,7 +34,8 @@
       "unit": "%",
       "delta": "-40.0%",
       "delta_label": "3x fewer collisions",
-      "higher_is_better": false
+      "higher_is_better": false,
+      "source_file": "runs/val_b_manifest.json#L32"
     },
     "smoothness_jerk": {
       "label": "Smoothness (Jerk)",
@@ -41,7 +44,8 @@
       "unit": "m/s\u00b3",
       "delta": "-20%",
       "delta_label": "20% smoother ride",
-      "higher_is_better": false
+      "higher_is_better": false,
+      "source_file": "runs/val_b_manifest.json#L36"
     },
     "think_time_ms": {
       "label": "Think Time",
@@ -50,7 +54,8 @@
       "unit": "ms",
       "delta": "-27%",
       "delta_label": "Sub-10ms real-time control",
-      "higher_is_better": false
+      "higher_is_better": false,
+      "source_file": "runs/val_b_manifest.json#L42"
     }
   },
   "scenarios": [
@@ -59,7 +64,10 @@
       "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
       "name": "Cattle Crossing",
       "flagship": true,
+      "built_from": "Synthetic rural corridor + erratic livestock dynamics",
+      "source_file": "engine/scenarios/scenarios_impl.py#L420",
       "description": "Livestock wandering unpredictably across rural highway lane.",
+      "tested_on": "Validation B (Seeds 2005\u20132009, 5 episodes per planner)",
       "adaptive": {
         "completion_rate": 100.0,
         "collision_rate": 0.0,
@@ -78,7 +86,10 @@
       "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
       "name": "Village Road",
       "flagship": false,
+      "built_from": "RoadRunner scene (VillageRoad.xodr) + synthetic traffic mix",
+      "source_file": "matlab_adapter/roadrunner/VillageRoad.xodr",
       "description": "Narrow unmarked road with oncoming motorcycle and slow auto-rickshaw.",
+      "tested_on": "Validation B (Seeds 2005\u20132009, 5 episodes per planner)",
       "adaptive": {
         "completion_rate": 20.0,
         "collision_rate": 20.0,
@@ -97,7 +108,10 @@
       "scenario_id": "SCENARIO_3_HIGHWAY_MERGE",
       "name": "Highway Merge",
       "flagship": false,
+      "built_from": "Synthetic multi-lane highway + high-speed truck kinematics",
+      "source_file": "engine/scenarios/scenarios_impl.py#L260",
       "description": "High-speed multi-lane traffic with fast-approaching trucks.",
+      "tested_on": "Validation B (Seeds 2005\u20132009, 5 episodes per planner)",
       "adaptive": {
         "completion_rate": 100.0,
         "collision_rate": 0.0,
@@ -116,7 +130,10 @@
       "scenario_id": "SCENARIO_4_DENSE_MARKET",
       "name": "Dense Market",
       "flagship": false,
+      "built_from": "Synthetic commercial corridor + vendor stalls and pedestrian clusters",
+      "source_file": "engine/scenarios/scenarios_impl.py#L340",
       "description": "Crowded commercial alley with pedestrians and vegetable carts.",
+      "tested_on": "Validation B (Seeds 2005\u20132009, 5 episodes per planner)",
       "adaptive": {
         "completion_rate": 0.0,
         "collision_rate": 40.0,
@@ -136,7 +153,10 @@
       "name": "City Junction",
       "flagship": false,
       "is_weak_spot": true,
+      "built_from": "RoadRunner scene (UrbanIntersection.xodr) + synthetic cross-traffic",
+      "source_file": "matlab_adapter/roadrunner/UrbanIntersection.xodr",
       "description": "Uncontrolled urban 4-way intersection with dense blind turns.",
+      "tested_on": "Validation B (Seeds 2005\u20132009, 5 episodes per planner)",
       "adaptive": {
         "completion_rate": 60.0,
         "collision_rate": 40.0,
@@ -153,7 +173,8 @@
   ],
   "weak_spot_analysis": {
     "scenario": "City Junction (SCENARIO_2_URBAN_INTERSECTION)",
-    "why": "High occlusion from turning heavy vehicles causes prediction bounds to dilate, causing occasional late evasive stops under crowded simultaneous crossings.",
-    "future_work": "Multi-agent intent negotiation and radar Doppler velocity fusion will tighten prediction bounds."
+    "why": "High occlusion from turning heavy vehicles causes safety margins to expand, causing occasional late evasive stops under crowded crossways.",
+    "future_work": "Multi-agent intent negotiation and radar Doppler velocity fusion will tighten prediction bounds.",
+    "source_file": "runs/val_b_manifest.json#L72"
   }
 }

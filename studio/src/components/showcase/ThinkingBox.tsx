@@ -163,3 +163,4 @@ export const ThinkingBox: React.FC<ThinkingBoxProps> = ({ frame, variant, planne
     </div>
   );
 };
+

@@ -109,3 +109,4 @@ All metrics displayed in the Studio are traceable to authoritative research defi
 - [x] Legend color key matches renderer semantics 1:1.
 - [x] Zero engine, calibration, or research metric files modified.
 - [x] Reference release commit `d489ed9` locked on `studio/ui-development`.
+

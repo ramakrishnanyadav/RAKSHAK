@@ -156,3 +156,4 @@ export const TimelineScrubber: React.FC<TimelineScrubberProps> = ({
     </div>
   );
 };
+

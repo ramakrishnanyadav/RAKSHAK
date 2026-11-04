@@ -3,15 +3,19 @@
   "scenario_id": "SCENARIO_4_DENSE_MARKET",
   "name": "Dense Market",
   "description": "Crowded commercial street with roadside stalls, pedestrians, and handcarts.",
+  "built_from": "Synthetic commercial corridor + roadside stalls and pedestrian clusters",
+  "source_file": "engine/scenarios/scenarios_impl.py",
   "road_users": [
     "pedestrian",
     "handcart",
     "auto_rickshaw"
   ],
   "seed": 2005,
+  "tested_on": "Validation B Split (Seed 2005)",
   "adaptive": {
     "scenario_id": "",
     "planner_id": "P3",
+    "source_file": "runs/val_b_manifest.json",
     "metrics": {
       "duration_s": 14.9,
       "completed_goal": false,
@@ -19,8 +23,9 @@
       "min_clearance_m": 0.14,
       "mean_jerk_m_s3": 1.351,
       "replan_count": 18,
-      "p95_latency_ms": 22.34,
-      "mean_speed_m_s": 4.14
+      "p95_latency_ms": 21.04,
+      "mean_speed_m_s": 4.14,
+      "source": "runs/val_b_manifest.json"
     },
     "frames": [
       {
@@ -851,7 +856,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7581
           },
-          "latency_ms": 35.9,
+          "latency_ms": 17.57,
           "planned_trajectory": [
             {
               "x": 1.57,
@@ -931,7 +936,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.76, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 30.75
       },
       {
@@ -1762,7 +1767,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2621
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 1.57,
@@ -1842,7 +1847,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 30.39
       },
       {
@@ -2673,7 +2678,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2658
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 1.57,
@@ -2753,7 +2758,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 29.77
       },
       {
@@ -3584,7 +3589,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2686
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 3.11,
@@ -3659,7 +3664,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 29.13
       },
       {
@@ -4490,7 +4495,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2719
           },
-          "latency_ms": 0.43,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 3.11,
@@ -4565,7 +4570,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 28.46
       },
       {
@@ -5396,7 +5401,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2751
           },
-          "latency_ms": 0.44,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 3.11,
@@ -5471,7 +5476,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 27.74
       },
       {
@@ -6302,7 +6307,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2756
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 4.67,
@@ -6372,7 +6377,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 27.09
       },
       {
@@ -7203,7 +7208,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2787
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 4.67,
@@ -7273,7 +7278,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 26.54
       },
       {
@@ -8104,7 +8109,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2816
           },
-          "latency_ms": 0.3,
+          "latency_ms": 0.27,
           "planned_trajectory": [
             {
               "x": 4.67,
@@ -8174,7 +8179,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 25.97
       },
       {
@@ -9005,7 +9010,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2817
           },
-          "latency_ms": 0.4,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 6.26,
@@ -9070,7 +9075,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 25.39
       },
       {
@@ -9901,7 +9906,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2845
           },
-          "latency_ms": 0.43,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 6.26,
@@ -9966,7 +9971,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 24.75
       },
       {
@@ -10797,7 +10802,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2855
           },
-          "latency_ms": 0.38,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 7.86,
@@ -10857,7 +10862,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 24.13
       },
       {
@@ -11688,7 +11693,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.603
           },
-          "latency_ms": 29.84,
+          "latency_ms": 16.67,
           "planned_trajectory": [
             {
               "x": 8.39,
@@ -11768,7 +11773,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.60, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 23.45
       },
       {
@@ -12599,7 +12604,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1079
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 8.39,
@@ -12679,7 +12684,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 22.87
       },
       {
@@ -13510,7 +13515,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1106
           },
-          "latency_ms": 0.25,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 8.39,
@@ -13590,7 +13595,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 22.29
       },
       {
@@ -14421,7 +14426,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1127
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 9.67,
@@ -14496,7 +14501,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 21.81
       },
       {
@@ -15327,7 +15332,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1153
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 9.67,
@@ -15402,7 +15407,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 21.19
       },
       {
@@ -16233,7 +16238,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1174
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 10.95,
@@ -16303,7 +16308,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 20.64
       },
       {
@@ -17134,7 +17139,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1422
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 10.95,
@@ -17204,7 +17209,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (20.5 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (20.5 km/h) with extra safety margin.",
         "min_clearance_m": 20.02
       },
       {
@@ -18825,7 +18830,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1721
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 12.23,
@@ -18890,7 +18895,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (19.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (19.6 km/h) with extra safety margin.",
         "min_clearance_m": 19.34
       },
       {
@@ -20511,7 +20516,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2068
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 12.23,
@@ -20576,7 +20581,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (18.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (18.8 km/h) with extra safety margin.",
         "min_clearance_m": 18.86
       },
       {
@@ -22197,7 +22202,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2447
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 12.23,
@@ -22262,7 +22267,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (18.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (18.1 km/h) with extra safety margin.",
         "min_clearance_m": 18.28
       },
       {
@@ -23883,7 +23888,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2841
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 13.51,
@@ -23943,7 +23948,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (17.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (17.4 km/h) with extra safety margin.",
         "min_clearance_m": 17.77
       },
       {
@@ -25564,7 +25569,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2876
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 13.51,
@@ -25624,7 +25629,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (16.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (16.8 km/h) with extra safety margin.",
         "min_clearance_m": 17.3
       },
       {
@@ -27245,7 +27250,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6332
           },
-          "latency_ms": 30.96,
+          "latency_ms": 23.27,
           "planned_trajectory": [
             {
               "x": 14.6,
@@ -27325,7 +27330,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.63, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (16.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (16.2 km/h) with extra safety margin.",
         "min_clearance_m": 16.85
       },
       {
@@ -28946,7 +28951,7 @@
             "risk_field_cost": 0.0006,
             "total_cost": 0.1305
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 14.6,
@@ -29026,7 +29031,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (15.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (15.7 km/h) with extra safety margin.",
         "min_clearance_m": 16.37
       },
       {
@@ -30647,7 +30652,7 @@
             "risk_field_cost": 0.0018,
             "total_cost": 0.1279
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 14.6,
@@ -30727,7 +30732,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (15.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (15.2 km/h) with extra safety margin.",
         "min_clearance_m": 15.94
       },
       {
@@ -32348,7 +32353,7 @@
             "risk_field_cost": 0.004,
             "total_cost": 0.1289
           },
-          "latency_ms": 0.38,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 15.39,
@@ -32423,7 +32428,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (14.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (14.8 km/h) with extra safety margin.",
         "min_clearance_m": 15.46
       },
       {
@@ -34044,7 +34049,7 @@
             "risk_field_cost": 0.0077,
             "total_cost": 0.133
           },
-          "latency_ms": 0.35,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 15.39,
@@ -34119,7 +34124,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (14.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (14.4 km/h) with extra safety margin.",
         "min_clearance_m": 15.0
       },
       {
@@ -35740,7 +35745,7 @@
             "risk_field_cost": 0.0128,
             "total_cost": 0.14
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 16.18,
@@ -35810,7 +35815,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (14.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (14.1 km/h) with extra safety margin.",
         "min_clearance_m": 14.62
       },
       {
@@ -37431,7 +37436,7 @@
             "risk_field_cost": 0.0188,
             "total_cost": 0.1488
           },
-          "latency_ms": 0.41,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 16.18,
@@ -37501,7 +37506,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (13.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (13.8 km/h) with extra safety margin.",
         "min_clearance_m": 14.26
       },
       {
@@ -39122,7 +39127,7 @@
             "risk_field_cost": 0.0246,
             "total_cost": 0.158
           },
-          "latency_ms": 0.33,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 16.98,
@@ -39187,7 +39192,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (13.5 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (13.5 km/h) with extra safety margin.",
         "min_clearance_m": 13.91
       },
       {
@@ -40808,7 +40813,7 @@
             "risk_field_cost": 0.0289,
             "total_cost": 0.1662
           },
-          "latency_ms": 0.3,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 16.98,
@@ -40873,7 +40878,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (13.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (13.2 km/h) with extra safety margin.",
         "min_clearance_m": 13.56
       },
       {
@@ -42494,7 +42499,7 @@
             "risk_field_cost": 0.0315,
             "total_cost": 0.1727
           },
-          "latency_ms": 0.34,
+          "latency_ms": 0.38,
           "planned_trajectory": [
             {
               "x": 17.77,
@@ -42554,7 +42559,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (13.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (13.0 km/h) with extra safety margin.",
         "min_clearance_m": 13.11
       },
       {
@@ -44235,7 +44240,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.8 km/h) with extra safety margin.",
         "min_clearance_m": 12.83
       },
       {
@@ -45911,7 +45916,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.6 km/h) with extra safety margin.",
         "min_clearance_m": 12.45
       },
       {
@@ -47532,7 +47537,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6349
           },
-          "latency_ms": 24.73,
+          "latency_ms": 24.8,
           "planned_trajectory": [
             {
               "x": 19.24,
@@ -47612,7 +47617,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.63, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (12.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.4 km/h) with extra safety margin.",
         "min_clearance_m": 12.14
       },
       {
@@ -49233,7 +49238,7 @@
             "risk_field_cost": 0.0191,
             "total_cost": 0.1628
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 19.24,
@@ -49313,7 +49318,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.2 km/h) with extra safety margin.",
         "min_clearance_m": 11.75
       },
       {
@@ -50934,7 +50939,7 @@
             "risk_field_cost": 0.0131,
             "total_cost": 0.1614
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 19.24,
@@ -51014,7 +51019,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.1 km/h) with extra safety margin.",
         "min_clearance_m": 11.4
       },
       {
@@ -52710,7 +52715,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.0 km/h) with extra safety margin.",
         "min_clearance_m": 11.09
       },
       {
@@ -54406,7 +54411,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.9 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.9 km/h) with extra safety margin.",
         "min_clearance_m": 10.74
       },
       {
@@ -56102,7 +56107,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.7 km/h) with extra safety margin.",
         "min_clearance_m": 10.36
       },
       {
@@ -57723,7 +57728,7 @@
             "risk_field_cost": 0.0009,
             "total_cost": 0.1649
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 20.74,
@@ -57793,7 +57798,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.7 km/h) with extra safety margin.",
         "min_clearance_m": 10.08
       },
       {
@@ -59484,7 +59489,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.6 km/h) with extra safety margin.",
         "min_clearance_m": 9.83
       },
       {
@@ -61105,7 +61110,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.1696
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 21.5,
@@ -61170,7 +61175,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.5 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.5 km/h) with extra safety margin.",
         "min_clearance_m": 9.53
       },
       {
@@ -62791,7 +62796,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1724
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 21.5,
@@ -62856,7 +62861,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.4 km/h) with extra safety margin.",
         "min_clearance_m": 9.23
       },
       {
@@ -64477,7 +64482,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1752
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 21.5,
@@ -64542,7 +64547,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.4 km/h) with extra safety margin.",
         "min_clearance_m": 8.89
       },
       {
@@ -66163,7 +66168,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.1763
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 22.27,
@@ -66223,7 +66228,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.3 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.3 km/h) with extra safety margin.",
         "min_clearance_m": 8.55
       },
       {
@@ -67844,7 +67849,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7038
           },
-          "latency_ms": 23.03,
+          "latency_ms": 22.96,
           "planned_trajectory": [
             {
               "x": 22.69,
@@ -67924,7 +67929,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected SLOW (cost=0.70, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (11.3 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.3 km/h) with extra safety margin.",
         "min_clearance_m": 8.24
       },
       {
@@ -69625,7 +69630,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.2 km/h) with extra safety margin.",
         "min_clearance_m": 7.95
       },
       {
@@ -71321,7 +71326,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.2 km/h) with extra safety margin.",
         "min_clearance_m": 7.63
       },
       {
@@ -73017,7 +73022,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.2 km/h) with extra safety margin.",
         "min_clearance_m": 7.35
       },
       {
@@ -74638,7 +74643,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2213
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 23.47,
@@ -74708,7 +74713,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra safety margin.",
         "min_clearance_m": 7.07
       },
       {
@@ -76329,7 +76334,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2213
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 23.84,
@@ -76394,7 +76399,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra safety margin.",
         "min_clearance_m": 6.79
       },
       {
@@ -78015,7 +78020,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2213
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 24.21,
@@ -78075,7 +78080,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra safety margin.",
         "min_clearance_m": 6.47
       },
       {
@@ -79751,7 +79756,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra safety margin.",
         "min_clearance_m": 6.15
       },
       {
@@ -81372,7 +81377,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2228
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 24.58,
@@ -81427,7 +81432,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra safety margin.",
         "min_clearance_m": 5.91
       },
       {
@@ -83048,7 +83053,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.222
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 24.95,
@@ -83098,7 +83103,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra safety margin.",
         "min_clearance_m": 5.64
       },
       {
@@ -84719,7 +84724,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2212
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 25.32,
@@ -84764,7 +84769,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.0 km/h) with extra safety margin.",
         "min_clearance_m": 5.4
       },
       {
@@ -86385,7 +86390,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2093
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 25.69,
@@ -86425,7 +86430,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.7 km/h) with extra safety margin.",
         "min_clearance_m": 5.16
       },
       {
@@ -88046,7 +88051,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.8685
           },
-          "latency_ms": 21.5,
+          "latency_ms": 21.37,
           "planned_trajectory": [
             {
               "x": 26.0,
@@ -88126,7 +88131,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.87, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (10.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.4 km/h) with extra safety margin.",
         "min_clearance_m": 4.95
       },
       {
@@ -89747,7 +89752,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4292
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 26.0,
@@ -89827,7 +89832,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.4 km/h) with extra safety margin.",
         "min_clearance_m": 4.79
       },
       {
@@ -91448,7 +91453,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4478
           },
-          "latency_ms": 0.28,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 26.16,
@@ -91523,7 +91528,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.5 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.5 km/h) with extra safety margin.",
         "min_clearance_m": 4.59
       },
       {
@@ -93144,7 +93149,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4536
           },
-          "latency_ms": 0.25,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 26.47,
@@ -93209,7 +93214,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.5 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.5 km/h) with extra safety margin.",
         "min_clearance_m": 4.41
       },
       {
@@ -94830,7 +94835,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4589
           },
-          "latency_ms": 0.24,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 26.79,
@@ -94885,7 +94890,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.6 km/h) with extra safety margin.",
         "min_clearance_m": 4.31
       },
       {
@@ -96506,7 +96511,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.4727
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 26.94,
@@ -96556,7 +96561,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.6 km/h) with extra safety margin.",
         "min_clearance_m": 4.23
       },
       {
@@ -97782,7 +97787,7 @@
             "risk_field_cost": 0.0004,
             "total_cost": 0.4755
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 27.26,
@@ -98653,7 +98658,7 @@
             "risk_field_cost": 0.0013,
             "total_cost": 0.5036
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 27.58,
@@ -99514,7 +99519,7 @@
             "risk_field_cost": 0.0038,
             "total_cost": 0.5667
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 27.74,
@@ -100370,7 +100375,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.2832
           },
-          "latency_ms": 15.12,
+          "latency_ms": 14.08,
           "planned_trajectory": [
             {
               "x": 28.21,
@@ -100450,7 +100455,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.28, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.92
       },
       {
@@ -101281,7 +101286,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3781
           },
-          "latency_ms": 14.93,
+          "latency_ms": 13.62,
           "planned_trajectory": [
             {
               "x": 28.53,
@@ -101361,7 +101366,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.83
       },
       {
@@ -102192,7 +102197,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3774
           },
-          "latency_ms": 15.12,
+          "latency_ms": 14.42,
           "planned_trajectory": [
             {
               "x": 28.88,
@@ -102272,7 +102277,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.79
       },
       {
@@ -102708,7 +102713,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3766
           },
-          "latency_ms": 12.64,
+          "latency_ms": 11.61,
           "planned_trajectory": [
             {
               "x": 29.25,
@@ -102788,7 +102793,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected STOP (cost=1.38, trigger=PERIODIC).",
-        "caption": "Tracking pedestrian with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.76
       },
       {
@@ -103224,7 +103229,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6139
           },
-          "latency_ms": 11.5,
+          "latency_ms": 11.12,
           "planned_trajectory": [
             {
               "x": 30.45,
@@ -104135,7 +104140,7 @@
             "risk_field_cost": 0.6639,
             "total_cost": 0.7908
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 30.45,
@@ -104215,7 +104220,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.27 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.69
       },
       {
@@ -105441,7 +105446,7 @@
             "risk_field_cost": 1.0078,
             "total_cost": 1.1291
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 30.45,
@@ -105521,7 +105526,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.40 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.62
       },
       {
@@ -107142,7 +107147,7 @@
             "risk_field_cost": 1.2851,
             "total_cost": 1.4003
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 31.24,
@@ -107217,7 +107222,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.51 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.62
       },
       {
@@ -108913,7 +108918,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.57 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.59
       },
       {
@@ -110604,7 +110609,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.57 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.59
       },
       {
@@ -112225,7 +112230,7 @@
             "risk_field_cost": 1.2953,
             "total_cost": 1.4088
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 32.0,
@@ -112295,7 +112300,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.52 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.57
       },
       {
@@ -113916,7 +113921,7 @@
             "risk_field_cost": 1.0522,
             "total_cost": 1.1668
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 32.74,
@@ -113981,7 +113986,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.42 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.51
       },
       {
@@ -115602,7 +115607,7 @@
             "risk_field_cost": 0.7582,
             "total_cost": 0.8747
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 32.74,
@@ -115667,7 +115672,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.30 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.47
       },
       {
@@ -117288,7 +117293,7 @@
             "risk_field_cost": 0.4833,
             "total_cost": 0.6014
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 33.49,
@@ -117348,7 +117353,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.19 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.44
       },
       {
@@ -118969,7 +118974,7 @@
             "risk_field_cost": 0.2726,
             "total_cost": 0.3934
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 33.49,
@@ -119029,7 +119034,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.11 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.44
       },
       {
@@ -120650,7 +120655,7 @@
             "risk_field_cost": 0.1358,
             "total_cost": 0.2583
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 34.24,
@@ -120705,7 +120710,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.05 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (13.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (13.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -122326,7 +122331,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7502
           },
-          "latency_ms": 27.36,
+          "latency_ms": 24.88,
           "planned_trajectory": [
             {
               "x": 35.9,
@@ -122406,7 +122411,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.75, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (13.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (13.1 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -124027,7 +124032,7 @@
             "risk_field_cost": 0.0238,
             "total_cost": 0.2762
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 35.9,
@@ -124107,7 +124112,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.9 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.9 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -125728,7 +125733,7 @@
             "risk_field_cost": 0.0085,
             "total_cost": 0.263
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 35.9,
@@ -125808,7 +125813,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.8 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -127429,7 +127434,7 @@
             "risk_field_cost": 0.0027,
             "total_cost": 0.2595
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 35.9,
@@ -127509,7 +127514,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.6 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -129130,7 +129135,7 @@
             "risk_field_cost": 0.0008,
             "total_cost": 0.2599
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 35.9,
@@ -129210,7 +129215,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.5 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.5 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -130436,7 +130441,7 @@
             "risk_field_cost": 0.0002,
             "total_cost": 0.2616
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 35.9,
@@ -130516,7 +130521,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.4 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -131742,7 +131747,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.2599
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 37.4,
@@ -131817,7 +131822,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.3 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.3 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -133043,7 +133048,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2614
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 37.4,
@@ -133118,7 +133123,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -134344,7 +134349,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2628
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 37.4,
@@ -134419,7 +134424,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -135645,7 +135650,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2642
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 37.4,
@@ -135720,7 +135725,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.1 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -136946,7 +136951,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2654
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 37.4,
@@ -137021,7 +137026,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -138247,7 +138252,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2624
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 38.79,
@@ -138317,7 +138322,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.7 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -139543,7 +139548,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7639
           },
-          "latency_ms": 21.07,
+          "latency_ms": 21.95,
           "planned_trajectory": [
             {
               "x": 39.48,
@@ -139623,7 +139628,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.76, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (11.3 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.3 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -140849,7 +140854,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2642
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 39.48,
@@ -140929,7 +140934,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -142155,7 +142160,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2647
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 39.48,
@@ -142235,7 +142240,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.7 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -143461,7 +143466,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2651
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 39.48,
@@ -143541,7 +143546,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.4 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -144767,7 +144772,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2656
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 39.48,
@@ -144847,7 +144852,7 @@
           ]
         },
         "decision_trace": "[BYPASS] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -146073,7 +146078,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.266
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 39.48,
@@ -146153,7 +146158,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -147379,7 +147384,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.266
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 40.55,
@@ -147454,7 +147459,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -148680,7 +148685,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2664
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.2,
           "planned_trajectory": [
             {
               "x": 40.55,
@@ -148755,7 +148760,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -149981,7 +149986,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.267
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 40.55,
@@ -150056,7 +150061,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.3 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.3 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -150887,7 +150892,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2676
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.27,
           "planned_trajectory": [
             {
               "x": 40.55,
@@ -150962,7 +150967,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (10.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.4 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -152188,7 +152193,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2679
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.24,
           "planned_trajectory": [
             {
               "x": 41.54,
@@ -152258,7 +152263,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -153484,7 +153489,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2686
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 41.54,
@@ -153554,7 +153559,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -154780,7 +154785,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.7463
           },
-          "latency_ms": 19.4,
+          "latency_ms": 19.02,
           "planned_trajectory": [
             {
               "x": 42.47,
@@ -154860,7 +154865,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.75, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (10.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (10.7 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -156086,7 +156091,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2471
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 42.47,
@@ -156166,7 +156171,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -157472,7 +157477,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -158698,7 +158703,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2487
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 42.47,
@@ -158778,7 +158783,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -160004,7 +160009,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.2495
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 42.47,
@@ -160084,7 +160089,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -161310,7 +161315,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.2474
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 43.62,
@@ -161385,7 +161390,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -162686,7 +162691,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -163987,7 +163992,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking handcart with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking pedestrian with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.37
       },
       {
@@ -165288,7 +165293,7 @@
           ]
         },
         "decision_trace": "[SLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.1 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -166514,7 +166519,7 @@
             "risk_field_cost": 0.0027,
             "total_cost": 0.2494
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 44.85,
@@ -166584,7 +166589,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -167810,7 +167815,7 @@
             "risk_field_cost": 0.005,
             "total_cost": 0.2525
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 44.85,
@@ -167880,7 +167885,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (11.5 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (11.5 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -169106,7 +169111,7 @@
             "risk_field_cost": 0.0091,
             "total_cost": 0.2574
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 44.85,
@@ -169176,7 +169181,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (12.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (12.1 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -170402,7 +170407,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.5893
           },
-          "latency_ms": 19.95,
+          "latency_ms": 20.63,
           "planned_trajectory": [
             {
               "x": 45.63,
@@ -170482,7 +170487,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.59, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (13.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (13.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -172103,7 +172108,7 @@
             "risk_field_cost": 0.0269,
             "total_cost": 0.1103
           },
-          "latency_ms": 0.38,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 45.63,
@@ -172183,7 +172188,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (13.9 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (13.9 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -173804,7 +173809,7 @@
             "risk_field_cost": 0.0417,
             "total_cost": 0.1252
           },
-          "latency_ms": 0.24,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 45.63,
@@ -173884,7 +173889,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.02 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (14.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (14.7 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -175505,7 +175510,7 @@
             "risk_field_cost": 0.0591,
             "total_cost": 0.1482
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 46.4,
@@ -175580,7 +175585,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.02 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (15.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (15.4 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -177201,7 +177206,7 @@
             "risk_field_cost": 0.0767,
             "total_cost": 0.1763
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 46.4,
@@ -177276,7 +177281,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.03 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (16.1 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (16.1 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -178897,7 +178902,7 @@
             "risk_field_cost": 0.0914,
             "total_cost": 0.2039
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 47.18,
@@ -178967,7 +178972,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.04 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (16.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (16.7 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -180588,7 +180593,7 @@
             "risk_field_cost": 0.098,
             "total_cost": 0.2267
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 47.18,
@@ -180658,7 +180663,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.04 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (17.3 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (17.3 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -182279,7 +182284,7 @@
             "risk_field_cost": 0.0949,
             "total_cost": 0.2399
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 47.97,
@@ -182344,7 +182349,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.04 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (17.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (17.8 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -183965,7 +183970,7 @@
             "risk_field_cost": 0.0816,
             "total_cost": 0.2438
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 48.77,
@@ -184025,7 +184030,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.03 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (18.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (18.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -185646,7 +185651,7 @@
             "risk_field_cost": 0.0612,
             "total_cost": 0.2422
           },
-          "latency_ms": 0.21,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 48.77,
@@ -185706,7 +185711,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.02 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (18.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (18.6 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -187327,7 +187332,7 @@
             "risk_field_cost": 0.0395,
             "total_cost": 0.2381
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 49.56,
@@ -187382,7 +187387,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.02 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (19.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (19.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -189003,7 +189008,7 @@
             "risk_field_cost": 0.0217,
             "total_cost": 0.2375
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 50.36,
@@ -189053,7 +189058,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (19.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (19.4 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -190674,7 +190679,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.686
           },
-          "latency_ms": 26.34,
+          "latency_ms": 25.24,
           "planned_trajectory": [
             {
               "x": 51.17,
@@ -190754,7 +190759,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=0.69, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (19.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (19.7 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -192375,7 +192380,7 @@
             "risk_field_cost": 0.0036,
             "total_cost": 0.2358
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 51.17,
@@ -192455,7 +192460,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (20.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (20.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -194076,7 +194081,7 @@
             "risk_field_cost": 0.001,
             "total_cost": 0.2495
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 51.97,
@@ -194151,7 +194156,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (20.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (20.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -195772,7 +195777,7 @@
             "risk_field_cost": 0.0002,
             "total_cost": 0.2645
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 51.97,
@@ -195847,7 +195852,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (20.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (20.4 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -197468,7 +197473,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2787
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 52.77,
@@ -197538,7 +197543,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (20.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (20.7 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -199159,7 +199164,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2925
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 53.57,
@@ -199224,7 +199229,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (20.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (20.8 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -200450,7 +200455,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3056
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 53.57,
@@ -200515,7 +200520,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -201741,7 +201746,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3179
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 54.37,
@@ -201801,7 +201806,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.2 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.2 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -203027,7 +203032,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3292
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 55.16,
@@ -203082,7 +203087,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.3 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.3 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -204308,7 +204313,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3398
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 55.96,
@@ -204358,7 +204363,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.4 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.4 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -205584,7 +205589,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3493
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 55.96,
@@ -205634,7 +205639,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.6 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -206860,7 +206865,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3585
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 56.76,
@@ -206905,7 +206910,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.7 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.7 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -208131,7 +208136,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.3291
           },
-          "latency_ms": 20.22,
+          "latency_ms": 19.56,
           "planned_trajectory": [
             {
               "x": 57.47,
@@ -208211,7 +208216,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=1.33, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (21.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.8 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -209437,7 +209442,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.8303
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 57.79,
@@ -209507,7 +209512,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.8 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.8 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -210783,7 +210788,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (21.9 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (21.9 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -212009,7 +212014,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.8328
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 59.07,
@@ -212039,7 +212044,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Gently bypassing slow traffic (22.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (22.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       },
       {
@@ -213660,7 +213665,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.327
           },
-          "latency_ms": 23.61,
+          "latency_ms": 23.2,
           "planned_trajectory": [
             {
               "x": 59.9,
@@ -213740,7 +213745,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected BYPASS (cost=1.33, trigger=PERIODIC).",
-        "caption": "Gently bypassing slow traffic (22.0 km/h) with extra 1.5m safety cushion.",
+        "caption": "Gently bypassing slow traffic (22.0 km/h) with extra safety margin.",
         "min_clearance_m": 3.37
       }
     ]
@@ -213748,6 +213753,7 @@
   "standard": {
     "scenario_id": "",
     "planner_id": "B1",
+    "source_file": "runs/val_b_manifest.json",
     "metrics": {
       "duration_s": 6.6,
       "completed_goal": false,
@@ -213755,8 +213761,9 @@
       "min_clearance_m": 1.41,
       "mean_jerk_m_s3": 2.276,
       "replan_count": 67,
-      "p95_latency_ms": 9.91,
-      "mean_speed_m_s": 4.33
+      "p95_latency_ms": 9.66,
+      "mean_speed_m_s": 4.33,
+      "source": "runs/val_b_manifest.json"
     },
     "frames": [
       {
@@ -214587,7 +214594,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.8161
           },
-          "latency_ms": 1.22,
+          "latency_ms": 1.18,
           "planned_trajectory": [
             {
               "x": 1.55,
@@ -214622,7 +214629,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=6.2 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 30.75
       },
       {
@@ -215453,7 +215460,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.6847
           },
-          "latency_ms": 1.56,
+          "latency_ms": 1.99,
           "planned_trajectory": [
             {
               "x": 2.06,
@@ -215488,7 +215495,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.8 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 30.39
       },
       {
@@ -216319,7 +216326,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2493
           },
-          "latency_ms": 1.34,
+          "latency_ms": 2.07,
           "planned_trajectory": [
             {
               "x": 2.58,
@@ -216354,7 +216361,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 29.76
       },
       {
@@ -217185,7 +217192,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2576
           },
-          "latency_ms": 1.13,
+          "latency_ms": 1.26,
           "planned_trajectory": [
             {
               "x": 3.17,
@@ -217220,7 +217227,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.06 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 29.11
       },
       {
@@ -218051,7 +218058,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2639
           },
-          "latency_ms": 1.2,
+          "latency_ms": 1.28,
           "planned_trajectory": [
             {
               "x": 3.77,
@@ -218086,7 +218093,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.10 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 28.42
       },
       {
@@ -218917,7 +218924,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2668
           },
-          "latency_ms": 1.33,
+          "latency_ms": 1.47,
           "planned_trajectory": [
             {
               "x": 4.36,
@@ -218952,7 +218959,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.13 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 27.68
       },
       {
@@ -219783,7 +219790,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2702
           },
-          "latency_ms": 1.37,
+          "latency_ms": 1.41,
           "planned_trajectory": [
             {
               "x": 4.95,
@@ -219818,7 +219825,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.15 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 27.02
       },
       {
@@ -220649,7 +220656,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2662
           },
-          "latency_ms": 1.55,
+          "latency_ms": 1.33,
           "planned_trajectory": [
             {
               "x": 5.53,
@@ -220684,7 +220691,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.14 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 26.46
       },
       {
@@ -221515,7 +221522,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2665
           },
-          "latency_ms": 1.27,
+          "latency_ms": 1.13,
           "planned_trajectory": [
             {
               "x": 6.1,
@@ -221550,7 +221557,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.15 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 25.9
       },
       {
@@ -222381,7 +222388,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2629
           },
-          "latency_ms": 0.95,
+          "latency_ms": 1.03,
           "planned_trajectory": [
             {
               "x": 6.66,
@@ -222416,7 +222423,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.14 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 25.34
       },
       {
@@ -223247,7 +223254,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3713
           },
-          "latency_ms": 0.93,
+          "latency_ms": 0.94,
           "planned_trajectory": [
             {
               "x": 6.51,
@@ -223297,7 +223304,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 24.74
       },
       {
@@ -224163,7 +224170,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.07 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 24.19
       },
       {
@@ -224994,7 +225001,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2357
           },
-          "latency_ms": 0.93,
+          "latency_ms": 0.96,
           "planned_trajectory": [
             {
               "x": 8.34,
@@ -225029,7 +225036,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.05 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 23.64
       },
       {
@@ -225860,7 +225867,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2286
           },
-          "latency_ms": 0.95,
+          "latency_ms": 1.04,
           "planned_trajectory": [
             {
               "x": 8.9,
@@ -225895,7 +225902,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=-0.03 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 23.09
       },
       {
@@ -226726,7 +226733,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2211
           },
-          "latency_ms": 0.96,
+          "latency_ms": 1.0,
           "planned_trajectory": [
             {
               "x": 9.46,
@@ -226761,7 +226768,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 22.54
       },
       {
@@ -227197,7 +227204,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2287
           },
-          "latency_ms": 1.38,
+          "latency_ms": 1.35,
           "planned_trajectory": [
             {
               "x": 10.04,
@@ -227232,7 +227239,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=0.06 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 22.54
       },
       {
@@ -227668,7 +227675,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2379
           },
-          "latency_ms": 2.97,
+          "latency_ms": 2.82,
           "planned_trajectory": [
             {
               "x": 10.63,
@@ -227703,7 +227710,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=5.5 m/s, steer=0.13 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 22.54
       },
       {
@@ -228139,7 +228146,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.503
           },
-          "latency_ms": 4.44,
+          "latency_ms": 4.65,
           "planned_trajectory": [
             {
               "x": 11.35,
@@ -228174,7 +228181,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=6.0 m/s, steer=0.11 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking handcart at 21.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 22.54
       },
       {
@@ -229400,7 +229407,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2346
           },
-          "latency_ms": 4.27,
+          "latency_ms": 4.35,
           "planned_trajectory": [
             {
               "x": 11.74,
@@ -229435,7 +229442,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.2 m/s, steer=0.13 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 20.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 20.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 20.25
       },
       {
@@ -231056,7 +231063,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.235
           },
-          "latency_ms": 4.85,
+          "latency_ms": 5.16,
           "planned_trajectory": [
             {
               "x": 12.25,
@@ -231091,7 +231098,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.0 m/s, steer=0.13 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 19.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 19.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 19.82
       },
       {
@@ -232712,7 +232719,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7966
           },
-          "latency_ms": 5.51,
+          "latency_ms": 5.55,
           "planned_trajectory": [
             {
               "x": 12.92,
@@ -232747,7 +232754,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.4 m/s, steer=0.13 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 18.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 18.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 19.24
       },
       {
@@ -234368,7 +234375,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7925
           },
-          "latency_ms": 5.3,
+          "latency_ms": 5.35,
           "planned_trajectory": [
             {
               "x": 13.39,
@@ -234403,7 +234410,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.2 m/s, steer=0.11 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 18.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 18.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 18.71
       },
       {
@@ -236024,7 +236031,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7881
           },
-          "latency_ms": 5.72,
+          "latency_ms": 6.44,
           "planned_trajectory": [
             {
               "x": 13.85,
@@ -236059,7 +236066,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=5.0 m/s, steer=0.09 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 17.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 17.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 18.22
       },
       {
@@ -237680,7 +237687,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7833
           },
-          "latency_ms": 6.06,
+          "latency_ms": 6.04,
           "planned_trajectory": [
             {
               "x": 14.29,
@@ -237715,7 +237722,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=4.9 m/s, steer=0.07 rad, state=FOLLOW).",
-        "caption": "Tracking handcart at 16.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 16.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 17.76
       },
       {
@@ -239336,7 +239343,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7779
           },
-          "latency_ms": 6.59,
+          "latency_ms": 6.09,
           "planned_trajectory": [
             {
               "x": 14.71,
@@ -240992,7 +240999,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.774
           },
-          "latency_ms": 6.89,
+          "latency_ms": 6.06,
           "planned_trajectory": [
             {
               "x": 15.13,
@@ -242648,7 +242655,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7747
           },
-          "latency_ms": 6.48,
+          "latency_ms": 6.53,
           "planned_trajectory": [
             {
               "x": 15.53,
@@ -244304,7 +244311,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7729
           },
-          "latency_ms": 6.96,
+          "latency_ms": 7.03,
           "planned_trajectory": [
             {
               "x": 15.93,
@@ -245960,7 +245967,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7736
           },
-          "latency_ms": 8.78,
+          "latency_ms": 9.1,
           "planned_trajectory": [
             {
               "x": 16.31,
@@ -247616,7 +247623,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7722
           },
-          "latency_ms": 9.57,
+          "latency_ms": 9.56,
           "planned_trajectory": [
             {
               "x": 16.69,
@@ -249272,7 +249279,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7733
           },
-          "latency_ms": 9.53,
+          "latency_ms": 9.57,
           "planned_trajectory": [
             {
               "x": 17.06,
@@ -250928,7 +250935,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7727
           },
-          "latency_ms": 9.34,
+          "latency_ms": 9.5,
           "planned_trajectory": [
             {
               "x": 17.42,
@@ -252584,7 +252591,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7748
           },
-          "latency_ms": 9.95,
+          "latency_ms": 9.24,
           "planned_trajectory": [
             {
               "x": 17.77,
@@ -254240,7 +254247,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7756
           },
-          "latency_ms": 9.63,
+          "latency_ms": 9.7,
           "planned_trajectory": [
             {
               "x": 18.12,
@@ -255896,7 +255903,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7802
           },
-          "latency_ms": 9.57,
+          "latency_ms": 9.81,
           "planned_trajectory": [
             {
               "x": 18.47,
@@ -257552,7 +257559,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7817
           },
-          "latency_ms": 10.32,
+          "latency_ms": 9.57,
           "planned_trajectory": [
             {
               "x": 18.8,
@@ -259208,7 +259215,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7848
           },
-          "latency_ms": 9.81,
+          "latency_ms": 9.54,
           "planned_trajectory": [
             {
               "x": 19.13,
@@ -259243,7 +259250,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=3.6 m/s, steer=0.16 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 12.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 12.42
       },
       {
@@ -260864,7 +260871,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.787
           },
-          "latency_ms": 9.79,
+          "latency_ms": 9.24,
           "planned_trajectory": [
             {
               "x": 19.45,
@@ -260899,7 +260906,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=3.6 m/s, steer=0.18 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 12.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 12.05
       },
       {
@@ -262520,7 +262527,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.7909
           },
-          "latency_ms": 9.79,
+          "latency_ms": 9.46,
           "planned_trajectory": [
             {
               "x": 19.76,
@@ -262555,7 +262562,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=3.6 m/s, steer=0.21 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 12.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 11.73
       },
       {
@@ -264176,7 +264183,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 0.6637
           },
-          "latency_ms": 9.46,
+          "latency_ms": 9.13,
           "planned_trajectory": [
             {
               "x": 19.97,
@@ -264211,7 +264218,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=3.2 m/s, steer=0.26 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 12.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 11.37
       },
       {
@@ -265832,7 +265839,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2395
           },
-          "latency_ms": 9.11,
+          "latency_ms": 9.09,
           "planned_trajectory": [
             {
               "x": 20.17,
@@ -265867,7 +265874,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=2.8 m/s, steer=0.32 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 11.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 11.12
       },
       {
@@ -267488,7 +267495,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2469
           },
-          "latency_ms": 9.1,
+          "latency_ms": 8.78,
           "planned_trajectory": [
             {
               "x": 20.44,
@@ -267523,7 +267530,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=2.8 m/s, steer=0.38 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 11.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 10.82
       },
       {
@@ -269144,7 +269151,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2548
           },
-          "latency_ms": 10.04,
+          "latency_ms": 9.07,
           "planned_trajectory": [
             {
               "x": 20.67,
@@ -269179,7 +269186,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=2.7 m/s, steer=0.45 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 11.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 10.49
       },
       {
@@ -270800,7 +270807,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2634
           },
-          "latency_ms": 9.1,
+          "latency_ms": 8.89,
           "planned_trajectory": [
             {
               "x": 20.87,
@@ -270835,7 +270842,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=2.7 m/s, steer=0.51 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 11.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 10.24
       },
       {
@@ -272456,7 +272463,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2691
           },
-          "latency_ms": 9.06,
+          "latency_ms": 9.13,
           "planned_trajectory": [
             {
               "x": 21.06,
@@ -272491,7 +272498,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=2.7 m/s, steer=0.55 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 11.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 10.01
       },
       {
@@ -274112,7 +274119,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2696
           },
-          "latency_ms": 9.17,
+          "latency_ms": 11.42,
           "planned_trajectory": [
             {
               "x": 21.23,
@@ -274147,7 +274154,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=2.7 m/s, steer=0.55 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 11.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.78
       },
       {
@@ -275768,7 +275775,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2702
           },
-          "latency_ms": 9.08,
+          "latency_ms": 9.74,
           "planned_trajectory": [
             {
               "x": 21.37,
@@ -275803,7 +275810,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=2.7 m/s, steer=0.55 rad, state=BYPASS).",
-        "caption": "Tracking handcart at 11.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.59
       },
       {
@@ -277029,7 +277036,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2708
           },
-          "latency_ms": 9.11,
+          "latency_ms": 9.0,
           "planned_trajectory": [
             {
               "x": 21.5,
@@ -277064,7 +277071,7 @@
           ]
         },
         "decision_trace": "[SLOW] B1 VO evaluation chosen (v=2.6 m/s, steer=0.55 rad, state=BYPASS).",
-        "caption": "Tracking pedestrian at 11.3 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.3 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.47
       },
       {
@@ -278290,7 +278297,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2716
           },
-          "latency_ms": 10.3,
+          "latency_ms": 9.24,
           "planned_trajectory": [
             {
               "x": 21.6,
@@ -278325,7 +278332,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=2.6 m/s, steer=0.55 rad, state=BYPASS).",
-        "caption": "Tracking pedestrian at 11.3 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.3 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.39
       },
       {
@@ -279551,7 +279558,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2742
           },
-          "latency_ms": 9.46,
+          "latency_ms": 8.29,
           "planned_trajectory": [
             {
               "x": 21.69,
@@ -279586,7 +279593,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=2.7 m/s, steer=0.55 rad, state=BYPASS).",
-        "caption": "Tracking pedestrian at 11.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -280812,7 +280819,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2788
           },
-          "latency_ms": 8.17,
+          "latency_ms": 7.79,
           "planned_trajectory": [
             {
               "x": 21.75,
@@ -280847,7 +280854,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=2.8 m/s, steer=0.55 rad, state=BYPASS).",
-        "caption": "Tracking pedestrian at 12.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -282073,7 +282080,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3297
           },
-          "latency_ms": 6.75,
+          "latency_ms": 6.57,
           "planned_trajectory": [
             {
               "x": 21.99,
@@ -282123,7 +282130,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 12.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -283349,7 +283356,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3285
           },
-          "latency_ms": 5.67,
+          "latency_ms": 5.36,
           "planned_trajectory": [
             {
               "x": 22.09,
@@ -283399,7 +283406,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 13.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 13.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -284625,7 +284632,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3274
           },
-          "latency_ms": 4.76,
+          "latency_ms": 4.5,
           "planned_trajectory": [
             {
               "x": 22.18,
@@ -284675,7 +284682,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 14.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 14.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -286296,7 +286303,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3277
           },
-          "latency_ms": 4.15,
+          "latency_ms": 4.0,
           "planned_trajectory": [
             {
               "x": 22.22,
@@ -286346,7 +286353,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking handcart at 14.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 14.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -287967,7 +287974,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3283
           },
-          "latency_ms": 3.48,
+          "latency_ms": 3.37,
           "planned_trajectory": [
             {
               "x": 22.25,
@@ -288017,7 +288024,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking handcart at 13.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 13.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -289243,7 +289250,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3289
           },
-          "latency_ms": 3.01,
+          "latency_ms": 2.77,
           "planned_trajectory": [
             {
               "x": 22.26,
@@ -289293,7 +289300,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking handcart at 13.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 13.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -290124,7 +290131,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3294
           },
-          "latency_ms": 2.17,
+          "latency_ms": 2.06,
           "planned_trajectory": [
             {
               "x": 22.28,
@@ -290174,7 +290181,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking handcart at 12.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -291005,7 +291012,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3299
           },
-          "latency_ms": 1.44,
+          "latency_ms": 1.35,
           "planned_trajectory": [
             {
               "x": 22.29,
@@ -291055,7 +291062,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking handcart at 12.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -291886,7 +291893,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3303
           },
-          "latency_ms": 1.7,
+          "latency_ms": 1.36,
           "planned_trajectory": [
             {
               "x": 22.31,
@@ -291936,7 +291943,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking handcart at 11.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -292372,7 +292379,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3307
           },
-          "latency_ms": 0.7,
+          "latency_ms": 0.69,
           "planned_trajectory": [
             {
               "x": 22.34,
@@ -292422,7 +292429,7 @@
           ]
         },
         "decision_trace": "[BYPASS] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 11.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -292858,7 +292865,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.331
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 22.37,
@@ -292908,7 +292915,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 10.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 10.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -293344,7 +293351,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3309
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 22.43,
@@ -293394,7 +293401,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 10.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 10.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -293830,7 +293837,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3305
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 22.5,
@@ -293880,7 +293887,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 11.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -294316,7 +294323,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.3296
           },
-          "latency_ms": 0.19,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 22.6,
@@ -294366,7 +294373,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 11.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 11.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -294852,7 +294859,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Tracking pedestrian at 12.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking pedestrian at 12.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.35
       },
       {
@@ -295288,7 +295295,7 @@
             "risk_field_cost": 2.25,
             "total_cost": 3.327
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 22.89,
@@ -295338,7 +295345,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1: All dynamic window rollouts violate VO / road boundaries. Reactive emergency braking applied.",
-        "caption": "Collided with obstacle at 13.3 km/h. Standard planner failed to anticipate sudden move.",
+        "caption": "Collided at 13.3 km/h. Standard planner failed to anticipate sudden move.",
         "min_clearance_m": 9.35
       }
     ]

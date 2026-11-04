@@ -1,12 +1,12 @@
 /**
  * ResultsSection - Authentic Benchmark Results & Honest Reflections
- * Presents the 4 headline research metrics, 5-scenario comparison bar chart,
- * "Where it still struggles" honest audit, and accessible data table.
+ * Presents 4 headline numbers with source tags, 5-scenario grouped bar chart
+ * with "Tested on" note, "Where it still struggles" honest audit, and accessible data table.
  */
 
 import React, { useState } from 'react';
 import { ShowcaseSummary } from './types';
-import { TrendingUp, ShieldCheck, Sparkles, Clock, AlertTriangle, Table, BarChart3 } from 'lucide-react';
+import { TrendingUp, ShieldCheck, Sparkles, Clock, AlertTriangle, Table, BarChart3, FileText } from 'lucide-react';
 
 interface ResultsSectionProps {
   summary: ShowcaseSummary | null;
@@ -29,7 +29,7 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
     <section id="results" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
       {/* Section Header */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           <span
             style={{
               fontSize: '0.75rem',
@@ -47,17 +47,30 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
           <span style={{ fontSize: '0.8rem', color: '#64748B' }}>
             {metadata.provenance} • {metadata.total_episodes_per_planner} episodes per planner
           </span>
+          <span
+            style={{
+              fontSize: '0.7rem',
+              color: '#2DD4BF',
+              background: 'rgba(45, 212, 191, 0.08)',
+              padding: '0.1rem 0.4rem',
+              borderRadius: '4px',
+              fontFamily: 'monospace',
+            }}
+            title="Authoritative benchmark manifest"
+          >
+            source: {metadata.source_file}
+          </span>
         </div>
         <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#FFFFFF', margin: 0 }}>
           Measured performance over 25 validation episodes
         </h2>
         <p style={{ color: '#94A3B8', fontSize: '0.95rem', maxWidth: '680px', lineHeight: 1.5, margin: 0 }}>
           Tested across 5 canonical unstructured Indian road scenarios under randomized seeds (2005–2009).
-          All numbers are traceable to the research manifest.
+          Every number is traceable to the source manifest.
         </p>
       </div>
 
-      {/* Row of 4 Headline Metrics */}
+      {/* Row of 4 Headline Metrics with Source Tags */}
       <div
         style={{
           display: 'grid',
@@ -90,6 +103,9 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
           <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2DD4BF' }}>
             {headline_metrics.completion_rate.delta_label}
           </div>
+          <span style={{ fontSize: '0.675rem', color: '#64748B', fontFamily: 'monospace', marginTop: 'auto' }}>
+            source: {headline_metrics.completion_rate.source_file}
+          </span>
         </div>
 
         {/* Metric 2: Crash Rate */}
@@ -117,6 +133,9 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
           <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2DD4BF' }}>
             {headline_metrics.collision_rate.delta_label}
           </div>
+          <span style={{ fontSize: '0.675rem', color: '#64748B', fontFamily: 'monospace', marginTop: 'auto' }}>
+            source: {headline_metrics.collision_rate.source_file}
+          </span>
         </div>
 
         {/* Metric 3: Smoothness (Jerk) */}
@@ -144,6 +163,9 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
           <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2DD4BF' }}>
             {headline_metrics.smoothness_jerk.delta_label}
           </div>
+          <span style={{ fontSize: '0.675rem', color: '#64748B', fontFamily: 'monospace', marginTop: 'auto' }}>
+            source: {headline_metrics.smoothness_jerk.source_file}
+          </span>
         </div>
 
         {/* Metric 4: Think Time */}
@@ -171,6 +193,9 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
           <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2DD4BF' }}>
             {headline_metrics.think_time_ms.delta_label}
           </div>
+          <span style={{ fontSize: '0.675rem', color: '#64748B', fontFamily: 'monospace', marginTop: 'auto' }}>
+            source: {headline_metrics.think_time_ms.source_file}
+          </span>
         </div>
       </div>
 
@@ -192,8 +217,11 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
               Scenario completion breakdown
             </h3>
             <p style={{ fontSize: '0.825rem', color: '#94A3B8', margin: '0.25rem 0 0' }}>
-              Comparison of goal completion rates across all 5 test road scenarios.
+              Comparison of goal completion rates across all 5 canonical test road scenarios.
             </p>
+            <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
+              <strong>Tested on:</strong> Validation B Split (Seeds 2005–2009, 25 episodes per planner)
+            </div>
           </div>
 
           <button
@@ -260,6 +288,11 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
                     />
                   </div>
                 </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: '#64748B' }}>
+                  <span>{sc.built_from}</span>
+                  <span style={{ fontFamily: 'monospace' }}>source: {sc.source_file}</span>
+                </div>
               </div>
             ))}
 
@@ -281,18 +314,20 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#94A3B8' }}>
                   <th style={{ padding: '0.5rem' }}>Scenario</th>
+                  <th style={{ padding: '0.5rem' }}>Built From</th>
                   <th style={{ padding: '0.5rem' }}>P3 Completion</th>
                   <th style={{ padding: '0.5rem' }}>Standard Completion</th>
                   <th style={{ padding: '0.5rem' }}>P3 Crash Rate</th>
-                  <th style={{ padding: '0.5rem' }}>Standard Crash Rate</th>
+                  <th style={{ padding: '0.5rem' }}>Standard Crash</th>
                   <th style={{ padding: '0.5rem' }}>P3 Jerk</th>
-                  <th style={{ padding: '0.5rem' }}>P3 Think Time</th>
+                  <th style={{ padding: '0.5rem' }}>Source</th>
                 </tr>
               </thead>
               <tbody>
                 {scenarios.map((sc) => (
                   <tr key={sc.key} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
                     <td style={{ padding: '0.6rem 0.5rem', color: '#FFFFFF', fontWeight: 500 }}>{sc.name}</td>
+                    <td style={{ padding: '0.6rem 0.5rem', color: '#94A3B8', fontSize: '0.75rem' }}>{sc.built_from}</td>
                     <td style={{ padding: '0.6rem 0.5rem', color: '#2DD4BF', fontFamily: 'monospace' }}>
                       {sc.adaptive.completion_rate}%
                     </td>
@@ -308,8 +343,8 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
                     <td style={{ padding: '0.6rem 0.5rem', color: '#CBD5E1', fontFamily: 'monospace' }}>
                       {sc.adaptive.jerk_m_s3} m/s³
                     </td>
-                    <td style={{ padding: '0.6rem 0.5rem', color: '#CBD5E1', fontFamily: 'monospace' }}>
-                      {sc.adaptive.latency_ms} ms
+                    <td style={{ padding: '0.6rem 0.5rem', color: '#64748B', fontFamily: 'monospace', fontSize: '0.7rem' }}>
+                      {sc.source_file}
                     </td>
                   </tr>
                 ))}
@@ -335,9 +370,14 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
           <AlertTriangle size={20} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#FBBF24' }}>
-            Where it still struggles: {weak_spot_analysis.scenario}
-          </h4>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#FBBF24' }}>
+              Where it still struggles: {weak_spot_analysis.scenario}
+            </h4>
+            <span style={{ fontSize: '0.7rem', color: '#FBBF24', fontFamily: 'monospace' }}>
+              source: {weak_spot_analysis.source_file}
+            </span>
+          </div>
           <p style={{ margin: 0, fontSize: '0.85rem', color: '#CBD5E1', lineHeight: 1.5 }}>
             {weak_spot_analysis.why}
           </p>
@@ -349,3 +389,7 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
     </section>
   );
 };
+
+// Aliases for component requirements
+export const ResultsRow = ResultsSection;
+export const ScenarioBars = ResultsSection;

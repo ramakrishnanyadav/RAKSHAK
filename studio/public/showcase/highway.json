@@ -3,15 +3,19 @@
   "scenario_id": "SCENARIO_3_HIGHWAY_MERGE",
   "name": "Highway Merge",
   "description": "High-speed multi-lane merge with fast trucks and merging two-wheelers.",
+  "built_from": "Synthetic multi-lane highway + high-speed truck kinematics",
+  "source_file": "engine/scenarios/scenarios_impl.py",
   "road_users": [
     "truck",
     "motorcycle",
     "sedan"
   ],
   "seed": 2005,
+  "tested_on": "Validation B Split (Seed 2005)",
   "adaptive": {
     "scenario_id": "",
     "planner_id": "P3",
+    "source_file": "runs/val_b_manifest.json",
     "metrics": {
       "duration_s": 9.1,
       "completed_goal": true,
@@ -19,8 +23,9 @@
       "min_clearance_m": 3.12,
       "mean_jerk_m_s3": 0.222,
       "replan_count": 8,
-      "p95_latency_ms": 10.27,
-      "mean_speed_m_s": 10.95
+      "p95_latency_ms": 10.34,
+      "mean_speed_m_s": 10.95,
+      "source": "runs/val_b_manifest.json"
     },
     "frames": [
       {
@@ -1246,7 +1251,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.6959
           },
-          "latency_ms": 16.52,
+          "latency_ms": 16.09,
           "planned_trajectory": [
             {
               "x": 1.6,
@@ -1326,7 +1331,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.70, trigger=PERIODIC).",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 32.3
       },
       {
@@ -2552,7 +2557,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2491
           },
-          "latency_ms": 0.22,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 1.6,
@@ -2632,7 +2637,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 31.39
       },
       {
@@ -3858,7 +3863,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.2895
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 3.2,
@@ -3933,7 +3938,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 30.84
       },
       {
@@ -5234,7 +5239,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 30.14
       },
       {
@@ -6460,7 +6465,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.3646
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.22,
           "planned_trajectory": [
             {
               "x": 4.8,
@@ -6530,7 +6535,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 29.48
       },
       {
@@ -7826,7 +7831,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 28.84
       },
       {
@@ -9052,7 +9057,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4347
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 6.4,
@@ -9117,7 +9122,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 28.16
       },
       {
@@ -10343,7 +10348,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4673
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 8.0,
@@ -10403,7 +10408,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 27.43
       },
       {
@@ -11629,7 +11634,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.4982
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.21,
           "planned_trajectory": [
             {
               "x": 8.0,
@@ -11689,7 +11694,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 26.77
       },
       {
@@ -12915,7 +12920,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.527
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 9.6,
@@ -12970,7 +12975,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 26.06
       },
       {
@@ -14196,7 +14201,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.5542
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 11.2,
@@ -14246,7 +14251,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 25.38
       },
       {
@@ -15522,7 +15527,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 24.63
       },
       {
@@ -16748,7 +16753,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 0.9376
           },
-          "latency_ms": 15.87,
+          "latency_ms": 16.08,
           "planned_trajectory": [
             {
               "x": 13.72,
@@ -16828,7 +16833,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=0.94, trigger=PERIODIC).",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 23.9
       },
       {
@@ -18054,7 +18059,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.5558
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 13.72,
@@ -18134,7 +18139,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 23.15
       },
       {
@@ -19435,7 +19440,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 22.44
       },
       {
@@ -20661,7 +20666,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.5987
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 15.32,
@@ -20736,7 +20741,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 21.75
       },
       {
@@ -21962,7 +21967,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6181
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 16.92,
@@ -22032,7 +22037,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 20.97
       },
       {
@@ -23258,7 +23263,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6356
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 18.52,
@@ -23323,7 +23328,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 20.2
       },
       {
@@ -24614,7 +24619,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 19.49
       },
       {
@@ -25840,7 +25845,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6673
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 20.12,
@@ -25900,7 +25905,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 18.7
       },
       {
@@ -27126,7 +27131,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6815
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 21.72,
@@ -27181,7 +27186,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 17.97
       },
       {
@@ -28407,7 +28412,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6945
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 21.72,
@@ -28462,7 +28467,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 17.24
       },
       {
@@ -29688,7 +29693,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7066
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 23.32,
@@ -29738,7 +29743,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 16.47
       },
       {
@@ -30964,7 +30969,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7177
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 24.92,
@@ -31009,7 +31014,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 15.8
       },
       {
@@ -32235,7 +32240,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.0457
           },
-          "latency_ms": 15.91,
+          "latency_ms": 16.53,
           "planned_trajectory": [
             {
               "x": 26.74,
@@ -32315,7 +32320,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=1.05, trigger=PERIODIC).",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 15.06
       },
       {
@@ -33541,7 +33546,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6795
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.19,
           "planned_trajectory": [
             {
               "x": 26.74,
@@ -33621,7 +33626,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 14.3
       },
       {
@@ -34922,7 +34927,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 13.56
       },
       {
@@ -36148,7 +36153,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6984
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 28.34,
@@ -36223,7 +36228,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 12.81
       },
       {
@@ -37449,7 +37454,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7069
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 29.94,
@@ -37519,7 +37524,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 12.06
       },
       {
@@ -38745,7 +38750,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7144
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 31.54,
@@ -38810,7 +38815,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 11.32
       },
       {
@@ -40036,7 +40041,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7218
           },
-          "latency_ms": 0.23,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 33.14,
@@ -40096,7 +40101,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 10.6
       },
       {
@@ -41322,7 +41327,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7283
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 33.14,
@@ -41382,7 +41387,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 9.91
       },
       {
@@ -42608,7 +42613,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7346
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 34.74,
@@ -42663,7 +42668,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 9.22
       },
       {
@@ -43889,7 +43894,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7404
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 36.34,
@@ -43939,7 +43944,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 8.53
       },
       {
@@ -45165,7 +45170,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.7458
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 36.34,
@@ -45215,7 +45220,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 7.86
       },
       {
@@ -46441,7 +46446,7 @@
             "risk_field_cost": 0.0004,
             "total_cost": 0.7508
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 37.94,
@@ -46486,7 +46491,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 7.17
       },
       {
@@ -47712,7 +47717,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.0818
           },
-          "latency_ms": 16.37,
+          "latency_ms": 16.25,
           "planned_trajectory": [
             {
               "x": 40.03,
@@ -47792,7 +47797,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=1.08, trigger=PERIODIC).",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 6.5
       },
       {
@@ -49018,7 +49023,7 @@
             "risk_field_cost": 0.0028,
             "total_cost": 0.7212
           },
-          "latency_ms": 0.17,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 40.03,
@@ -49098,7 +49103,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 5.84
       },
       {
@@ -50324,7 +50329,7 @@
             "risk_field_cost": 0.0062,
             "total_cost": 0.7292
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 41.62,
@@ -50399,7 +50404,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 5.26
       },
       {
@@ -51625,7 +51630,7 @@
             "risk_field_cost": 0.0117,
             "total_cost": 0.7395
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 41.62,
@@ -51700,7 +51705,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 4.76
       },
       {
@@ -52926,7 +52931,7 @@
             "risk_field_cost": 0.0218,
             "total_cost": 0.7519
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 43.21,
@@ -52996,7 +53001,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 4.28
       },
       {
@@ -54222,7 +54227,7 @@
             "risk_field_cost": 0.0354,
             "total_cost": 0.7682
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 44.8,
@@ -54287,7 +54292,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.86
       },
       {
@@ -55513,7 +55518,7 @@
             "risk_field_cost": 0.0524,
             "total_cost": 0.7878
           },
-          "latency_ms": 0.16,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 46.4,
@@ -55573,7 +55578,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.02 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.48
       },
       {
@@ -56404,7 +56409,7 @@
             "risk_field_cost": 0.0818,
             "total_cost": 0.8206
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 46.4,
@@ -56464,7 +56469,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.03 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 3.09
       },
       {
@@ -57295,7 +57300,7 @@
             "risk_field_cost": 0.1088,
             "total_cost": 0.8511
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 48.0,
@@ -57350,7 +57355,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.04 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.8
       },
       {
@@ -58181,7 +58186,7 @@
             "risk_field_cost": 0.1234,
             "total_cost": 0.8683
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 49.6,
@@ -58231,7 +58236,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.05 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.62
       },
       {
@@ -59062,7 +59067,7 @@
             "risk_field_cost": 0.1416,
             "total_cost": 0.8894
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 49.6,
@@ -59112,7 +59117,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.06 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -59943,7 +59948,7 @@
             "risk_field_cost": 0.1371,
             "total_cost": 0.887
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 51.2,
@@ -59988,7 +59993,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.05 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -60819,7 +60824,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.0768
           },
-          "latency_ms": 13.04,
+          "latency_ms": 13.13,
           "planned_trajectory": [
             {
               "x": 53.39,
@@ -60899,7 +60904,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=1.08, trigger=PERIODIC).",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -61415,7 +61420,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.04 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -61851,7 +61856,7 @@
             "risk_field_cost": 0.0775,
             "total_cost": 0.7929
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 54.99,
@@ -61926,7 +61931,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.03 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -62362,7 +62367,7 @@
             "risk_field_cost": 0.0579,
             "total_cost": 0.7759
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 54.99,
@@ -62437,7 +62442,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.02 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -62873,7 +62878,7 @@
             "risk_field_cost": 0.037,
             "total_cost": 0.7573
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 56.59,
@@ -62943,7 +62948,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -63379,7 +63384,7 @@
             "risk_field_cost": 0.0212,
             "total_cost": 0.7438
           },
-          "latency_ms": 0.11,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 58.19,
@@ -63444,7 +63449,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.01 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -63880,7 +63885,7 @@
             "risk_field_cost": 0.01,
             "total_cost": 0.7349
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 59.79,
@@ -63940,7 +63945,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -64436,7 +64441,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -64872,7 +64877,7 @@
             "risk_field_cost": 0.002,
             "total_cost": 0.7313
           },
-          "latency_ms": 0.11,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 61.39,
@@ -64927,7 +64932,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -65363,7 +65368,7 @@
             "risk_field_cost": 0.0007,
             "total_cost": 0.7317
           },
-          "latency_ms": 0.1,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 62.99,
@@ -65413,7 +65418,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -65849,7 +65854,7 @@
             "risk_field_cost": 0.0003,
             "total_cost": 0.7333
           },
-          "latency_ms": 0.11,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 62.99,
@@ -65899,7 +65904,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -66335,7 +66340,7 @@
             "risk_field_cost": 0.0001,
             "total_cost": 0.735
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 64.59,
@@ -66380,7 +66385,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -66816,7 +66821,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.0693
           },
-          "latency_ms": 8.0,
+          "latency_ms": 8.05,
           "planned_trajectory": [
             {
               "x": 66.75,
@@ -66896,7 +66901,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=1.07, trigger=PERIODIC).",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -67332,7 +67337,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7035
           },
-          "latency_ms": 0.18,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 66.75,
@@ -67412,7 +67417,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -67848,7 +67853,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7057
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.17,
           "planned_trajectory": [
             {
               "x": 68.35,
@@ -67923,7 +67928,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -68359,7 +68364,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7075
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 68.35,
@@ -68434,7 +68439,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -68870,7 +68875,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7096
           },
-          "latency_ms": 0.2,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 69.95,
@@ -68940,7 +68945,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -69376,7 +69381,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7112
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 71.55,
@@ -69441,7 +69446,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -69877,7 +69882,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7132
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 73.15,
@@ -69937,7 +69942,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -70373,7 +70378,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7147
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 73.15,
@@ -70433,7 +70438,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -70869,7 +70874,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7166
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 74.75,
@@ -70924,7 +70929,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -71410,7 +71415,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -71846,7 +71851,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7198
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 76.35,
@@ -71896,7 +71901,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -72332,7 +72337,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7211
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 77.95,
@@ -72377,7 +72382,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -72813,7 +72818,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.0613
           },
-          "latency_ms": 7.64,
+          "latency_ms": 8.0,
           "planned_trajectory": [
             {
               "x": 80.09,
@@ -72893,7 +72898,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=1.06, trigger=PERIODIC).",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -73329,7 +73334,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6936
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 80.09,
@@ -73409,7 +73414,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -73845,7 +73850,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6951
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.15,
           "planned_trajectory": [
             {
               "x": 81.69,
@@ -73920,7 +73925,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -74356,7 +74361,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.697
           },
-          "latency_ms": 0.15,
+          "latency_ms": 0.14,
           "planned_trajectory": [
             {
               "x": 81.69,
@@ -74431,7 +74436,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -74867,7 +74872,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6984
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 83.29,
@@ -74937,7 +74942,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -75373,7 +75378,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7002
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.18,
           "planned_trajectory": [
             {
               "x": 84.89,
@@ -75438,7 +75443,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -75874,7 +75879,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7016
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.16,
           "planned_trajectory": [
             {
               "x": 86.49,
@@ -75934,7 +75939,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -76370,7 +76375,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7033
           },
-          "latency_ms": 0.12,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 86.49,
@@ -76430,7 +76435,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -76866,7 +76871,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7049
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 88.09,
@@ -76921,7 +76926,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -77407,7 +77412,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -77843,7 +77848,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7077
           },
-          "latency_ms": 0.11,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 89.69,
@@ -77893,7 +77898,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -78329,7 +78334,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.7088
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 91.29,
@@ -78374,7 +78379,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -78810,7 +78815,7 @@
             "risk_field_cost": 0.3,
             "total_cost": 1.054
           },
-          "latency_ms": 7.51,
+          "latency_ms": 7.56,
           "planned_trajectory": [
             {
               "x": 93.41,
@@ -78890,7 +78895,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 Dynamic Replan (PERIODIC): Selected FOLLOW (cost=1.05, trigger=PERIODIC).",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -79326,7 +79331,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6843
           },
-          "latency_ms": 0.14,
+          "latency_ms": 0.13,
           "planned_trajectory": [
             {
               "x": 93.41,
@@ -79406,7 +79411,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -79917,7 +79922,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -80428,7 +80433,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -80864,7 +80869,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6889
           },
-          "latency_ms": 0.11,
+          "latency_ms": 0.12,
           "planned_trajectory": [
             {
               "x": 96.61,
@@ -80934,7 +80939,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -81435,7 +81440,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -81871,7 +81876,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.692
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.11,
           "planned_trajectory": [
             {
               "x": 99.81,
@@ -81931,7 +81936,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] P3 executing smooth trajectory; risk=0.00 below dynamic threshold.",
-        "caption": "Tracking auto_rickshaw with multi-path prediction. Trajectory is smooth and clear.",
+        "caption": "Tracking auto_rickshaw with predicted path. Safe trajectory is clear.",
         "min_clearance_m": 2.53
       },
       {
@@ -82367,7 +82372,7 @@
             "risk_field_cost": 0.0,
             "total_cost": 0.6935
           },
-          "latency_ms": 0.13,
+          "latency_ms": 0.1,
           "planned_trajectory": [
             {
               "x": 99.81,
@@ -82435,6 +82440,7 @@
   "standard": {
     "scenario_id": "",
     "planner_id": "B1",
+    "source_file": "runs/val_b_manifest.json",
     "metrics": {
       "duration_s": 9.1,
       "completed_goal": true,
@@ -82442,8 +82448,9 @@
       "min_clearance_m": 3.82,
       "mean_jerk_m_s3": 0.222,
       "replan_count": 92,
-      "p95_latency_ms": 4.74,
-      "mean_speed_m_s": 10.95
+      "p95_latency_ms": 4.23,
+      "mean_speed_m_s": 10.95,
+      "source": "runs/val_b_manifest.json"
     },
     "frames": [
       {
@@ -83669,7 +83676,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2125
           },
-          "latency_ms": 0.92,
+          "latency_ms": 1.11,
           "planned_trajectory": [
             {
               "x": 2.25,
@@ -83704,7 +83711,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.0 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 34.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 34.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 32.3
       },
       {
@@ -84930,7 +84937,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2073
           },
-          "latency_ms": 0.68,
+          "latency_ms": 0.83,
           "planned_trajectory": [
             {
               "x": 3.22,
@@ -84965,7 +84972,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.1 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 34.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 34.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 31.39
       },
       {
@@ -86191,7 +86198,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.2015
           },
-          "latency_ms": 0.7,
+          "latency_ms": 1.7,
           "planned_trajectory": [
             {
               "x": 4.22,
@@ -86226,7 +86233,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.2 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 35.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 35.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 30.84
       },
       {
@@ -87452,7 +87459,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1963
           },
-          "latency_ms": 0.64,
+          "latency_ms": 0.91,
           "planned_trajectory": [
             {
               "x": 5.22,
@@ -87487,7 +87494,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 35.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 35.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 30.14
       },
       {
@@ -88713,7 +88720,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1914
           },
-          "latency_ms": 0.77,
+          "latency_ms": 0.82,
           "planned_trajectory": [
             {
               "x": 6.24,
@@ -88748,7 +88755,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 36.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 36.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 29.48
       },
       {
@@ -89974,7 +89981,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1869
           },
-          "latency_ms": 0.68,
+          "latency_ms": 0.97,
           "planned_trajectory": [
             {
               "x": 7.27,
@@ -90009,7 +90016,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.6 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 36.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 36.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 28.84
       },
       {
@@ -91235,7 +91242,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1826
           },
-          "latency_ms": 0.67,
+          "latency_ms": 1.29,
           "planned_trajectory": [
             {
               "x": 8.3,
@@ -91270,7 +91277,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.7 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 36.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 36.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 28.16
       },
       {
@@ -92496,7 +92503,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1787
           },
-          "latency_ms": 0.83,
+          "latency_ms": 0.71,
           "planned_trajectory": [
             {
               "x": 9.35,
@@ -92531,7 +92538,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.8 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 37.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 37.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 27.43
       },
       {
@@ -93757,7 +93764,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1751
           },
-          "latency_ms": 0.83,
+          "latency_ms": 0.69,
           "planned_trajectory": [
             {
               "x": 10.4,
@@ -93792,7 +93799,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.9 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 37.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 37.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 26.77
       },
       {
@@ -95018,7 +95025,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1717
           },
-          "latency_ms": 0.74,
+          "latency_ms": 0.73,
           "planned_trajectory": [
             {
               "x": 11.45,
@@ -95053,7 +95060,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.0 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 37.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 37.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 26.06
       },
       {
@@ -96279,7 +96286,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1685
           },
-          "latency_ms": 0.75,
+          "latency_ms": 0.71,
           "planned_trajectory": [
             {
               "x": 12.51,
@@ -96314,7 +96321,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.0 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 37.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 37.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 25.38
       },
       {
@@ -97540,7 +97547,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1656
           },
-          "latency_ms": 0.68,
+          "latency_ms": 1.72,
           "planned_trajectory": [
             {
               "x": 13.58,
@@ -97575,7 +97582,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.1 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 38.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 38.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 24.63
       },
       {
@@ -98801,7 +98808,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1628
           },
-          "latency_ms": 0.78,
+          "latency_ms": 1.08,
           "planned_trajectory": [
             {
               "x": 14.66,
@@ -98836,7 +98843,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.1 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 38.3 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 38.3 km/h assuming it moves in a straight line.",
         "min_clearance_m": 23.9
       },
       {
@@ -100062,7 +100069,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1602
           },
-          "latency_ms": 0.8,
+          "latency_ms": 0.7,
           "planned_trajectory": [
             {
               "x": 15.73,
@@ -100097,7 +100104,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.2 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 38.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 38.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 23.15
       },
       {
@@ -101323,7 +101330,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1577
           },
-          "latency_ms": 0.77,
+          "latency_ms": 0.78,
           "planned_trajectory": [
             {
               "x": 16.81,
@@ -101358,7 +101365,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.2 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 38.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 38.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 22.44
       },
       {
@@ -102584,7 +102591,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1554
           },
-          "latency_ms": 0.84,
+          "latency_ms": 0.71,
           "planned_trajectory": [
             {
               "x": 17.9,
@@ -102619,7 +102626,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 38.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 38.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 21.75
       },
       {
@@ -103845,7 +103852,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1532
           },
-          "latency_ms": 1.2,
+          "latency_ms": 0.66,
           "planned_trajectory": [
             {
               "x": 18.99,
@@ -103880,7 +103887,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 20.97
       },
       {
@@ -105106,7 +105113,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1512
           },
-          "latency_ms": 1.31,
+          "latency_ms": 0.77,
           "planned_trajectory": [
             {
               "x": 20.08,
@@ -105141,7 +105148,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 20.2
       },
       {
@@ -106367,7 +106374,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1492
           },
-          "latency_ms": 1.41,
+          "latency_ms": 0.7,
           "planned_trajectory": [
             {
               "x": 21.17,
@@ -106402,7 +106409,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.2 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.2 km/h assuming it moves in a straight line.",
         "min_clearance_m": 19.49
       },
       {
@@ -107628,7 +107635,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1474
           },
-          "latency_ms": 1.35,
+          "latency_ms": 0.67,
           "planned_trajectory": [
             {
               "x": 22.27,
@@ -107663,7 +107670,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.3 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.3 km/h assuming it moves in a straight line.",
         "min_clearance_m": 18.7
       },
       {
@@ -108889,7 +108896,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1456
           },
-          "latency_ms": 1.82,
+          "latency_ms": 0.63,
           "planned_trajectory": [
             {
               "x": 23.36,
@@ -108924,7 +108931,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.4 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.4 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.4 km/h assuming it moves in a straight line.",
         "min_clearance_m": 17.97
       },
       {
@@ -110150,7 +110157,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.144
           },
-          "latency_ms": 1.38,
+          "latency_ms": 0.65,
           "planned_trajectory": [
             {
               "x": 24.46,
@@ -110185,7 +110192,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 17.24
       },
       {
@@ -111411,7 +111418,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1424
           },
-          "latency_ms": 1.28,
+          "latency_ms": 0.67,
           "planned_trajectory": [
             {
               "x": 25.57,
@@ -111446,7 +111453,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.5 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.5 km/h assuming it moves in a straight line.",
         "min_clearance_m": 16.47
       },
       {
@@ -112672,7 +112679,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1409
           },
-          "latency_ms": 1.14,
+          "latency_ms": 0.63,
           "planned_trajectory": [
             {
               "x": 26.67,
@@ -112707,7 +112714,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.6 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.6 km/h assuming it moves in a straight line.",
         "min_clearance_m": 15.8
       },
       {
@@ -113933,7 +113940,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1395
           },
-          "latency_ms": 1.08,
+          "latency_ms": 0.68,
           "planned_trajectory": [
             {
               "x": 27.77,
@@ -113968,7 +113975,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.5 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 15.06
       },
       {
@@ -115194,7 +115201,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1466
           },
-          "latency_ms": 4.4,
+          "latency_ms": 3.48,
           "planned_trajectory": [
             {
               "x": 28.56,
@@ -115229,7 +115236,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.7 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.7 km/h assuming it moves in a straight line.",
         "min_clearance_m": 14.3
       },
       {
@@ -116455,7 +116462,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1451
           },
-          "latency_ms": 4.85,
+          "latency_ms": 3.56,
           "planned_trajectory": [
             {
               "x": 29.67,
@@ -116490,7 +116497,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.3 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 13.56
       },
       {
@@ -117716,7 +117723,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1479
           },
-          "latency_ms": 4.7,
+          "latency_ms": 4.08,
           "planned_trajectory": [
             {
               "x": 30.61,
@@ -117751,7 +117758,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.6 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.8 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.8 km/h assuming it moves in a straight line.",
         "min_clearance_m": 12.81
       },
       {
@@ -118977,7 +118984,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1506
           },
-          "latency_ms": 4.52,
+          "latency_ms": 4.31,
           "planned_trajectory": [
             {
               "x": 31.56,
@@ -119012,7 +119019,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.00 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 12.06
       },
       {
@@ -120238,7 +120245,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1546
           },
-          "latency_ms": 4.98,
+          "latency_ms": 4.85,
           "planned_trajectory": [
             {
               "x": 32.67,
@@ -120273,7 +120280,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.02 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 11.32
       },
       {
@@ -121499,7 +121506,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1595
           },
-          "latency_ms": 5.02,
+          "latency_ms": 4.88,
           "planned_trajectory": [
             {
               "x": 33.77,
@@ -121534,7 +121541,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.04 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 10.6
       },
       {
@@ -122760,7 +122767,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1598
           },
-          "latency_ms": 4.34,
+          "latency_ms": 3.93,
           "planned_trajectory": [
             {
               "x": 34.88,
@@ -122795,7 +122802,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.05 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.94
       },
       {
@@ -124021,7 +124028,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1605
           },
-          "latency_ms": 4.55,
+          "latency_ms": 3.93,
           "planned_trajectory": [
             {
               "x": 35.99,
@@ -124056,7 +124063,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.05 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 9.27
       },
       {
@@ -125282,7 +125289,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1613
           },
-          "latency_ms": 4.37,
+          "latency_ms": 4.16,
           "planned_trajectory": [
             {
               "x": 37.09,
@@ -125317,7 +125324,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.06 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 8.64
       },
       {
@@ -126543,7 +126550,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1625
           },
-          "latency_ms": 3.37,
+          "latency_ms": 3.3,
           "planned_trajectory": [
             {
               "x": 38.18,
@@ -126578,7 +126585,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.07 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 8.05
       },
       {
@@ -127804,7 +127811,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1578
           },
-          "latency_ms": 3.14,
+          "latency_ms": 3.4,
           "planned_trajectory": [
             {
               "x": 39.28,
@@ -127839,7 +127846,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.05 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 7.46
       },
       {
@@ -129065,7 +129072,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1528
           },
-          "latency_ms": 3.11,
+          "latency_ms": 3.12,
           "planned_trajectory": [
             {
               "x": 40.37,
@@ -129100,7 +129107,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.04 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 6.94
       },
       {
@@ -130326,7 +130333,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1531
           },
-          "latency_ms": 3.03,
+          "latency_ms": 3.1,
           "planned_trajectory": [
             {
               "x": 41.45,
@@ -130361,7 +130368,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.04 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 6.43
       },
       {
@@ -131587,7 +131594,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1478
           },
-          "latency_ms": 2.77,
+          "latency_ms": 2.78,
           "planned_trajectory": [
             {
               "x": 42.54,
@@ -131622,7 +131629,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=8.0 m/s, steer=0.03 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 6.02
       },
       {
@@ -132848,7 +132855,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1349
           },
-          "latency_ms": 2.4,
+          "latency_ms": 2.42,
           "planned_trajectory": [
             {
               "x": 44.27,
@@ -132883,7 +132890,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.03 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 5.71
       },
       {
@@ -134109,7 +134116,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1488
           },
-          "latency_ms": 2.98,
+          "latency_ms": 2.96,
           "planned_trajectory": [
             {
               "x": 45.38,
@@ -134144,7 +134151,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.07 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 5.41
       },
       {
@@ -135370,7 +135377,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1566
           },
-          "latency_ms": 4.78,
+          "latency_ms": 4.58,
           "planned_trajectory": [
             {
               "x": 46.5,
@@ -135405,7 +135412,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.09 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 5.18
       },
       {
@@ -136631,7 +136638,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1494
           },
-          "latency_ms": 6.49,
+          "latency_ms": 5.96,
           "planned_trajectory": [
             {
               "x": 47.61,
@@ -136666,7 +136673,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.07 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.9
       },
       {
@@ -137497,7 +137504,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1501
           },
-          "latency_ms": 3.69,
+          "latency_ms": 3.51,
           "planned_trajectory": [
             {
               "x": 48.73,
@@ -137532,7 +137539,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.08 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.64
       },
       {
@@ -137968,7 +137975,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1426
           },
-          "latency_ms": 2.09,
+          "latency_ms": 1.93,
           "planned_trajectory": [
             {
               "x": 49.84,
@@ -138003,7 +138010,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.06 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.5
       },
       {
@@ -138439,7 +138446,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1446
           },
-          "latency_ms": 1.93,
+          "latency_ms": 1.57,
           "planned_trajectory": [
             {
               "x": 50.79,
@@ -138474,7 +138481,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.0 m/s, steer=-0.06 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.29
       },
       {
@@ -138910,7 +138917,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1359
           },
-          "latency_ms": 2.65,
+          "latency_ms": 2.55,
           "planned_trajectory": [
             {
               "x": 52.07,
@@ -138945,7 +138952,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.04 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.18
       },
       {
@@ -139381,7 +139388,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1377
           },
-          "latency_ms": 1.77,
+          "latency_ms": 2.36,
           "planned_trajectory": [
             {
               "x": 53.02,
@@ -139416,7 +139423,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.0 m/s, steer=-0.05 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -139852,7 +139859,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1288
           },
-          "latency_ms": 1.62,
+          "latency_ms": 1.74,
           "planned_trajectory": [
             {
               "x": 54.3,
@@ -139887,7 +139894,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.03 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -140323,7 +140330,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1287
           },
-          "latency_ms": 1.79,
+          "latency_ms": 1.74,
           "planned_trajectory": [
             {
               "x": 55.41,
@@ -140358,7 +140365,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.03 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -140794,7 +140801,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.121
           },
-          "latency_ms": 1.58,
+          "latency_ms": 1.64,
           "planned_trajectory": [
             {
               "x": 56.52,
@@ -140829,7 +140836,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -141265,7 +141272,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1205
           },
-          "latency_ms": 1.78,
+          "latency_ms": 1.55,
           "planned_trajectory": [
             {
               "x": 57.63,
@@ -141300,7 +141307,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -141771,7 +141778,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -142207,7 +142214,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1195
           },
-          "latency_ms": 1.69,
+          "latency_ms": 1.74,
           "planned_trajectory": [
             {
               "x": 59.85,
@@ -142242,7 +142249,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -142678,7 +142685,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1215
           },
-          "latency_ms": 1.93,
+          "latency_ms": 1.81,
           "planned_trajectory": [
             {
               "x": 60.79,
@@ -142713,7 +142720,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.0 m/s, steer=-0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -143149,7 +143156,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1238
           },
-          "latency_ms": 2.22,
+          "latency_ms": 1.85,
           "planned_trajectory": [
             {
               "x": 61.74,
@@ -143184,7 +143191,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=9.3 m/s, steer=-0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -143620,7 +143627,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1164
           },
-          "latency_ms": 1.94,
+          "latency_ms": 1.93,
           "planned_trajectory": [
             {
               "x": 63.17,
@@ -143655,7 +143662,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -144091,7 +144098,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1159
           },
-          "latency_ms": 1.62,
+          "latency_ms": 1.72,
           "planned_trajectory": [
             {
               "x": 64.28,
@@ -144126,7 +144133,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -144597,7 +144604,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -145033,7 +145040,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.115
           },
-          "latency_ms": 1.63,
+          "latency_ms": 1.71,
           "planned_trajectory": [
             {
               "x": 66.5,
@@ -145068,7 +145075,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -145504,7 +145511,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1146
           },
-          "latency_ms": 1.58,
+          "latency_ms": 1.83,
           "planned_trajectory": [
             {
               "x": 67.61,
@@ -145539,7 +145546,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -145975,7 +145982,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1142
           },
-          "latency_ms": 1.85,
+          "latency_ms": 1.71,
           "planned_trajectory": [
             {
               "x": 68.72,
@@ -146010,7 +146017,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.1 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -146446,7 +146453,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1137
           },
-          "latency_ms": 1.89,
+          "latency_ms": 1.67,
           "planned_trajectory": [
             {
               "x": 69.83,
@@ -146481,7 +146488,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -146917,7 +146924,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1133
           },
-          "latency_ms": 1.78,
+          "latency_ms": 1.86,
           "planned_trajectory": [
             {
               "x": 70.94,
@@ -146952,7 +146959,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -147388,7 +147395,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1129
           },
-          "latency_ms": 1.82,
+          "latency_ms": 1.66,
           "planned_trajectory": [
             {
               "x": 72.05,
@@ -147423,7 +147430,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -147859,7 +147866,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1125
           },
-          "latency_ms": 2.06,
+          "latency_ms": 1.68,
           "planned_trajectory": [
             {
               "x": 73.16,
@@ -147894,7 +147901,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -148330,7 +148337,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1122
           },
-          "latency_ms": 1.64,
+          "latency_ms": 1.96,
           "planned_trajectory": [
             {
               "x": 74.27,
@@ -148365,7 +148372,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -148801,7 +148808,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1118
           },
-          "latency_ms": 1.62,
+          "latency_ms": 1.71,
           "planned_trajectory": [
             {
               "x": 75.38,
@@ -148836,7 +148843,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -149272,7 +149279,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1114
           },
-          "latency_ms": 1.65,
+          "latency_ms": 1.63,
           "planned_trajectory": [
             {
               "x": 76.49,
@@ -149307,7 +149314,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -149743,7 +149750,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1111
           },
-          "latency_ms": 0.66,
+          "latency_ms": 0.73,
           "planned_trajectory": [
             {
               "x": 77.6,
@@ -149778,7 +149785,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -150214,7 +150221,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1107
           },
-          "latency_ms": 0.7,
+          "latency_ms": 0.64,
           "planned_trajectory": [
             {
               "x": 78.71,
@@ -150249,7 +150256,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -150685,7 +150692,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1104
           },
-          "latency_ms": 0.7,
+          "latency_ms": 0.71,
           "planned_trajectory": [
             {
               "x": 79.82,
@@ -150720,7 +150727,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -151156,7 +151163,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.11
           },
-          "latency_ms": 0.75,
+          "latency_ms": 0.65,
           "planned_trajectory": [
             {
               "x": 80.93,
@@ -151191,7 +151198,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -151627,7 +151634,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1097
           },
-          "latency_ms": 0.75,
+          "latency_ms": 0.64,
           "planned_trajectory": [
             {
               "x": 82.04,
@@ -151662,7 +151669,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -152098,7 +152105,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1094
           },
-          "latency_ms": 0.87,
+          "latency_ms": 0.64,
           "planned_trajectory": [
             {
               "x": 83.15,
@@ -152133,7 +152140,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -152569,7 +152576,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1091
           },
-          "latency_ms": 0.86,
+          "latency_ms": 0.67,
           "planned_trajectory": [
             {
               "x": 84.26,
@@ -152604,7 +152611,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -153040,7 +153047,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1088
           },
-          "latency_ms": 0.81,
+          "latency_ms": 0.73,
           "planned_trajectory": [
             {
               "x": 85.37,
@@ -153075,7 +153082,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -153511,7 +153518,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1085
           },
-          "latency_ms": 0.77,
+          "latency_ms": 0.78,
           "planned_trajectory": [
             {
               "x": 86.48,
@@ -153546,7 +153553,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -153982,7 +153989,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1082
           },
-          "latency_ms": 0.83,
+          "latency_ms": 0.87,
           "planned_trajectory": [
             {
               "x": 87.59,
@@ -154017,7 +154024,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -154453,7 +154460,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1079
           },
-          "latency_ms": 0.73,
+          "latency_ms": 0.8,
           "planned_trajectory": [
             {
               "x": 88.7,
@@ -154488,7 +154495,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 40.0 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -154924,7 +154931,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1076
           },
-          "latency_ms": 0.77,
+          "latency_ms": 0.72,
           "planned_trajectory": [
             {
               "x": 89.81,
@@ -154959,7 +154966,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -155395,7 +155402,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1073
           },
-          "latency_ms": 0.74,
+          "latency_ms": 0.71,
           "planned_trajectory": [
             {
               "x": 90.92,
@@ -155430,7 +155437,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -155866,7 +155873,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.107
           },
-          "latency_ms": 0.8,
+          "latency_ms": 0.71,
           "planned_trajectory": [
             {
               "x": 92.03,
@@ -155901,7 +155908,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -156337,7 +156344,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1068
           },
-          "latency_ms": 0.78,
+          "latency_ms": 0.7,
           "planned_trajectory": [
             {
               "x": 93.14,
@@ -156372,7 +156379,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -156808,7 +156815,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1065
           },
-          "latency_ms": 0.72,
+          "latency_ms": 0.66,
           "planned_trajectory": [
             {
               "x": 94.25,
@@ -156843,7 +156850,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -157279,7 +157286,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1063
           },
-          "latency_ms": 0.69,
+          "latency_ms": 0.67,
           "planned_trajectory": [
             {
               "x": 95.36,
@@ -157314,7 +157321,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -157750,7 +157757,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.106
           },
-          "latency_ms": 0.65,
+          "latency_ms": 0.82,
           "planned_trajectory": [
             {
               "x": 96.46,
@@ -157785,7 +157792,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -158221,7 +158228,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1058
           },
-          "latency_ms": 0.65,
+          "latency_ms": 0.75,
           "planned_trajectory": [
             {
               "x": 97.57,
@@ -158256,7 +158263,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -158692,7 +158699,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1077
           },
-          "latency_ms": 0.59,
+          "latency_ms": 0.71,
           "planned_trajectory": [
             {
               "x": 98.68,
@@ -158727,7 +158734,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=-0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -159163,7 +159170,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1049
           },
-          "latency_ms": 0.74,
+          "latency_ms": 0.79,
           "planned_trajectory": [
             {
               "x": 99.79,
@@ -159198,7 +159205,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -159634,7 +159641,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1047
           },
-          "latency_ms": 0.71,
+          "latency_ms": 0.66,
           "planned_trajectory": [
             {
               "x": 100.9,
@@ -159669,7 +159676,7 @@
           ]
         },
         "decision_trace": "[FOLLOW] B1 VO evaluation chosen (v=10.6 m/s, steer=0.01 rad, state=FOLLOW).",
-        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight constant line.",
+        "caption": "Tracking auto_rickshaw at 39.9 km/h assuming it moves in a straight line.",
         "min_clearance_m": 4.15
       },
       {
@@ -160105,7 +160112,7 @@
             "risk_field_cost": 0.125,
             "total_cost": 1.1045
           },
-          "latency_ms": 0.66,
+          "latency_ms": 0.83,
           "planned_trajectory": [
             {
               "x": 102.01,

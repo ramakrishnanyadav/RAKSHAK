@@ -19,9 +19,9 @@ The benchmark synthesizes two complementary data streams:
    - Prediction horizon: $3.0$s ($15$ timesteps).
 
 2. **Real-World IDD-3D Trajectory Sequences (Realism & Fine-Tuning)**:
-   - Derived from IDD-3D (India Driving Dataset 3D) LiDAR/camera track sequences recorded in Bangalore and Hyderabad.
-   - **License & Terms**: CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International).
-   - 150 short sequences of real auto-rickshaws, two-wheelers, and pedestrians used strictly for realism validation and zero-shot transfer checking, NOT as the sole training set.
+   - Interface implemented in `engine/ml/data/idd_adapter.py` mapping IDD-3D classes (`auto`, `motorcycle`, `pedestrian`, `animal`, `truck`, `pushcart`) to canonical simulation objects.
+   - **Repository Ingestion Status**: **Adapter only (no raw sequence data loaded)**. Zero raw IDD sequence files are checked into this Git repository due to academic registration distribution restrictions (CC BY-NC-SA 4.0).
+   - Real-world evaluation is performed by mounting local external IDD downloads through the adapter interface. Current closed-loop benchmark sweeps utilize 100% verified deterministic synthetic simulation streams.
 
 ## 3. Split Protocol & Leakage Prevention
 Splits are strictly partitioned **by sequence/scenario ID**, never by frame, preventing temporal leakage:

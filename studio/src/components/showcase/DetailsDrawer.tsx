@@ -1,18 +1,21 @@
 /**
  * DetailsDrawer - Slide-over Technical & MathWorks Integration Drawer
- * Full benchmark reproduction steps, MathWorks toolchain status, and known limitations.
+ * Full benchmark reproduction steps, MathWorks toolchain status,
+ * ablation reconciliation, licenses, and known limitations.
  */
 
 import React, { useState } from 'react';
-import { X, Copy, Check, Terminal, Cpu, FileText, ExternalLink, ShieldAlert } from 'lucide-react';
+import { X, Copy, Check, Terminal, Cpu, ExternalLink, ShieldAlert, GitCompare, BookOpen, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ProvenancePayload } from './types';
 
 interface DetailsDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  provenance?: ProvenancePayload | null;
 }
 
-export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose }) => {
+export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose, provenance }) => {
   const [copied, setCopied] = useState(false);
   const reproCommand = 'python scripts/reproduce_all.py';
 
@@ -23,6 +26,8 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose })
   };
 
   if (!isOpen) return null;
+
+  const reconciliation = provenance?.reconciliation;
 
   return (
     <div
@@ -43,7 +48,7 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose })
       <div
         style={{
           width: '100%',
-          maxWidth: '520px',
+          maxWidth: '560px',
           height: '100%',
           background: '#0B0C0F',
           borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
@@ -122,11 +127,76 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose })
             </button>
           </div>
           <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
-            Re-runs the exact 25 episodes (seeds 2005–2009) and regenerates runs/val_b_manifest.json.
+            Re-runs the exact 25 episodes (seeds 2005–2009) and regenerates runs/val_b_manifest.json in ~12 seconds.
           </span>
         </div>
 
-        {/* 2. MathWorks Toolchain Integration */}
+        {/* 2. Ablation Reconciliation (Frozen Test vs. Validation B) */}
+        <div
+          style={{
+            background: '#111318',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '8px',
+            padding: '1.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.75rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#FFFFFF', fontSize: '0.9rem', fontWeight: 700 }}>
+            <GitCompare size={15} color="#2DD4BF" />
+            <span>Ablation Reconciliation</span>
+          </div>
+          <p style={{ margin: 0, fontSize: '0.825rem', color: '#94A3B8', lineHeight: 1.5 }}>
+            Why early test suites reported 0% completion while Validation B reports 56%:
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <div
+              style={{
+                background: 'rgba(239, 68, 68, 0.05)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                borderRadius: '6px',
+                padding: '0.75rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.35rem',
+              }}
+            >
+              <div style={{ fontSize: '0.7rem', color: '#F87171', fontWeight: 700 }}>FROZEN TEST (EARLY)</div>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF' }}>0.0%</div>
+              <div style={{ fontSize: '0.725rem', color: '#94A3B8', lineHeight: 1.4 }}>
+                <code>w_stall = 0.0</code> (no stall penalty). Vehicle halted indefinitely before obstacles due to livelock.
+              </div>
+              <div style={{ fontSize: '0.65rem', color: '#64748B', fontFamily: 'monospace', marginTop: '0.25rem' }}>
+                engine/experiments/results/frozen_test_results.json
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: 'rgba(45, 212, 191, 0.05)',
+                border: '1px solid rgba(45, 212, 191, 0.2)',
+                borderRadius: '6px',
+                padding: '0.75rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.35rem',
+              }}
+            >
+              <div style={{ fontSize: '0.7rem', color: '#2DD4BF', fontWeight: 700 }}>VALIDATION B (CURRENT)</div>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF' }}>56.0%</div>
+              <div style={{ fontSize: '0.725rem', color: '#94A3B8', lineHeight: 1.4 }}>
+                <code>w_stall = 4.00, w_prog = 2.20</code>. Stall persistence enables vehicle to actively bypass obstacles.
+              </div>
+              <div style={{ fontSize: '0.65rem', color: '#64748B', fontFamily: 'monospace', marginTop: '0.25rem' }}>
+                runs/val_b_manifest.json
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. MathWorks Toolchain Integration */}
         <div
           style={{
             background: '#111318',
@@ -140,7 +210,7 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose })
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#FFFFFF', fontSize: '0.9rem', fontWeight: 700 }}>
             <Cpu size={15} color="#2DD4BF" />
-            <span>MathWorks & Stateflow Architecture</span>
+            <span>Runs in MATLAB / Simulink / RoadRunner</span>
           </div>
           <p style={{ margin: 0, fontSize: '0.825rem', color: '#94A3B8', lineHeight: 1.5 }}>
             The trajectory planner couples to a Stateflow decision automaton implementing 5 supervisory modes:
@@ -152,12 +222,68 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose })
           </p>
           <div style={{ fontSize: '0.8rem', color: '#CBD5E1', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
             <div>• <strong>Stateflow Bridge:</strong> <code>engine/stateflow_bridge.py</code></div>
-            <div>• <strong>MATLAB Adapter:</strong> <code>matlab_adapter/run_matlab_validation.m</code></div>
-            <div>• <strong>Simulink Compatibility:</strong> Zero C++ wrapper dependencies, clean JSON telemetry I/O.</div>
+            <div>• <strong>RoadRunner 3D Scenes:</strong> <code>matlab_adapter/roadrunner/*.xodr, *.xosc</code></div>
+            <div>• <strong>MATLAB Validation Harness:</strong> <code>matlab_adapter/run_matlab_validation.m</code></div>
+            <div>• <strong>Simulink Log Exporter:</strong> <code>matlab_adapter/apath_log_v1_export.m</code></div>
           </div>
         </div>
 
-        {/* 3. Known Limitations */}
+        {/* 4. Licenses & Attribution */}
+        <div
+          style={{
+            background: '#111318',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '8px',
+            padding: '1.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.6rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#FFFFFF', fontSize: '0.9rem', fontWeight: 700 }}>
+            <BookOpen size={15} color="#2DD4BF" />
+            <span>Dataset Licenses & Attributions</span>
+          </div>
+          <div style={{ fontSize: '0.8rem', color: '#94A3B8', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <div>
+              <strong style={{ color: '#CBD5E1' }}>Indian Driving Dataset (IDD):</strong> CC BY-NC-SA 4.0. CVIT, IIIT Hyderabad & Intel.
+            </div>
+            <div>
+              <strong style={{ color: '#CBD5E1' }}>Mendeley Data:</strong> CC BY 4.0. Individual repository contributors.
+            </div>
+            <div>
+              <strong style={{ color: '#CBD5E1' }}>MathWorks:</strong> Automated Driving Toolbox & RoadRunner (Commercial & Academic Licensing).
+            </div>
+            <div>
+              <strong style={{ color: '#CBD5E1' }}>ADAPTIVE-PATH:</strong> MIT License for hackathon submission code.
+            </div>
+          </div>
+        </div>
+
+        {/* 5. Not Used / Future Work List */}
+        <div
+          style={{
+            background: '#111318',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '8px',
+            padding: '1.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#CBD5E1', fontSize: '0.85rem', fontWeight: 700 }}>
+            <AlertCircle size={15} color="#FBBF24" />
+            <span>Not Yet Ingested / Future Work</span>
+          </div>
+          <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.8rem', color: '#94A3B8', lineHeight: 1.5 }}>
+            <li>Mendeley crowd-sourced traffic videos (planned for physical gap tuning).</li>
+            <li>Hardware-in-the-loop (HIL) drive-by-wire CAN bus interface.</li>
+            <li>3D LiDAR voxel segmentation for non-flat road surfaces and potholes.</li>
+          </ul>
+        </div>
+
+        {/* 6. Known Limitations */}
         <div
           style={{
             background: 'rgba(239, 68, 68, 0.05)',
@@ -176,11 +302,11 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose })
           <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.8rem', color: '#CBD5E1', lineHeight: 1.5 }}>
             <li>Validated in simulated 2D road environments with synthetic sensor error models.</li>
             <li>Not certified for road deployment or commercial autonomous operation.</li>
-            <li>Urban intersections with multi-vehicle occlusions remain challenging.</li>
+            <li>Urban intersections with multi-vehicle occlusions remain challenging (40% completion).</li>
           </ul>
         </div>
 
-        {/* 4. Action Links */}
+        {/* 7. Action Links */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: 'auto' }}>
           <Link
             to="/app"
@@ -211,3 +337,4 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose })
     </div>
   );
 };
+

@@ -122,6 +122,32 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
     ctx.stroke();
     ctx.setLineDash([]);
 
+    // Roadside Stalls & Potholes (Unstructured Indian road features)
+    // Potholes at fixed longitudinal intervals
+    ctx.fillStyle = '#0F1015';
+    ctx.strokeStyle = '#1E222D';
+    ctx.lineWidth = 1;
+    [12, 38, -15].forEach((px) => {
+      const pCanvas = worldToCanvas(ego.x + px, ego.y - 2.8);
+      ctx.beginPath();
+      if (typeof ctx.ellipse === 'function') {
+        ctx.ellipse(pCanvas.x, pCanvas.y, 8, 4, 0.2, 0, Math.PI * 2);
+      } else {
+        ctx.arc(pCanvas.x, pCanvas.y, 6, 0, Math.PI * 2);
+      }
+      ctx.fill();
+      ctx.stroke();
+    });
+
+    // Roadside Stalls (Vendor tables outside curbs)
+    [22, -8, 52].forEach((sx) => {
+      const sCanvas = worldToCanvas(ego.x + sx, ego.y + 6.8);
+      ctx.fillStyle = '#B45309'; // Warm stall canopy
+      ctx.fillRect(sCanvas.x - 12, sCanvas.y - 6, 24, 12);
+      ctx.strokeStyle = '#D97706';
+      ctx.strokeRect(sCanvas.x - 12, sCanvas.y - 6, 24, 12);
+    });
+
     // 2. Risk Field Heatmap (if enabled)
     if (showRiskField) {
       agents.forEach((ag) => {
@@ -370,6 +396,26 @@ export const SimCanvas: React.FC<SimCanvasProps> = ({
           ctx.strokeStyle = '#64748B';
           ctx.lineWidth = 1;
           ctx.strokeRect(-agLen / 2, -agWid / 2, agLen, agWid);
+          break;
+        }
+
+        case 'motorcycle':
+        case 'two_wheeler': {
+          // Two-wheeler / motorcycle: slim chassis with handlebars
+          ctx.fillStyle = '#A855F7'; // Purple profile
+          ctx.fillRect(-agLen / 2, -agWid * 0.3, agLen, agWid * 0.6);
+          // Handlebars
+          ctx.strokeStyle = '#E9D5FF';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(agLen * 0.2, -agWid / 2);
+          ctx.lineTo(agLen * 0.2, agWid / 2);
+          ctx.stroke();
+          // Rider helmet circle
+          ctx.fillStyle = '#38BDF8';
+          ctx.beginPath();
+          ctx.arc(0, 0, agWid * 0.35, 0, Math.PI * 2);
+          ctx.fill();
           break;
         }
 

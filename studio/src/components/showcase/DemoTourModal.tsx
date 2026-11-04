@@ -1,10 +1,17 @@
 /**
  * DemoTourModal - 3-Minute Guided Walkthrough for Judges
- * Steps through Cattle Crossing, Perception/Conformal bounds, and Empirical validation.
+ * Step-by-step tour covering:
+ *  0:00 Cattle crossing (B1 crash vs P3 avoidance)
+ *  0:40 Layers on (Sensors, predictions, safety margin)
+ *  1:10 Village & market scenes
+ *  1:40 Our data (IDD, Mendeley, MathWorks, Synthetic with honest statuses)
+ *  2:10 City junction shown as a weak spot
+ *  2:35 Results row
+ *  2:55 "Simulation only" close
  */
 
 import React, { useState } from 'react';
-import { X, ChevronRight, ChevronLeft, Play, CheckCircle } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, CheckCircle, Clock } from 'lucide-react';
 
 interface DemoTourModalProps {
   isOpen: boolean;
@@ -16,11 +23,11 @@ interface DemoTourModalProps {
 }
 
 interface TourStep {
+  timestamp: string;
   title: string;
   subtitle: string;
   description: string;
-  scenario: 'cattle' | 'village' | 'intersection' | 'highway' | 'market';
-  time: number;
+  targetId?: string;
   setup: (
     selectScen: (s: any) => void,
     toggleLayer: (l: any, v: boolean) => void,
@@ -31,12 +38,12 @@ interface TourStep {
 
 const TOUR_STEPS: TourStep[] = [
   {
+    timestamp: '0:00',
     title: 'The Flagship Moment: Livestock on Rural Road',
-    subtitle: 'Step 1 of 3 • Cattle Crossing',
+    subtitle: 'Step 1 of 7 • Cattle Crossing',
     description:
-      'Notice the standard planner (left) assumes the cow will walk forward in a straight line, causing a collision at 5.1s. ADAPTIVE-PATH (right) predicts both crossing and mid-road freezing, smoothly slowing down to 8 km/h and reaching the destination safely.',
-    scenario: 'cattle',
-    time: 5.0,
+      'Notice the standard planner (left) assumes the cow moves predictably, crashing at 5.1s. ADAPTIVE-PATH (right) anticipates livestock hesitation, smoothly decelerates to 8 km/h, and safely steers clear.',
+    targetId: 'demo-stage',
     setup: (selectScen, toggleLayer, seek, play) => {
       selectScen('cattle');
       toggleLayer('predictions', true);
@@ -44,31 +51,65 @@ const TOUR_STEPS: TourStep[] = [
       toggleLayer('sensors', true);
       seek(4.5);
       play();
+      const el = document.getElementById('demo-stage');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     },
   },
   {
+    timestamp: '0:40',
     title: 'Multi-Sensor Perception & Dynamic Safety Bounds',
-    subtitle: 'Step 2 of 3 • Sensor Cones & Occlusion',
+    subtitle: 'Step 2 of 7 • Perception Layers',
     description:
-      'See how Camera (green cone), LiDAR (360 dash ring), and Radar (blue beam) identify occlusions behind parked vehicles. The conformal safety cushion expands as animal movements become unpredictable.',
-    scenario: 'cattle',
-    time: 3.0,
+      'Camera (green cone), LiDAR (dash ring), and Radar (blue beam) fuse detections. The conformal safety cushion dynamically expands as obstacle trajectory uncertainty increases.',
+    targetId: 'demo-stage',
     setup: (selectScen, toggleLayer, seek, play) => {
       selectScen('cattle');
       toggleLayer('sensors', true);
       toggleLayer('predictions', true);
-      toggleLayer('risk', false);
+      toggleLayer('risk', true);
       seek(2.5);
       play();
+      const el = document.getElementById('demo-stage');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     },
   },
   {
-    title: 'Empirical Research Results & Honest Audit',
-    subtitle: 'Step 3 of 3 • 25-Episode Benchmark',
+    timestamp: '1:10',
+    title: 'Unstructured Traffic: Village Road & Dense Market',
+    subtitle: 'Step 3 of 7 • Diverse Road Users',
     description:
-      'Over 25 validation episodes (seeds 2005–2009), ADAPTIVE-PATH cuts crashes by 3x (from 60% down to 20%) and increases goal completions by 1.4x. We honestly report that dense urban intersections remain our key challenge for future radar Doppler fusion.',
-    scenario: 'intersection',
-    time: 0.0,
+      'Auto-rickshaws, handcarts, and pedestrians share narrow corridors without lane markings. The Stateflow supervisor dynamically commands FOLLOW, SLOW, or BYPASS behaviors.',
+    targetId: 'demo-stage',
+    setup: (selectScen, toggleLayer, seek, play) => {
+      selectScen('village');
+      toggleLayer('predictions', true);
+      toggleLayer('risk', true);
+      toggleLayer('sensors', true);
+      seek(1.0);
+      play();
+      const el = document.getElementById('demo-stage');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    },
+  },
+  {
+    timestamp: '1:40',
+    title: 'Transparent Data Provenance: Real vs. Simulated',
+    subtitle: 'Step 4 of 7 • Data Audit',
+    description:
+      'We audit all problem statement datasets honestly: 0 real IDD sequences bundled due to license constraints (adapter fully implemented), 9 MathWorks assets, and 75 synthetic episodes.',
+    targetId: 'our-data',
+    setup: () => {
+      const el = document.getElementById('our-data');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    },
+  },
+  {
+    timestamp: '2:10',
+    title: 'Honest Weak Spot: City Junction Challenge',
+    subtitle: 'Step 5 of 7 • Limitations',
+    description:
+      'In multi-vehicle cross-traffic occlusions, P3 achieves 40% completion due to conservative stop livelocks. We report our failure modes openly rather than masking edge cases.',
+    targetId: 'demo-stage',
     setup: (selectScen, toggleLayer, seek, play) => {
       selectScen('intersection');
       toggleLayer('predictions', true);
@@ -76,6 +117,31 @@ const TOUR_STEPS: TourStep[] = [
       toggleLayer('sensors', true);
       seek(0.0);
       play();
+      const el = document.getElementById('demo-stage');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    },
+  },
+  {
+    timestamp: '2:35',
+    title: 'Validation B Benchmark: 3x Collision Reduction',
+    subtitle: 'Step 6 of 7 • Traceable Numbers',
+    description:
+      'Across 25 episodes in runs/val_b_manifest.json, collisions are cut from 60% down to 20%, completion reaches 56%, and mean minimum clearance improves by 32cm.',
+    targetId: 'results',
+    setup: () => {
+      const el = document.getElementById('results');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    },
+  },
+  {
+    timestamp: '2:55',
+    title: 'Research Scope & MathWorks Co-Simulation',
+    subtitle: 'Step 7 of 7 • Simulation Only Close',
+    description:
+      'Simulation only. Not certified for road deployment. Ready for RoadRunner 3D co-simulation and Simulink Stateflow integration. One-command reproduction via python scripts/reproduce_all.py.',
+    targetId: 'demo-stage',
+    setup: () => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     },
   },
 ];
@@ -112,6 +178,11 @@ export const DemoTourModal: React.FC<DemoTourModalProps> = ({
     }
   };
 
+  const handleJumpToStep = (idx: number) => {
+    setCurrentStepIdx(idx);
+    TOUR_STEPS[idx].setup(onSelectScenario, onToggleLayer, onSeekTime, onPlayReplay);
+  };
+
   return (
     <div
       style={{
@@ -119,12 +190,12 @@ export const DemoTourModal: React.FC<DemoTourModalProps> = ({
         bottom: '2rem',
         right: '2rem',
         zIndex: 9998,
-        maxWidth: '460px',
+        maxWidth: '480px',
         width: 'calc(100% - 4rem)',
         background: '#111318',
         border: '1px solid rgba(45, 212, 191, 0.4)',
         borderRadius: '10px',
-        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.8)',
+        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.85)',
         padding: '1.25rem',
         display: 'flex',
         flexDirection: 'column',
@@ -133,16 +204,30 @@ export const DemoTourModal: React.FC<DemoTourModalProps> = ({
     >
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
-          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#2DD4BF', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              background: 'rgba(45, 212, 191, 0.1)',
+              color: '#2DD4BF',
+              padding: '0.2rem 0.45rem',
+              borderRadius: '4px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+            }}
+          >
+            <Clock size={12} />
+            <span>{step.timestamp}</span>
+          </div>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8' }}>
             {step.subtitle}
           </span>
-          <h3 style={{ margin: '0.15rem 0 0', fontSize: '1rem', fontWeight: 700, color: '#FFFFFF' }}>
-            {step.title}
-          </h3>
         </div>
         <button
           onClick={onClose}
+          aria-label="Close tour"
           style={{
             background: 'transparent',
             border: 'none',
@@ -155,13 +240,25 @@ export const DemoTourModal: React.FC<DemoTourModalProps> = ({
         </button>
       </div>
 
+      <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#FFFFFF' }}>
+        {step.title}
+      </h3>
+
       {/* Description */}
       <p style={{ margin: 0, fontSize: '0.825rem', color: '#CBD5E1', lineHeight: 1.5 }}>
         {step.description}
       </p>
 
-      {/* Action buttons */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+      {/* Action buttons & Timeline dots */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingTop: '0.65rem',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+        }}
+      >
         <button
           onClick={handlePrev}
           disabled={currentStepIdx === 0}
@@ -179,15 +276,20 @@ export const DemoTourModal: React.FC<DemoTourModalProps> = ({
           <ChevronLeft size={14} /> Back
         </button>
 
-        <div style={{ display: 'flex', gap: '0.25rem' }}>
-          {TOUR_STEPS.map((_, i) => (
-            <span
+        <div style={{ display: 'flex', gap: '0.35rem' }}>
+          {TOUR_STEPS.map((s, i) => (
+            <button
               key={i}
+              onClick={() => handleJumpToStep(i)}
+              title={`${s.timestamp}: ${s.title}`}
               style={{
-                width: '6px',
-                height: '6px',
+                width: '8px',
+                height: '8px',
                 borderRadius: '50%',
                 background: i === currentStepIdx ? '#2DD4BF' : 'rgba(255, 255, 255, 0.2)',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
               }}
             />
           ))}
@@ -219,3 +321,4 @@ export const DemoTourModal: React.FC<DemoTourModalProps> = ({
     </div>
   );
 };
+

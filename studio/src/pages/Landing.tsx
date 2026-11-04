@@ -3,24 +3,25 @@
  * Single-page, demo-first research product for Smart India Hackathon problem SIH26037 (MathWorks).
  * Fulfills all North Star criteria: dual synchronized canvas replay, 5 canonical scenarios,
  * 4 headline metrics traceable to runs/val_b_manifest.json, Grade 8 plain English explanations,
- * and seamless link to full research mode (/app).
+ * authentic dataset provenance audit, and seamless link to full research mode (/app).
  */
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ScenarioKey,
-  ScenarioPills,
-} from '../components/showcase/ScenarioPills';
+  ScenarioPicker,
+} from '../components/showcase/ScenarioPicker';
 import { SimCanvas } from '../components/showcase/SimCanvas';
 import { TimelineScrubber } from '../components/showcase/TimelineScrubber';
 import { ThinkingBox } from '../components/showcase/ThinkingBox';
 import { OutcomeBanner } from '../components/showcase/OutcomeBanner';
 import { ResultsSection } from '../components/showcase/ResultsSection';
+import { OurDataSection } from '../components/showcase/OurDataSection';
 import { HowItWorksStrip } from '../components/showcase/HowItWorksStrip';
 import { DetailsDrawer } from '../components/showcase/DetailsDrawer';
 import { DemoTourModal } from '../components/showcase/DemoTourModal';
-import { ShowcaseScenarioFile, ShowcaseSummary } from '../components/showcase/types';
+import { ShowcaseScenarioFile, ShowcaseSummary, ProvenancePayload } from '../components/showcase/types';
 import { useSettings } from '../context/SettingsContext';
 import { useI18n } from '../context/I18nContext';
 import {
@@ -29,20 +30,20 @@ import {
   Eye,
   GitBranch,
   Shield,
-  Sun,
-  Moon,
-  Globe,
   Code2,
+  Settings,
+  Check,
 } from 'lucide-react';
 
 export const Landing: React.FC = () => {
-  const { theme, setTheme } = useSettings();
+  const { theme, setTheme, textScale, setTextScale } = useSettings();
   const { language, setLanguage } = useI18n();
 
   // Selected scenario key (defaults to flagship Cattle Crossing)
   const [activeScenarioKey, setActiveScenarioKey] = useState<ScenarioKey>('cattle');
   const [scenarioData, setScenarioData] = useState<ShowcaseScenarioFile | null>(null);
   const [summaryData, setSummaryData] = useState<ShowcaseSummary | null>(null);
+  const [provenanceData, setProvenanceData] = useState<ProvenancePayload | null>(null);
   const [, setIsLoading] = useState(true);
 
   // Playback & Scrubber State
@@ -55,13 +56,26 @@ export const Landing: React.FC = () => {
   const [showPredictions, setShowPredictions] = useState(true);
   const [showRiskField, setShowRiskField] = useState(true);
 
-  // Modal / Drawer States
+  // Modal / Drawer / Popover States
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Animation frame loop ref
   const animFrameRef = useRef<number | null>(null);
   const lastTimestampRef = useRef<number | null>(null);
+  const settingsRef = useRef<HTMLDivElement | null>(null);
+
+  // Close settings on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
+        setIsSettingsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // 1. Fetch Summary Data
   useEffect(() => {
@@ -73,7 +87,17 @@ export const Landing: React.FC = () => {
       .catch((err) => console.error('Error loading showcase summary:', err));
   }, []);
 
-  // 2. Fetch Scenario Data when activeScenarioKey changes
+  // 2. Fetch Provenance Data
+  useEffect(() => {
+    fetch('/showcase/provenance.json')
+      .then((res) => res.json())
+      .then((data: ProvenancePayload) => {
+        setProvenanceData(data);
+      })
+      .catch((err) => console.error('Error loading provenance data:', err));
+  }, []);
+
+  // 3. Fetch Scenario Data when activeScenarioKey changes
   useEffect(() => {
     setIsLoading(true);
     fetch(`/showcase/${activeScenarioKey}.json`)
@@ -106,7 +130,7 @@ export const Landing: React.FC = () => {
   const adaptiveFrame = getFrameAtTime(scenarioData?.adaptive.frames || [], currentTime);
   const standardFrame = getFrameAtTime(scenarioData?.standard.frames || [], currentTime);
 
-  // 3. Replay Animation Loop
+  // 4. Replay Animation Loop
   useEffect(() => {
     if (!isPlaying) {
       lastTimestampRef.current = null;
@@ -136,7 +160,7 @@ export const Landing: React.FC = () => {
     };
   }, [isPlaying, playbackSpeed, duration]);
 
-  // 4. Keyboard Shortcuts (Space: Play/Pause, Left/Right: scrub)
+  // 5. Keyboard Shortcuts (Space: Play/Pause, Left/Right: scrub)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
@@ -222,53 +246,154 @@ export const Landing: React.FC = () => {
             Results
           </a>
           <a
+            href="#our-data"
+            style={{ color: '#CBD5E1', textDecoration: 'none', fontWeight: 500 }}
+          >
+            Our data
+          </a>
+          <a
             href="#how-it-works"
             style={{ color: '#CBD5E1', textDecoration: 'none', fontWeight: 500 }}
           >
-            How It Works
+            How it works
           </a>
         </nav>
 
         {/* Right: Controls & Research Mode Link */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          {/* Language selector */}
-          <button
-            onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
-            style={{
-              background: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '6px',
-              color: '#CBD5E1',
-              padding: '0.35rem 0.6rem',
-              fontSize: '0.75rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-            }}
-            title="Switch Language"
-          >
-            <Globe size={13} />
-            <span style={{ textTransform: 'uppercase' }}>{language}</span>
-          </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', position: 'relative' }}>
+          {/* Consolidated Settings Popover Button */}
+          <div ref={settingsRef} style={{ position: 'relative' }}>
+            <button
+              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+              style={{
+                background: isSettingsOpen ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '6px',
+                color: '#CBD5E1',
+                padding: '0.4rem 0.65rem',
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+              }}
+              aria-label="Application Settings"
+              title="Settings (Language, Theme, Text Size)"
+            >
+              <Settings size={14} />
+              <span>Settings</span>
+            </button>
 
-          {/* Theme subtle toggle */}
-          <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            style={{
-              background: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '6px',
-              color: '#CBD5E1',
-              padding: '0.35rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            title="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
+            {/* Floating Popover Card */}
+            {isSettingsOpen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 8px)',
+                  right: 0,
+                  width: '240px',
+                  background: '#14161E',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  padding: '1rem',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
+                  zIndex: 2000,
+                }}
+              >
+                {/* Language Option */}
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8', marginBottom: '0.4rem' }}>
+                    LANGUAGE
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.3rem' }}>
+                    {[
+                      { code: 'en', label: 'English' },
+                      { code: 'hi', label: 'हिन्दी' },
+                      { code: 'te', label: 'తెలుగు' },
+                    ].map((l) => (
+                      <button
+                        key={l.code}
+                        onClick={() => setLanguage(l.code as any)}
+                        style={{
+                          flex: 1,
+                          padding: '0.3rem',
+                          fontSize: '0.75rem',
+                          borderRadius: '4px',
+                          border: 'none',
+                          background: language === l.code ? '#2DD4BF' : 'rgba(255,255,255,0.06)',
+                          color: language === l.code ? '#090A0D' : '#CBD5E1',
+                          fontWeight: language === l.code ? 700 : 500,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {l.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Theme Option */}
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8', marginBottom: '0.4rem' }}>
+                    APPEARANCE
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.3rem' }}>
+                    {(['dark', 'light'] as const).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTheme(t)}
+                        style={{
+                          flex: 1,
+                          padding: '0.3rem',
+                          fontSize: '0.75rem',
+                          borderRadius: '4px',
+                          border: 'none',
+                          background: theme === t ? '#2DD4BF' : 'rgba(255,255,255,0.06)',
+                          color: theme === t ? '#090A0D' : '#CBD5E1',
+                          fontWeight: theme === t ? 700 : 500,
+                          cursor: 'pointer',
+                          textTransform: 'capitalize',
+                        }}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Text Size Option */}
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94A3B8', marginBottom: '0.4rem' }}>
+                    TEXT SIZE
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.3rem' }}>
+                    {[100, 125].map((scale) => (
+                      <button
+                        key={scale}
+                        onClick={() => setTextScale(scale as any)}
+                        style={{
+                          flex: 1,
+                          padding: '0.3rem',
+                          fontSize: '0.75rem',
+                          borderRadius: '4px',
+                          border: 'none',
+                          background: textScale === scale ? '#2DD4BF' : 'rgba(255,255,255,0.06)',
+                          color: textScale === scale ? '#090A0D' : '#CBD5E1',
+                          fontWeight: textScale === scale ? 700 : 500,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {scale === 100 ? 'Default' : 'Large'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Details & Code button */}
           <button
@@ -278,7 +403,7 @@ export const Landing: React.FC = () => {
               border: '1px solid rgba(255, 255, 255, 0.15)',
               borderRadius: '6px',
               color: '#FFFFFF',
-              padding: '0.35rem 0.75rem',
+              padding: '0.4rem 0.75rem',
               fontSize: '0.8rem',
               fontWeight: 600,
               cursor: 'pointer',
@@ -298,7 +423,7 @@ export const Landing: React.FC = () => {
               background: '#2DD4BF',
               color: '#090A0D',
               borderRadius: '6px',
-              padding: '0.35rem 0.85rem',
+              padding: '0.4rem 0.85rem',
               fontSize: '0.8rem',
               fontWeight: 700,
               textDecoration: 'none',
@@ -414,6 +539,98 @@ export const Landing: React.FC = () => {
               Play full demo tour (3 min)
             </button>
           </div>
+
+          {/* 4 Dataset Chips linking to #our-data */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              marginTop: '1rem',
+            }}
+          >
+            <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>
+              DATA SOURCES:
+            </span>
+
+            <a
+              href="#our-data"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '6px',
+                padding: '0.3rem 0.6rem',
+                fontSize: '0.75rem',
+                color: '#CBD5E1',
+                textDecoration: 'none',
+              }}
+            >
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F59E0B' }} />
+              <span>IDD: Adapter only</span>
+            </a>
+
+            <a
+              href="#our-data"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '6px',
+                padding: '0.3rem 0.6rem',
+                fontSize: '0.75rem',
+                color: '#CBD5E1',
+                textDecoration: 'none',
+              }}
+            >
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#64748B' }} />
+              <span>Mendeley: Not yet ingested</span>
+            </a>
+
+            <a
+              href="#our-data"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '6px',
+                padding: '0.3rem 0.6rem',
+                fontSize: '0.75rem',
+                color: '#CBD5E1',
+                textDecoration: 'none',
+              }}
+            >
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2DD4BF' }} />
+              <span>MathWorks: In use</span>
+            </a>
+
+            <a
+              href="#our-data"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(255, 255, 255, 0.03)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '6px',
+                padding: '0.3rem 0.6rem',
+                fontSize: '0.75rem',
+                color: '#CBD5E1',
+                textDecoration: 'none',
+              }}
+            >
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2DD4BF' }} />
+              <span>Synthetic: In use (75 eps)</span>
+            </a>
+          </div>
         </section>
 
         {/* ============================================================== */}
@@ -431,9 +648,9 @@ export const Landing: React.FC = () => {
             padding: '1.5rem',
           }}
         >
-          {/* Top Controls Bar: Scenario Pills + Layer Chips */}
+          {/* Top Controls Bar: Scenario Picker + Layer Chips */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <ScenarioPills activeKey={activeScenarioKey} onSelect={(k) => setActiveScenarioKey(k)} />
+            <ScenarioPicker activeKey={activeScenarioKey} onSelect={(k) => setActiveScenarioKey(k)} />
 
             {/* Layer Toggles */}
             <div
@@ -599,7 +816,12 @@ export const Landing: React.FC = () => {
         <ResultsSection summary={summaryData} />
 
         {/* ============================================================== */}
-        {/* SECTION 4 — HOW IT WORKS                                       */}
+        {/* SECTION 4 — OUR DATA (PROVENANCE & INTEGRITY)                  */}
+        {/* ============================================================== */}
+        <OurDataSection provenance={provenanceData} />
+
+        {/* ============================================================== */}
+        {/* SECTION 5 — HOW IT WORKS                                       */}
         {/* ============================================================== */}
         <HowItWorksStrip />
       </main>
@@ -664,7 +886,11 @@ export const Landing: React.FC = () => {
       </footer>
 
       {/* Slide-over Technical Details Drawer */}
-      <DetailsDrawer isOpen={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} />
+      <DetailsDrawer
+        isOpen={isDetailsOpen}
+        onClose={() => setIsDetailsOpen(false)}
+        provenance={provenanceData}
+      />
 
       {/* 3-Minute Guided Demo Tour Overlay */}
       <DemoTourModal
