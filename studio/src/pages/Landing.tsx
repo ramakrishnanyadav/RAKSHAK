@@ -1,362 +1,684 @@
 /**
- * Landing Page for ADAPTIVE-PATH Studio (Route: /).
- * Professional product introduction explaining the simulation platform,
- * challenges of Indian mixed-traffic roads, core driving capabilities,
- * and clear starting points.
+ * ADAPTIVE-PATH Showcase Landing Page (Route: / and /demo)
+ * Single-page, demo-first research product for Smart India Hackathon problem SIH26037 (MathWorks).
+ * Fulfills all North Star criteria: dual synchronized canvas replay, 5 canonical scenarios,
+ * 4 headline metrics traceable to runs/val_b_manifest.json, Grade 8 plain English explanations,
+ * and seamless link to full research mode (/app).
  */
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Compass,
-  PlayCircle,
-  ShieldCheck,
-  Zap,
-  Layers,
-  ArrowRight,
-  BarChart3,
-  Sparkles,
-  Map,
-  Eye,
-  AlertTriangle,
-  Info,
-} from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+  ScenarioKey,
+  ScenarioPills,
+} from '../components/showcase/ScenarioPills';
+import { SimCanvas } from '../components/showcase/SimCanvas';
+import { TimelineScrubber } from '../components/showcase/TimelineScrubber';
+import { ThinkingBox } from '../components/showcase/ThinkingBox';
+import { OutcomeBanner } from '../components/showcase/OutcomeBanner';
+import { ResultsSection } from '../components/showcase/ResultsSection';
+import { HowItWorksStrip } from '../components/showcase/HowItWorksStrip';
+import { DetailsDrawer } from '../components/showcase/DetailsDrawer';
+import { DemoTourModal } from '../components/showcase/DemoTourModal';
+import { ShowcaseScenarioFile, ShowcaseSummary } from '../components/showcase/types';
+import { useSettings } from '../context/SettingsContext';
 import { useI18n } from '../context/I18nContext';
+import {
+  Play,
+  ArrowRight,
+  Eye,
+  GitBranch,
+  Shield,
+  Sun,
+  Moon,
+  Globe,
+  Code2,
+} from 'lucide-react';
 
 export const Landing: React.FC = () => {
-  const { guestLogin } = useAuth();
-  const { t } = useI18n();
+  const { theme, setTheme } = useSettings();
+  const { language, setLanguage } = useI18n();
+
+  // Selected scenario key (defaults to flagship Cattle Crossing)
+  const [activeScenarioKey, setActiveScenarioKey] = useState<ScenarioKey>('cattle');
+  const [scenarioData, setScenarioData] = useState<ShowcaseScenarioFile | null>(null);
+  const [summaryData, setSummaryData] = useState<ShowcaseSummary | null>(null);
+  const [, setIsLoading] = useState(true);
+
+  // Playback & Scrubber State
+  const [currentTime, setCurrentTime] = useState(0.0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
+
+  // Layer Toggles
+  const [showSensors, setShowSensors] = useState(true);
+  const [showPredictions, setShowPredictions] = useState(true);
+  const [showRiskField, setShowRiskField] = useState(true);
+
+  // Modal / Drawer States
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  // Animation frame loop ref
+  const animFrameRef = useRef<number | null>(null);
+  const lastTimestampRef = useRef<number | null>(null);
+
+  // 1. Fetch Summary Data
+  useEffect(() => {
+    fetch('/showcase/summary.json')
+      .then((res) => res.json())
+      .then((data: ShowcaseSummary) => {
+        setSummaryData(data);
+      })
+      .catch((err) => console.error('Error loading showcase summary:', err));
+  }, []);
+
+  // 2. Fetch Scenario Data when activeScenarioKey changes
+  useEffect(() => {
+    setIsLoading(true);
+    fetch(`/showcase/${activeScenarioKey}.json`)
+      .then((res) => res.json())
+      .then((data: ShowcaseScenarioFile) => {
+        setScenarioData(data);
+        setCurrentTime(0.0);
+        setIsPlaying(true);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error(`Error loading ${activeScenarioKey}.json:`, err);
+        setIsLoading(false);
+      });
+  }, [activeScenarioKey]);
+
+  // Duration calculation
+  const duration = Math.max(
+    scenarioData?.adaptive.metrics.duration_s || 12.0,
+    scenarioData?.standard.metrics.duration_s || 7.0
+  );
+
+  // Frame resolution based on currentTime (dt = 0.1s)
+  const getFrameAtTime = (frames: any[], time: number) => {
+    if (!frames || frames.length === 0) return undefined;
+    const targetIdx = Math.min(frames.length - 1, Math.max(0, Math.round(time / 0.1)));
+    return frames[targetIdx];
+  };
+
+  const adaptiveFrame = getFrameAtTime(scenarioData?.adaptive.frames || [], currentTime);
+  const standardFrame = getFrameAtTime(scenarioData?.standard.frames || [], currentTime);
+
+  // 3. Replay Animation Loop
+  useEffect(() => {
+    if (!isPlaying) {
+      lastTimestampRef.current = null;
+      return;
+    }
+
+    const onFrame = (timestamp: number) => {
+      if (lastTimestampRef.current !== null) {
+        const deltaSeconds = (timestamp - lastTimestampRef.current) / 1000;
+        setCurrentTime((prev) => {
+          const next = prev + deltaSeconds * playbackSpeed;
+          if (next >= duration) {
+            setIsPlaying(false);
+            return duration;
+          }
+          return next;
+        });
+      }
+      lastTimestampRef.current = timestamp;
+      animFrameRef.current = requestAnimationFrame(onFrame);
+    };
+
+    animFrameRef.current = requestAnimationFrame(onFrame);
+
+    return () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [isPlaying, playbackSpeed, duration]);
+
+  // 4. Keyboard Shortcuts (Space: Play/Pause, Left/Right: scrub)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setIsPlaying((prev) => !prev);
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        setCurrentTime((prev) => Math.max(0, prev - 0.5));
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        setCurrentTime((prev) => Math.min(duration, prev + 0.5));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [duration]);
+
+  const scrollToDemo = () => {
+    const el = document.getElementById('demo-stage');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div
       style={{
         minHeight: '100vh',
-        background: 'var(--bg-app)',
-        color: 'var(--text-primary)',
-        display: 'flex',
-        flexDirection: 'column',
+        background: '#0B0C0F',
+        color: '#E2E8F0',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       }}
     >
-      {/* Top SIH & MathWorks Positioning Banner */}
-      <div
+      {/* ============================================================== */}
+      {/* TOP NAVIGATION BAR                                            */}
+      {/* ============================================================== */}
+      <header
         style={{
-          background: 'rgba(59, 130, 246, 0.08)',
-          borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
-          padding: '0.5rem 1rem',
-          textAlign: 'center',
-          fontSize: '0.8rem',
-          fontWeight: 600,
-          color: 'var(--accent-primary)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000,
+          background: 'rgba(11, 12, 15, 0.92)',
+          backdropFilter: 'blur(8px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          padding: '0.75rem 2rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <Sparkles size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} />
-        <span>Smart India Hackathon 2026 • Problem SIH26037 • MathWorks Track</span>
-      </div>
-
-      {/* Hero Section */}
-      <section
-        aria-labelledby="landing-hero-heading"
-        style={{
-          padding: '3.5rem 1.5rem 2.5rem',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          width: '100%',
-        }}
-      >
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h1
-            id="landing-hero-heading"
+        {/* Left: Wordmark & Problem Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+            ADAPTIVE-PATH
+          </span>
+          <span
             style={{
-              fontSize: 'clamp(2.1rem, 5vw, 3.25rem)',
-              fontWeight: 900,
-              lineHeight: 1.15,
-              letterSpacing: '-0.03em',
-              marginBottom: '1.25rem',
-              color: 'var(--text-primary)',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              background: 'rgba(45, 212, 191, 0.12)',
+              color: '#2DD4BF',
+              padding: '0.2rem 0.5rem',
+              borderRadius: '4px',
+              border: '1px solid rgba(45, 212, 191, 0.25)',
+              letterSpacing: '0.04em',
             }}
           >
-            Smart Driving for India's Unpredictable Roads
-          </h1>
+            SIH26037 • MATHWORKS
+          </span>
+        </div>
 
-          <p
-            style={{
-              fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
-              color: 'var(--text-secondary)',
-              maxWidth: '820px',
-              margin: '0 auto 2.25rem',
-              lineHeight: 1.6,
-            }}
+        {/* Center: Jump Anchors */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', fontSize: '0.875rem' }}>
+          <a
+            href="#demo-stage"
+            style={{ color: '#CBD5E1', textDecoration: 'none', fontWeight: 500 }}
           >
-            Explore how an intelligent driving system detects obstacles, predicts movement and finds safer paths through challenging Indian road environments.
-          </p>
+            Demo
+          </a>
+          <a
+            href="#results"
+            style={{ color: '#CBD5E1', textDecoration: 'none', fontWeight: 500 }}
+          >
+            Results
+          </a>
+          <a
+            href="#how-it-works"
+            style={{ color: '#CBD5E1', textDecoration: 'none', fontWeight: 500 }}
+          >
+            How It Works
+          </a>
+        </nav>
 
-          {/* Primary Action Buttons */}
-          <div
+        {/* Right: Controls & Research Mode Link */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Language selector */}
+          <button
+            onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
             style={{
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '6px',
+              color: '#CBD5E1',
+              padding: '0.35rem 0.6rem',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              gap: '1rem',
-              flexWrap: 'wrap',
+              gap: '0.3rem',
+            }}
+            title="Switch Language"
+          >
+            <Globe size={13} />
+            <span style={{ textTransform: 'uppercase' }}>{language}</span>
+          </button>
+
+          {/* Theme subtle toggle */}
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            style={{
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '6px',
+              color: '#CBD5E1',
+              padding: '0.35rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            title="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
+
+          {/* Details & Code button */}
+          <button
+            onClick={() => setIsDetailsOpen(true)}
+            style={{
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '6px',
+              color: '#FFFFFF',
+              padding: '0.35rem 0.75rem',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
             }}
           >
-            <Link
-              to="/demo"
-              onClick={guestLogin}
-              className="btn-primary"
-              style={{
-                padding: '0.85rem 1.75rem',
-                fontSize: '1rem',
-                fontWeight: 700,
-                textDecoration: 'none',
-                minHeight: 'var(--touch-target-size)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.35)',
-              }}
-            >
-              <PlayCircle size={20} aria-hidden="true" />
-              <span>Explore 14 Verified Test Drives</span>
-            </Link>
+            <Code2 size={14} />
+            <span>Details & Code</span>
+          </button>
 
-            <Link
-              to="/app/runs/new"
-              className="btn-secondary"
-              style={{
-                padding: '0.85rem 1.5rem',
-                fontSize: '1rem',
-                textDecoration: 'none',
-                minHeight: 'var(--touch-target-size)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}
-            >
-              <span>Prepare Simulation Drive</span>
-              <ArrowRight size={18} aria-hidden="true" />
-            </Link>
-
-            <Link
-              to="/app/scenarios"
-              className="btn-secondary"
-              style={{
-                padding: '0.85rem 1.25rem',
-                fontSize: '0.95rem',
-                textDecoration: 'none',
-                minHeight: 'var(--touch-target-size)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}
-            >
-              <Map size={18} aria-hidden="true" />
-              <span>Browse 5 Scenarios</span>
-            </Link>
-          </div>
+          {/* Link to Full Research Mode (/app) */}
+          <Link
+            to="/app"
+            style={{
+              background: '#2DD4BF',
+              color: '#090A0D',
+              borderRadius: '6px',
+              padding: '0.35rem 0.85rem',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+            }}
+          >
+            <span>Research Mode</span>
+            <ArrowRight size={13} />
+          </Link>
         </div>
+      </header>
 
-        {/* 3 Core Driving Capabilities */}
-        <div
+      {/* Main Content Container */}
+      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 2rem 5rem', display: 'flex', flexDirection: 'column', gap: '5rem' }}>
+        {/* ============================================================== */}
+        {/* SECTION 1 — HERO                                               */}
+        {/* ============================================================== */}
+        <section
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '1.25rem',
-            marginTop: '2rem',
+            padding: '4.5rem 0 2rem',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            gap: '1.5rem',
+            position: 'relative',
           }}
         >
-          <div className="glass-panel" style={{ padding: '1.75rem', border: '1px solid var(--border-default)' }}>
-            <div
+          {/* Subtle top indicator */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.3rem 0.85rem',
+              borderRadius: '20px',
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              fontSize: '0.8rem',
+              color: '#CBD5E1',
+            }}
+          >
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2DD4BF' }} />
+            <span>Smart India Hackathon 2026 • Problem SIH26037</span>
+          </div>
+
+          {/* Headline (7 words <= 9 words) */}
+          <h1
+            style={{
+              fontSize: 'clamp(2.5rem, 5vw, 3.75rem)',
+              fontWeight: 900,
+              color: '#FFFFFF',
+              lineHeight: 1.15,
+              maxWidth: '820px',
+              margin: 0,
+              letterSpacing: '-0.03em',
+            }}
+          >
+            Self-driving navigation built for Indian roads.
+          </h1>
+
+          {/* Single Supporting Sentence */}
+          <p
+            style={{
+              fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+              color: '#94A3B8',
+              maxWidth: '680px',
+              lineHeight: 1.5,
+              margin: 0,
+            }}
+          >
+            Predicts what cows, rickshaws, and carts will do next, then plans a smooth path around them.
+          </p>
+
+          {/* Call to Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.75rem', flexWrap: 'wrap' }}>
+            <button
+              onClick={scrollToDemo}
               style={{
-                width: '42px',
-                height: '42px',
+                background: '#2DD4BF',
+                color: '#090A0D',
+                border: 'none',
                 borderRadius: '8px',
-                background: 'rgba(16, 185, 129, 0.15)',
-                color: 'var(--accent-teal)',
-                display: 'flex',
+                padding: '0.75rem 1.5rem',
+                fontSize: '0.95rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '1rem',
+                gap: '0.5rem',
+                boxShadow: '0 4px 14px rgba(45, 212, 191, 0.3)',
               }}
             >
-              <ShieldCheck size={22} aria-hidden="true" />
-            </div>
-            <h2 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.45rem' }}>
-              Finding Paths Without Painted Lanes
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
-              Real Indian roads frequently lack painted lane markings. The simulator identifies safe, continuous driving corridors across uneven surfaces, unpaved shoulders, and roadside obstacles.
-            </p>
-          </div>
+              <Play size={16} fill="#090A0D" />
+              <span>Watch it drive</span>
+            </button>
 
-          <div className="glass-panel" style={{ padding: '1.75rem', border: '1px solid var(--border-default)' }}>
-            <div
+            <button
+              onClick={() => setIsTourOpen(true)}
               style={{
-                width: '42px',
-                height: '42px',
+                background: 'transparent',
+                color: '#CBD5E1',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 borderRadius: '8px',
-                background: 'rgba(59, 130, 246, 0.15)',
-                color: 'var(--accent-primary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '1rem',
+                padding: '0.75rem 1.25rem',
+                fontSize: '0.95rem',
+                fontWeight: 600,
+                cursor: 'pointer',
               }}
             >
-              <Zap size={22} aria-hidden="true" />
-            </div>
-            <h2 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.45rem' }}>
-              Accounting for Movement Uncertainty
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
-              Pedestrians, auto-rickshaws, and wandering cattle move unpredictably. The simulator calculates safety buffers that account for potential direction changes to prevent dangerous close calls.
-            </p>
+              Play full demo tour (3 min)
+            </button>
           </div>
+        </section>
 
-          <div className="glass-panel" style={{ padding: '1.75rem', border: '1px solid var(--border-default)' }}>
+        {/* ============================================================== */}
+        {/* SECTION 2 — THE DEMO STAGE (THE CORE)                         */}
+        {/* ============================================================== */}
+        <section
+          id="demo-stage"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.25rem',
+            background: '#0F1116',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '12px',
+            padding: '1.5rem',
+          }}
+        >
+          {/* Top Controls Bar: Scenario Pills + Layer Chips */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <ScenarioPills activeKey={activeScenarioKey} onSelect={(k) => setActiveScenarioKey(k)} />
+
+            {/* Layer Toggles */}
             <div
               style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '8px',
-                background: 'rgba(245, 158, 11, 0.15)',
-                color: 'var(--risk-medium)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '1rem',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.75rem',
+                paddingTop: '0.5rem',
+                borderTop: '1px solid rgba(255, 255, 255, 0.06)',
               }}
             >
-              <Layers size={22} aria-hidden="true" />
+              <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
+                SYNCHRONIZED REPLAY LAYERS:
+              </span>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => setShowSensors(!showSensors)}
+                  style={{
+                    background: showSensors ? 'rgba(45, 212, 191, 0.15)' : 'transparent',
+                    color: showSensors ? '#2DD4BF' : '#94A3B8',
+                    border: `1px solid ${showSensors ? 'rgba(45, 212, 191, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                    borderRadius: '6px',
+                    padding: '0.3rem 0.65rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                  }}
+                >
+                  <Eye size={13} />
+                  <span>Sensors (Camera/LiDAR/Radar)</span>
+                </button>
+
+                <button
+                  onClick={() => setShowPredictions(!showPredictions)}
+                  style={{
+                    background: showPredictions ? 'rgba(45, 212, 191, 0.15)' : 'transparent',
+                    color: showPredictions ? '#2DD4BF' : '#94A3B8',
+                    border: `1px solid ${showPredictions ? 'rgba(45, 212, 191, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                    borderRadius: '6px',
+                    padding: '0.3rem 0.65rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                  }}
+                >
+                  <GitBranch size={13} />
+                  <span>Predictions (Multi-Hypothesis)</span>
+                </button>
+
+                <button
+                  onClick={() => setShowRiskField(!showRiskField)}
+                  style={{
+                    background: showRiskField ? 'rgba(45, 212, 191, 0.15)' : 'transparent',
+                    color: showRiskField ? '#2DD4BF' : '#94A3B8',
+                    border: `1px solid ${showRiskField ? 'rgba(45, 212, 191, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                    borderRadius: '6px',
+                    padding: '0.3rem 0.65rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                  }}
+                >
+                  <Shield size={13} />
+                  <span>Risk Field (Danger Heatmap)</span>
+                </button>
+              </div>
             </div>
-            <h2 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.45rem' }}>
-              Rapid Path Recalculation
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
-              When an oncoming vehicle cuts across or an animal stops mid-road, the vehicle immediately checks the driving path again, slowing down or finding a safe detour without hesitation.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Explanatory Product Walkthrough Section */}
-      <section
-        style={{
-          background: 'var(--bg-surface)',
-          borderTop: '1px solid var(--border-default)',
-          borderBottom: '1px solid var(--border-default)',
-          padding: '3rem 1.5rem',
-        }}
-      >
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <h2 style={{ fontSize: '1.65rem', fontWeight: 800, margin: '0 0 0.5rem' }}>
-              How ADAPTIVE-PATH Simulates Real Indian Driving
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '720px', margin: '0 auto' }}>
-              A structured simulation platform designed to test autonomous driving decision-making against unstructured, real-world traffic behavior.
-            </p>
           </div>
 
+          {/* DUAL SYNCHRONIZED TOP-DOWN VIEWS */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: '1.5rem',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '1.25rem',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-primary)', textTransform: 'uppercase' }}>
-                1. Road Environments
+            {/* LEFT: Standard Planner (Dynamic Window Approach / Velocity Obstacles) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#94A3B8' }}>
+                  Standard Planner (B1: Velocity Obstacles)
+                </span>
+                <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Fixed speed window</span>
               </div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>5 Indian Road Scenarios</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
-                Simulate unmarked village roads with potholes, busy unsignalized intersections, highway merges with slow auto-rickshaws, crowded market streets, and sudden cattle crossings.
-              </p>
+
+              <SimCanvas
+                frame={standardFrame}
+                variant="standard"
+                showSensors={showSensors}
+                showPredictions={showPredictions}
+                showRiskField={showRiskField}
+                height={380}
+              />
+
+              <OutcomeBanner metrics={scenarioData?.standard.metrics} variant="standard" />
+
+              <ThinkingBox
+                frame={standardFrame}
+                variant="standard"
+                plannerName="B1 Classical Controller"
+              />
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-primary)', textTransform: 'uppercase' }}>
-                2. Driving Algorithms
+            {/* RIGHT: ADAPTIVE-PATH (P3: Multi-Hypothesis + Conformal Safety) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#2DD4BF' }}>
+                  ADAPTIVE-PATH (P3: Conformal Risk Field)
+                </span>
+                <span style={{ fontSize: '0.75rem', color: '#2DD4BF', background: 'rgba(45, 212, 191, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                  Adaptive strategy
+                </span>
               </div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>6 Driving Strategies</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
-                Compare standard reactive driving algorithms (B0, B1, B2) against predictive, risk-aware path planners (P1, P2, P3) under identical traffic conditions and random seeds.
-              </p>
-            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-primary)', textTransform: 'uppercase' }}>
-                3. Evaluation Metrics
-              </div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>Clear Safety & Comfort Scoring</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
-                Every drive is evaluated on trip completion, collision avoidance, closest hazard buffer, ride smoothness (jerk), and how quickly the vehicle calculates new paths.
-              </p>
-            </div>
+              <SimCanvas
+                frame={adaptiveFrame}
+                variant="adaptive"
+                showSensors={showSensors}
+                showPredictions={showPredictions}
+                showRiskField={showRiskField}
+                height={380}
+              />
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-primary)', textTransform: 'uppercase' }}>
-                4. Simulation Engine
-              </div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>Dual Simulation Architecture</h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
-                Runs through an in-process reference engine and connects with MathWorks RoadRunner for co-simulation, producing synchronized run logs and replays.
-              </p>
+              <OutcomeBanner metrics={scenarioData?.adaptive.metrics} variant="adaptive" />
+
+              <ThinkingBox
+                frame={adaptiveFrame}
+                variant="adaptive"
+                plannerName="P3 Adaptive Controller"
+              />
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Research Disclaimer & Transparency Notice */}
-      <section
-        style={{
-          padding: '2.5rem 1.5rem',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          width: '100%',
-        }}
-      >
-        <div
-          className="glass-panel"
-          style={{
-            padding: '1.25rem 1.5rem',
-            border: '1px solid var(--border-default)',
-            background: 'var(--bg-surface-elevated)',
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '1rem',
-          }}
-        >
-          <Info size={22} color="var(--accent-primary)" style={{ flexShrink: 0, marginTop: '2px' }} />
-          <div>
-            <h3 style={{ fontSize: '0.95rem', fontWeight: 700, margin: '0 0 0.35rem' }}>
-              Research Prototype Notice
-            </h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-              ADAPTIVE-PATH is an engineering research and simulation platform developed for Smart India Hackathon 2026 (SIH26037). It is designed to evaluate intelligent path planning algorithms in simulation and is not certified for road deployment or commercial vehicle control.
-            </p>
-          </div>
-        </div>
-      </section>
+          {/* Shared Timeline Scrubber */}
+          <TimelineScrubber
+            currentTime={currentTime}
+            duration={duration}
+            isPlaying={isPlaying}
+            playbackSpeed={playbackSpeed}
+            onTogglePlay={() => setIsPlaying(!isPlaying)}
+            onSeek={(t) => setCurrentTime(t)}
+            onReset={() => setCurrentTime(0.0)}
+            onChangeSpeed={(spd) => setPlaybackSpeed(spd)}
+          />
+        </section>
 
-      {/* Footer */}
+        {/* ============================================================== */}
+        {/* SECTION 3 — THE RESULTS                                        */}
+        {/* ============================================================== */}
+        <ResultsSection summary={summaryData} />
+
+        {/* ============================================================== */}
+        {/* SECTION 4 — HOW IT WORKS                                       */}
+        {/* ============================================================== */}
+        <HowItWorksStrip />
+      </main>
+
+      {/* ============================================================== */}
+      {/* FOOTER                                                         */}
+      {/* ============================================================== */}
       <footer
         style={{
-          marginTop: 'auto',
-          padding: '2rem 1.5rem',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          background: '#08090C',
+          padding: '2.5rem 2rem',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem',
           textAlign: 'center',
-          color: 'var(--text-secondary)',
-          fontSize: '0.85rem',
-          borderTop: '1px solid var(--border-default)',
         }}
       >
-        <div>ADAPTIVE-PATH Studio • Smart India Hackathon 2026 (SIH26037)</div>
-        <div style={{ marginTop: '0.35rem', color: 'var(--text-muted)' }}>
-          Research and Simulation Platform — For Algorithmic Benchmarking
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <span style={{ fontWeight: 800, color: '#FFFFFF' }}>ADAPTIVE-PATH</span>
+          <span style={{ color: '#4B5563' }}>•</span>
+          <span style={{ color: '#94A3B8', fontSize: '0.85rem' }}>
+            Smart India Hackathon SIH26037 (MathWorks)
+          </span>
+        </div>
+
+        {/* Essential road-readiness disclaimer */}
+        <div
+          style={{
+            fontSize: '0.8rem',
+            color: '#FBBF24',
+            background: 'rgba(245, 158, 11, 0.08)',
+            border: '1px solid rgba(245, 158, 11, 0.2)',
+            padding: '0.35rem 0.85rem',
+            borderRadius: '6px',
+            maxWidth: '480px',
+          }}
+        >
+          Simulation only. Not road-ready. Evaluated in synthetic 2D unstructured road environments.
+        </div>
+
+        <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.8rem', color: '#64748B', marginTop: '0.5rem' }}>
+          <Link to="/app" style={{ color: '#94A3B8', textDecoration: 'none' }}>
+            Full Research Studio (/app)
+          </Link>
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: '#94A3B8', textDecoration: 'none' }}
+          >
+            Repository & Code
+          </a>
+          <button
+            onClick={() => setIsDetailsOpen(true)}
+            style={{ background: 'transparent', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: 0, fontSize: '0.8rem' }}
+          >
+            Reproduction Command
+          </button>
         </div>
       </footer>
+
+      {/* Slide-over Technical Details Drawer */}
+      <DetailsDrawer isOpen={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} />
+
+      {/* 3-Minute Guided Demo Tour Overlay */}
+      <DemoTourModal
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        onSelectScenario={(k) => setActiveScenarioKey(k)}
+        onToggleLayer={(layer, val) => {
+          if (layer === 'sensors') setShowSensors(val);
+          if (layer === 'predictions') setShowPredictions(val);
+          if (layer === 'risk') setShowRiskField(val);
+        }}
+        onSeekTime={(t) => setCurrentTime(t)}
+        onPlayReplay={() => setIsPlaying(true)}
+      />
     </div>
   );
 };

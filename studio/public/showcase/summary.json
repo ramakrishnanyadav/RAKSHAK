@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "title": "ADAPTIVE-PATH Benchmark Validation Summary",
+    "provenance": "Validation B \u2014 Research Experiment",
+    "git_commit": "07fa1ff019aa09c852a8efb3f77867ea1d0c8eef",
+    "timestamp": "2026-11-03T14:17:05.120041+00:00",
+    "split": "val_b",
+    "seeds": [
+      2005,
+      2006,
+      2007,
+      2008,
+      2009
+    ],
+    "total_episodes_per_planner": 25,
+    "disclaimer": "Simulation only. Not road-ready."
+  },
+  "headline_metrics": {
+    "completion_rate": {
+      "label": "Completion Rate",
+      "adaptive": 56.0,
+      "standard": 40.0,
+      "unit": "%",
+      "delta": "+16.0%",
+      "delta_label": "1.4x higher goal completion",
+      "higher_is_better": true
+    },
+    "collision_rate": {
+      "label": "Crash Rate",
+      "adaptive": 20.0,
+      "standard": 60.0,
+      "unit": "%",
+      "delta": "-40.0%",
+      "delta_label": "3x fewer collisions",
+      "higher_is_better": false
+    },
+    "smoothness_jerk": {
+      "label": "Smoothness (Jerk)",
+      "adaptive": 1.25,
+      "standard": 1.56,
+      "unit": "m/s\u00b3",
+      "delta": "-20%",
+      "delta_label": "20% smoother ride",
+      "higher_is_better": false
+    },
+    "think_time_ms": {
+      "label": "Think Time",
+      "adaptive": 6.3,
+      "standard": 8.7,
+      "unit": "ms",
+      "delta": "-27%",
+      "delta_label": "Sub-10ms real-time control",
+      "higher_is_better": false
+    }
+  },
+  "scenarios": [
+    {
+      "key": "cattle",
+      "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
+      "name": "Cattle Crossing",
+      "flagship": true,
+      "description": "Livestock wandering unpredictably across rural highway lane.",
+      "adaptive": {
+        "completion_rate": 100.0,
+        "collision_rate": 0.0,
+        "jerk_m_s3": 1.64,
+        "latency_ms": 8.0
+      },
+      "standard": {
+        "completion_rate": 0.0,
+        "collision_rate": 100.0,
+        "jerk_m_s3": 3.25,
+        "latency_ms": 23.1
+      }
+    },
+    {
+      "key": "village",
+      "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
+      "name": "Village Road",
+      "flagship": false,
+      "description": "Narrow unmarked road with oncoming motorcycle and slow auto-rickshaw.",
+      "adaptive": {
+        "completion_rate": 20.0,
+        "collision_rate": 20.0,
+        "jerk_m_s3": 2.08,
+        "latency_ms": 12.4
+      },
+      "standard": {
+        "completion_rate": 0.0,
+        "collision_rate": 100.0,
+        "jerk_m_s3": 1.5,
+        "latency_ms": 3.1
+      }
+    },
+    {
+      "key": "highway",
+      "scenario_id": "SCENARIO_3_HIGHWAY_MERGE",
+      "name": "Highway Merge",
+      "flagship": false,
+      "description": "High-speed multi-lane traffic with fast-approaching trucks.",
+      "adaptive": {
+        "completion_rate": 100.0,
+        "collision_rate": 0.0,
+        "jerk_m_s3": 0.22,
+        "latency_ms": 1.5
+      },
+      "standard": {
+        "completion_rate": 100.0,
+        "collision_rate": 0.0,
+        "jerk_m_s3": 0.22,
+        "latency_ms": 2.2
+      }
+    },
+    {
+      "key": "market",
+      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "name": "Dense Market",
+      "flagship": false,
+      "description": "Crowded commercial alley with pedestrians and vegetable carts.",
+      "adaptive": {
+        "completion_rate": 0.0,
+        "collision_rate": 40.0,
+        "jerk_m_s3": 1.36,
+        "latency_ms": 4.1
+      },
+      "standard": {
+        "completion_rate": 0.0,
+        "collision_rate": 100.0,
+        "jerk_m_s3": 1.87,
+        "latency_ms": 13.3
+      }
+    },
+    {
+      "key": "intersection",
+      "scenario_id": "SCENARIO_2_URBAN_INTERSECTION",
+      "name": "City Junction",
+      "flagship": false,
+      "is_weak_spot": true,
+      "description": "Uncontrolled urban 4-way intersection with dense blind turns.",
+      "adaptive": {
+        "completion_rate": 60.0,
+        "collision_rate": 40.0,
+        "jerk_m_s3": 0.96,
+        "latency_ms": 5.6
+      },
+      "standard": {
+        "completion_rate": 100.0,
+        "collision_rate": 0.0,
+        "jerk_m_s3": 0.98,
+        "latency_ms": 1.7
+      }
+    }
+  ],
+  "weak_spot_analysis": {
+    "scenario": "City Junction (SCENARIO_2_URBAN_INTERSECTION)",
+    "why": "High occlusion from turning heavy vehicles causes prediction bounds to dilate, causing occasional late evasive stops under crowded simultaneous crossings.",
+    "future_work": "Multi-agent intent negotiation and radar Doppler velocity fusion will tighten prediction bounds."
+  }
+}
