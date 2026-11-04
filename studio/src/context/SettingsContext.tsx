@@ -11,6 +11,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type AppTheme = 'dark' | 'light' | 'high-contrast';
 export type TextScale = 100 | 125 | 150 | 175 | 200;
+export type PresentationMode = 'simple' | 'research';
 
 interface SettingsState {
   theme: AppTheme;
@@ -18,6 +19,7 @@ interface SettingsState {
   reducedMotion: boolean;
   audioAnnouncer: boolean;
   defaultSpeed: number;
+  presentationMode: PresentationMode;
 }
 
 interface SettingsContextType extends SettingsState {
@@ -26,6 +28,7 @@ interface SettingsContextType extends SettingsState {
   setReducedMotion: (reduced: boolean) => void;
   setAudioAnnouncer: (enabled: boolean) => void;
   setDefaultSpeed: (speed: number) => void;
+  setPresentationMode: (mode: PresentationMode) => void;
   resetDefaults: () => void;
 }
 
@@ -35,6 +38,7 @@ const DEFAULT_SETTINGS: SettingsState = {
   reducedMotion: false,
   audioAnnouncer: false,
   defaultSpeed: 1.0,
+  presentationMode: 'simple',
 };
 
 const SettingsContext = createContext<SettingsContextType>({
@@ -44,15 +48,26 @@ const SettingsContext = createContext<SettingsContextType>({
   setReducedMotion: () => {},
   setAudioAnnouncer: () => {},
   setDefaultSpeed: () => {},
+  setPresentationMode: () => {},
   resetDefaults: () => {},
 });
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<SettingsState>(() => {
+    let storedMode: PresentationMode = 'simple';
+    try {
+      const mode = localStorage.getItem('apath_presentation_mode');
+      if (mode === 'simple' || mode === 'research') {
+        storedMode = mode;
+      }
+    } catch {
+      // Use fallback
+    }
+
     try {
       const stored = localStorage.getItem('apath_settings');
       if (stored) {
-        return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
+        return { ...DEFAULT_SETTINGS, presentationMode: storedMode, ...JSON.parse(stored) };
       }
     } catch {
       // Use defaults
@@ -63,13 +78,14 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     return {
       ...DEFAULT_SETTINGS,
+      presentationMode: storedMode,
       reducedMotion: prefersReducedMotion,
     };
   });
 
   // Apply settings to DOM
   useEffect(() => {
-    const { theme, textScale, reducedMotion } = settings;
+    const { theme, textScale, reducedMotion, presentationMode } = settings;
 
     // Apply theme classes
     document.body.classList.remove('dark-theme', 'light-theme', 'high-contrast-theme');
@@ -93,8 +109,13 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       document.body.classList.remove('reduced-motion');
     }
 
+    // Apply presentation mode class
+    document.body.classList.remove('mode-simple', 'mode-research');
+    document.body.classList.add(`mode-${presentationMode}`);
+
     try {
       localStorage.setItem('apath_settings', JSON.stringify(settings));
+      localStorage.setItem('apath_presentation_mode', presentationMode);
     } catch {
       // Storage unavailable
     }
@@ -120,6 +141,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setSettings((prev) => ({ ...prev, defaultSpeed }));
   };
 
+  const setPresentationMode = (presentationMode: PresentationMode) => {
+    setSettings((prev) => ({ ...prev, presentationMode }));
+  };
+
   const resetDefaults = () => {
     setSettings(DEFAULT_SETTINGS);
   };
@@ -133,6 +158,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setReducedMotion,
         setAudioAnnouncer,
         setDefaultSpeed,
+        setPresentationMode,
         resetDefaults,
       }}
     >
@@ -147,4 +173,14 @@ export const useSettings = (): SettingsContextType => {
     throw new Error('useSettings must be used within a SettingsProvider');
   }
   return context;
+};
+
+export const usePresentationMode = () => {
+  const { presentationMode, setPresentationMode } = useSettings();
+  return {
+    presentationMode,
+    setPresentationMode,
+    isSimple: presentationMode === 'simple',
+    isResearch: presentationMode === 'research',
+  };
 };

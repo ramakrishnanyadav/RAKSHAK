@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { apiClient } from '../api/client';
 import { useI18n } from '../context/I18nContext';
+import { usePresentationMode } from '../context/SettingsContext';
 import { DataTableToggle } from '../components/DataTableToggle';
 import { AccessibleTable, AccessibleRiskBadge, ColumnDef } from '../components/AccessibleTable';
 import { SkeletonCard, SkeletonTable, ErrorState, OfflineBanner } from '../components/StatusState';
@@ -29,6 +30,7 @@ import { RunSummary } from '../types/api';
 
 export const Dashboard: React.FC = () => {
   const { t } = useI18n();
+  const { isResearch } = usePresentationMode();
   const navigate = useNavigate();
   const [isTableView, setIsTableView] = useState(false);
 
@@ -185,19 +187,33 @@ export const Dashboard: React.FC = () => {
           padding: '1.75rem',
         }}
       >
-        <div
-          style={{
-            display: 'inline-block',
-            padding: '0.2rem 0.6rem',
-            background: 'rgba(56, 189, 248, 0.2)',
-            color: '#38bdf8',
-            borderRadius: '4px',
-            fontSize: '0.75rem',
-            fontWeight: 700,
-            marginBottom: '0.6rem',
-          }}
-        >
-          SMART INDIA HACKATHON 2026 • SIH26037 • MATHWORKS
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+          <div
+            style={{
+              display: 'inline-block',
+              padding: '0.2rem 0.6rem',
+              background: 'rgba(56, 189, 248, 0.2)',
+              color: '#38bdf8',
+              borderRadius: '4px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+            }}
+          >
+            SMART INDIA HACKATHON 2026 • SIH26037 • MATHWORKS
+          </div>
+          <div
+            style={{
+              display: 'inline-block',
+              padding: '0.2rem 0.6rem',
+              background: isResearch ? 'rgba(168, 85, 247, 0.2)' : 'rgba(16, 185, 129, 0.2)',
+              color: isResearch ? '#c084fc' : '#34d399',
+              borderRadius: '4px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+            }}
+          >
+            {isResearch ? '🔬 RESEARCH MODE' : '✨ SIMPLE MODE'}
+          </div>
         </div>
 
         <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>

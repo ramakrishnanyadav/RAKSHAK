@@ -12,7 +12,7 @@ import { ReplayCanvas, CanvasLayerState } from '../components/ReplayCanvas';
 import { DataTableToggle } from '../components/DataTableToggle';
 import { AccessibleTable, ColumnDef } from '../components/AccessibleTable';
 import { SkeletonCard, ErrorState } from '../components/StatusState';
-import { useSettings } from '../context/SettingsContext';
+import { useSettings, usePresentationMode } from '../context/SettingsContext';
 
 interface ComparisonMetricRow {
   metric: string;
@@ -24,6 +24,7 @@ interface ComparisonMetricRow {
 
 export const CompareView: React.FC = () => {
   const { theme } = useSettings();
+  const { isSimple } = usePresentationMode();
   const isHighContrast = theme === 'high-contrast';
 
   const [runAId, setRunAId] = useState('run_scenario_5_cattle_crossing_b1_tune_s1000');
@@ -318,6 +319,47 @@ export const CompareView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* SIMPLE MODE: Why P3 Prevents Collisions Card */}
+      {isSimple && (
+        <div
+          role="region"
+          aria-label="Plain-English Comparison Summary"
+          className="glass-panel"
+          style={{
+            padding: '1rem 1.25rem',
+            background: 'rgba(59, 130, 246, 0.08)',
+            border: '1px solid rgba(59, 130, 246, 0.25)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+          }}
+        >
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              background: 'rgba(59, 130, 246, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--accent-primary)',
+              flexShrink: 0,
+            }}
+          >
+            <ShieldCheck size={20} />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.2rem' }}>
+              Why ADAPTIVE-PATH (P3) Prevents the Collision
+            </div>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+              The baseline planner drives reactively and does not anticipate how crossing road users move, resulting in emergency braking or collisions. In contrast, ADAPTIVE-PATH (P3) continuously predicts movement envelopes, initiates early smooth adjustments, and maintains a safe buffer around all road hazards.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Main View: Side-by-side Viewports OR Accessible Table */}
       {isTableView ? (

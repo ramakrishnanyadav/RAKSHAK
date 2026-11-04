@@ -18,10 +18,13 @@ import {
   Layers,
   Volume2,
   VolumeX,
+  Sparkles,
+  FlaskConical,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useSettings, AppTheme, TextScale } from '../context/SettingsContext';
+import { useSettings, AppTheme, TextScale, PresentationMode } from '../context/SettingsContext';
 import { useI18n, Language } from '../context/I18nContext';
+import { useAnnouncer } from './LiveAnnouncer';
 
 interface HeaderBarProps {
   onOpenKeyboardHelp: () => void;
@@ -40,8 +43,21 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     setTextScale,
     audioAnnouncer,
     setAudioAnnouncer,
+    presentationMode,
+    setPresentationMode,
   } = useSettings();
   const { language, setLanguage, t } = useI18n();
+  const { announce } = useAnnouncer();
+
+  const handleSetMode = (mode: PresentationMode) => {
+    setPresentationMode(mode);
+    announce(
+      mode === 'simple'
+        ? 'Switched to Simple Mode: Streamlined plain-English view'
+        : 'Switched to Research Mode: Full technical telemetry enabled',
+      'polite'
+    );
+  };
 
   // Cycle themes: dark -> light -> high-contrast -> dark
   const handleCycleTheme = () => {
@@ -174,6 +190,74 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           flexWrap: 'wrap',
         }}
       >
+        {/* Mode Switcher Segmented Control */}
+        <div
+          role="radiogroup"
+          aria-label="Presentation level"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            background: 'var(--bg-surface-elevated)',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-sm)',
+            padding: '2px',
+            gap: '2px',
+          }}
+        >
+          <button
+            type="button"
+            role="radio"
+            aria-checked={presentationMode === 'simple'}
+            onClick={() => handleSetMode('simple')}
+            title="Simple Mode: Plain-English vehicle decisions and essentials for visitors and judges"
+            aria-label="Simple Mode: Streamlined view for visitors and evaluators"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              padding: '0.25rem 0.6rem',
+              borderRadius: 'var(--radius-sm)',
+              border: 'none',
+              background: presentationMode === 'simple' ? 'var(--accent-primary)' : 'transparent',
+              color: presentationMode === 'simple' ? '#ffffff' : 'var(--text-secondary)',
+              fontSize: '0.75rem',
+              fontWeight: presentationMode === 'simple' ? 700 : 500,
+              cursor: 'pointer',
+              minHeight: 'var(--min-target-size)',
+            }}
+          >
+            <Sparkles size={13} aria-hidden="true" />
+            <span>{t('mode_simple')}</span>
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={presentationMode === 'research'}
+            onClick={() => handleSetMode('research')}
+            title="Research Mode: Full telemetry, 6 planners, conformal prediction cones, and validation provenance"
+            aria-label="Research Mode: Advanced technical telemetry and evaluation"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              padding: '0.25rem 0.6rem',
+              borderRadius: 'var(--radius-sm)',
+              border: 'none',
+              background: presentationMode === 'research' ? 'var(--accent-primary)' : 'transparent',
+              color: presentationMode === 'research' ? '#ffffff' : 'var(--text-secondary)',
+              fontSize: '0.75rem',
+              fontWeight: presentationMode === 'research' ? 700 : 500,
+              cursor: 'pointer',
+              minHeight: 'var(--min-target-size)',
+            }}
+          >
+            <FlaskConical size={13} aria-hidden="true" />
+            <span>{t('mode_research')}</span>
+          </button>
+        </div>
+
+        <div style={{ width: '1px', height: '18px', background: 'var(--border-default)' }} />
+
         {/* Language Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
           {(['en', 'hi', 'te'] as Language[]).map((lang) => (

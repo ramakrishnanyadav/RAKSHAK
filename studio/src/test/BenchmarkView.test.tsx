@@ -131,14 +131,12 @@ describe('BenchmarkView Authentic Research Validation Integration', () => {
       </QueryClientProvider>
     );
 
-    // Verify explicit dataset isolation badge
-    await waitFor(() => {
-      expect(screen.getByText('Validation B — Research Experiment')).not.toBeNull();
-      expect(screen.getByText('runs/val_b_manifest.json')).not.toBeNull();
-      expect(screen.getByText('07fa1ff019')).not.toBeNull();
-      expect(screen.getByText(/2005, 2006, 2007, 2008, 2009/)).not.toBeNull();
-      expect(screen.getByText(/25 episodes \(5 scenarios × 5 seeds\)/)).not.toBeNull();
-    });
+    // Verify explicit dataset isolation badge and provenance after query resolves
+    expect(await screen.findByText('runs/val_b_manifest.json')).not.toBeNull();
+    expect(screen.getByText('Validation B — Research Experiment')).not.toBeNull();
+    expect(screen.getByText('07fa1ff019')).not.toBeNull();
+    expect(screen.getByText(/2005, 2006, 2007, 2008, 2009/)).not.toBeNull();
+    expect(screen.getByText(/25 episodes \(5 scenarios × 5 seeds\)/)).not.toBeNull();
   });
 
   it('renders authentic benchmark metrics from manifest', async () => {

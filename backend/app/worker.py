@@ -200,7 +200,11 @@ def execute_simulation_task(
             record.replan_count = m.replan_count
             record.p95_latency_ms = m.p95_latency_ms
             record.failure_tag = m.failure_tag
-            record.log_path = str(log_file.relative_to(settings.storage_dir))
+            storage_root = Path(settings.storage_dir).resolve()
+            try:
+                record.log_path = str(log_file.resolve().relative_to(storage_root))
+            except ValueError:
+                record.log_path = str(log_file.name)
             db.commit()
 
             broadcast_event(

@@ -30,11 +30,12 @@ import {
   Sparkles,
   Bookmark,
   CheckCircle2,
+  FlaskConical,
 } from 'lucide-react';
 import { RunLog, Frame, AgentTrack } from '../types/apath_log';
 import { apiClient } from '../api/client';
 import { useI18n } from '../context/I18nContext';
-import { useSettings } from '../context/SettingsContext';
+import { useSettings, usePresentationMode } from '../context/SettingsContext';
 import { useAnnouncer } from '../components/LiveAnnouncer';
 import { ReplayCanvas, CanvasLayerState } from '../components/ReplayCanvas';
 import { ReplayTimeline } from '../components/ReplayTimeline';
@@ -48,6 +49,7 @@ export const ReplayView: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
   const { theme, audioAnnouncer, setAudioAnnouncer } = useSettings();
+  const { presentationMode, isSimple, isResearch } = usePresentationMode();
   const { announce } = useAnnouncer();
 
   const isHighContrast = theme === 'high-contrast';
@@ -588,6 +590,149 @@ export const ReplayView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* SIMPLE MODE: Vehicle Decision & Status Summary Card */}
+      {isSimple && (
+        <div
+          role="region"
+          aria-label="Vehicle Decision and Status Summary"
+          className="glass-panel"
+          style={{
+            padding: '0.85rem 1.25rem',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-default)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '1rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                background: runLog.metrics?.collision_occurred ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: runLog.metrics?.collision_occurred ? 'var(--risk-critical)' : 'var(--accent-teal)',
+                flexShrink: 0,
+              }}
+            >
+              {runLog.metrics?.collision_occurred ? <AlertTriangle size={20} /> : <CheckCircle2 size={20} />}
+            </div>
+            <div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                {runLog.metrics?.collision_occurred
+                  ? 'Collision Detected — Safety Perimeter Breached'
+                  : 'Simulation Completed — Safe Goal Arrival'}
+              </div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                {currentFrame?.planner_output.replan_triggered
+                  ? `Active Decision: ${currentFrame.decision_trace || 'Adjusting trajectory to maintain safety clearance from moving traffic.'}`
+                  : `Active Decision: Cruise speed maintained along planned path at ${(currentFrame ? currentFrame.ego.v * 3.6 : 0).toFixed(1)} km/h.`}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+            <div>
+              <span>Trip Duration: </span>
+              <strong style={{ color: 'var(--text-primary)' }}>{runLog.metrics?.duration_s?.toFixed(1) ?? '--'}s</strong>
+            </div>
+            <div>
+              <span>Avg Speed: </span>
+              <strong style={{ color: 'var(--text-primary)' }}>{((runLog.metrics?.mean_speed_m_s ?? 0) * 3.6).toFixed(1)} km/h</strong>
+            </div>
+            <div>
+              <span>Min Hazard Buffer: </span>
+              <strong style={{ color: 'var(--accent-teal)' }}>{runLog.metrics?.min_clearance_m?.toFixed(2) ?? '--'}m</strong>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* RESEARCH MODE: Research Telemetry & Conformal Uncertainty Panel */}
+      {isResearch && (
+        <div
+          role="region"
+          aria-label="Research Telemetry and Conformal Prediction Analysis"
+          className="glass-panel"
+          style={{
+            padding: '1rem 1.25rem',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-default)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.75rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FlaskConical size={18} color="var(--accent-primary)" />
+              <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                Research Telemetry & Conformal Uncertainty Analysis
+              </h3>
+              <span
+                style={{
+                  fontSize: '0.7rem',
+                  padding: '1px 6px',
+                  borderRadius: '4px',
+                  background: 'rgba(56, 189, 248, 0.15)',
+                  color: 'var(--accent-primary)',
+                  fontFamily: 'var(--font-mono)',
+                }}
+              >
+                Gate G3 Verified
+              </span>
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+              Engine Adapter: <code>{(runLog as any).engine_adapter || 'python_inprocess'}</code> • Schema: <code>apath-log/1.0</code>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+                CONFORMAL COVERAGE GUARANTEE
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 700 }}>
+                1 - α = 95.0% (ε = 0.05)
+              </div>
+              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                Mondrian velocity-binned calibration. Guarantees finite-sample coverage when exchangeability holds.
+              </p>
+            </div>
+
+            <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+                CALIBRATION PROVENANCE & INTEGRITY
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--accent-teal)', fontWeight: 700 }}>
+                Split: {runLog.scenario.split.toUpperCase()} • Seed: {runLog.scenario.seed}
+              </div>
+              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                ⚠️ For baseline runs (B0-B2) or uncalibrated shifts, non-conformity bounds do not carry mathematical coverage guarantees.
+              </p>
+            </div>
+
+            <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+                CONTINUOUS RISK FIELD & KINEMATICS
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 700 }}>
+                Peak Jerk: {runLog.metrics?.max_jerk_m_s3?.toFixed(2) ?? '--'} m/s³ • P95 Latency: {runLog.metrics?.p95_latency_ms?.toFixed(1) ?? '--'} ms
+              </div>
+              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                Current spatial risk R(t) = {currentFrame?.risk_field.ego_risk.toFixed(2)} [{currentFrame?.risk_field.risk_level}].
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Live Narration Banner (Screen reader and text alternative) */}
       <div

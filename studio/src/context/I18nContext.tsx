@@ -17,6 +17,19 @@ interface Translations {
 }
 
 const DICTIONARY: Translations = {
+  // Mode switcher
+  mode_simple: { en: 'Simple Mode', hi: 'सरल मोड', te: 'సాధారణ మోడ్' },
+  mode_research: { en: 'Research Mode', hi: 'अनुसंधान मोड', te: 'పరిశోధన మోడ్' },
+  mode_simple_desc: {
+    en: 'Streamlined experience for first-time visitors, evaluators, and judges with plain-English decisions',
+    hi: 'सरल अनुभव',
+    te: 'సరళమైన అనుభవం',
+  },
+  mode_research_desc: {
+    en: 'Full research telemetry, all 6 planners, conformal uncertainty envelopes, and validation provenance',
+    hi: 'पूर्ण अनुसंधान टेलीमेट्री',
+    te: 'పరిశోధన టెలిమెట్రీ',
+  },
   // Navigation & 4-Workspace Architecture
   workspace_home: { en: 'Home', hi: 'होम', te: 'హోమ్' },
   workspace_simulate: { en: 'Simulate', hi: 'सिमुलेट', te: 'సిమ్యులేట్' },

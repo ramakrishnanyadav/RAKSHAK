@@ -2,8 +2,17 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
+import { SettingsProvider } from '../context/SettingsContext';
 import { NewRun } from '../pages/NewRun';
 import { apiClient } from '../api/client';
+
+const renderWithProviders = (ui: React.ReactElement) => {
+  return render(
+    <SettingsProvider>
+      {ui}
+    </SettingsProvider>
+  );
+};
 
 // Mock useNavigate
 const mockNavigate = vi.fn();
@@ -21,7 +30,7 @@ describe('NewRun Guided Three-Step Simulation Experience', () => {
   });
 
   it('renders Step 1 with all 5 canonical scenarios and navigates to Step 2', async () => {
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={['/app/runs/new']}>
         <NewRun />
       </MemoryRouter>
@@ -47,7 +56,7 @@ describe('NewRun Guided Three-Step Simulation Experience', () => {
   });
 
   it('displays P3 and B0 in Simple Mode with plain-language explanations', async () => {
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={['/app/runs/new']}>
         <NewRun />
       </MemoryRouter>
@@ -67,7 +76,7 @@ describe('NewRun Guided Three-Step Simulation Experience', () => {
   });
 
   it('exposes all six canonical planners (B0, B1, B2, P1, P2, P3) in Research Mode', async () => {
-    render(
+    renderWithProviders(
       <MemoryRouter initialEntries={['/app/runs/new']}>
         <NewRun />
       </MemoryRouter>
@@ -101,7 +110,7 @@ describe('NewRun Guided Three-Step Simulation Experience', () => {
   });
 
   it('validates invalid seed and shows error', async () => {
-    const { container } = render(
+    const { container } = renderWithProviders(
       <MemoryRouter initialEntries={['/app/runs/new']}>
         <NewRun />
       </MemoryRouter>
@@ -129,7 +138,7 @@ describe('NewRun Guided Three-Step Simulation Experience', () => {
   it('handles API errors authentically without fake mock data', async () => {
     vi.spyOn(apiClient, 'createRun').mockRejectedValueOnce(new Error('Connection refused to simulation worker:5000'));
 
-    const { container } = render(
+    const { container } = renderWithProviders(
       <MemoryRouter initialEntries={['/app/runs/new']}>
         <NewRun />
       </MemoryRouter>
@@ -159,7 +168,7 @@ describe('NewRun Guided Three-Step Simulation Experience', () => {
       status: 'queued',
     });
 
-    const { container } = render(
+    const { container } = renderWithProviders(
       <MemoryRouter initialEntries={['/app/runs/new']}>
         <NewRun />
       </MemoryRouter>

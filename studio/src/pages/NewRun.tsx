@@ -10,6 +10,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAnnouncer } from '../components/LiveAnnouncer';
+import { usePresentationMode } from '../context/SettingsContext';
 import { BENCHMARK_SCENARIOS, LEGACY_SCENARIO_COMPATIBILITY_MAP } from './Scenarios';
 import {
   PlayCircle,
@@ -115,8 +116,10 @@ export const NewRun: React.FC = () => {
   // STEP 1: Selected Scenario
   const [scenarioId, setScenarioId] = useState<string>(initialScenario);
 
-  // STEP 2: Driving Strategy & Mode
-  const [strategyMode, setStrategyMode] = useState<'simple' | 'research'>('simple');
+  // STEP 2: Driving Strategy & Mode (Synced with Global Presentation Level)
+  const { presentationMode, setPresentationMode } = usePresentationMode();
+  const strategyMode = presentationMode;
+  const setStrategyMode = (mode: 'simple' | 'research') => setPresentationMode(mode);
   const [plannerId, setPlannerId] = useState<string>('P3');
 
   // STEP 3: Configuration & Hyperparameters
@@ -599,12 +602,7 @@ export const NewRun: React.FC = () => {
               >
                 <button
                   type="button"
-                  onClick={() => {
-                    setStrategyMode('simple');
-                    if (plannerId !== 'P3' && plannerId !== 'B0') {
-                      setPlannerId('P3');
-                    }
-                  }}
+                  onClick={() => setStrategyMode('simple')}
                   style={{
                     padding: '0.35rem 0.75rem',
                     fontSize: '0.8rem',
@@ -652,6 +650,40 @@ export const NewRun: React.FC = () => {
           {/* SIMPLE MODE: P3 vs B0 */}
           {strategyMode === 'simple' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+              {/* Preserved Planner Notice from Research Mode */}
+              {plannerId !== 'P3' && plannerId !== 'B0' && (
+                <div
+                  style={{
+                    padding: '0.85rem 1.1rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'rgba(59, 130, 246, 0.1)',
+                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '1rem',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-primary)' }}>
+                      Advanced Strategy Active: {selectedPlanner.id} ({selectedPlanner.name})
+                    </div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                      Preserved from Research Mode. The simulation will run this exact planner. Or switch to the recommended adaptive driving AI.
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setPlannerId('P3')}
+                    className="btn-primary"
+                    style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem' }}
+                  >
+                    Switch to Recommended P3
+                  </button>
+                </div>
+              )}
+
               {/* Option 1: P3 (Adaptive AI - Recommended) */}
               <div
                 role="radio"
