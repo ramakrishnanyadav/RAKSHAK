@@ -303,7 +303,7 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <span style={{ width: '10px', height: '6px', background: '#64748B', borderRadius: '2px' }} />
-                <span style={{ color: '#94A3B8' }}>Standard Baseline (B1)</span>
+                <span style={{ color: '#94A3B8' }}>Standard planner (B1: DWA + velocity obstacles)</span>
               </div>
             </div>
           </div>

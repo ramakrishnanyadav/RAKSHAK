@@ -137,3 +137,4 @@ Secondary metrics recorded per scenario:
 1. **No Code Modifications:** No changes to `engine/`, `engine/planners/`, `engine/risk/`, or scenario definitions are permitted prior to or during evaluation.
 2. **Deterministic Reproducibility:** Execution script `scripts/evaluate_held_out.py` must run fully headless, recording all raw output traces bit-for-bit into `runs/held_out_manifest.json`.
 3. **Execution Gate:** This protocol is strictly **pre-registered**. Execution will occur only upon formal written authorization.
+

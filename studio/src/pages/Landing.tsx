@@ -744,7 +744,7 @@ export const Landing: React.FC = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#94A3B8' }}>
-                  Standard Planner (B1: Velocity Obstacles)
+                  Standard planner (B1: DWA + velocity obstacles)
                 </span>
                 <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Fixed speed window</span>
               </div>

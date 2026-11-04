@@ -42,14 +42,14 @@ export interface RunSummary {
   is_shipped: boolean;
   owner_id: string | null;
   created_at: string;
-  duration_s: number;
-  completed_goal: boolean;
-  collision_occurred: boolean;
-  min_clearance_m: number;
-  mean_speed_m_s: number;
-  max_jerk_m_s3: number;
-  replan_count: number;
-  p95_latency_ms: number;
+  duration_s: number | null;
+  completed_goal: boolean | null;
+  collision_occurred: boolean | null;
+  min_clearance_m: number | null;
+  mean_speed_m_s: number | null;
+  max_jerk_m_s3: number | null;
+  replan_count: number | null;
+  p95_latency_ms: number | null;
   failure_tag: string | null;
 }
 

@@ -95,40 +95,16 @@ class ReplayEngineAdapter(BaseEngineAdapter):
         return True
 
     def _find_recorded_run(self, ctx: RunContext) -> Optional[RunLog]:
-        """Locates pre-recorded log on disk or synthesizes fallback run."""
+        """Locates pre-recorded log on disk by exact run_id match."""
         runs_dir = self._get_storage_runs_dir()
 
-        # 1. Exact match
+        # Exact match only. No globbing, no arbitrary fallback.
         exact_path = runs_dir / f"{ctx.run_id}.json"
         if exact_path.exists():
             with open(exact_path, "r", encoding="utf-8") as f:
                 return RunLog.model_validate(json.load(f))
 
-        # 2. Scenario match
-        pattern = f"run_{ctx.scenario_id.lower()}*.json"
-        matches = list(runs_dir.glob(pattern))
-        if matches:
-            with open(matches[0], "r", encoding="utf-8") as f:
-                data = json.load(f)
-                data["run_id"] = ctx.run_id
-                data["planner"]["id"] = ctx.planner_id
-                return RunLog.model_validate(data)
-
-        # 3. Any run file fallback
-        all_runs = [p for p in runs_dir.glob("*.json") if not p.name.endswith(".partial.json")]
-        if all_runs:
-            with open(all_runs[0], "r", encoding="utf-8") as f:
-                data = json.load(f)
-                data["run_id"] = ctx.run_id
-                data["scenario"]["id"] = ctx.scenario_id
-                data["planner"]["id"] = ctx.planner_id
-                return RunLog.model_validate(data)
-
-        # 4. Generate in-memory fallback if no disk logs exist
-        from backend.app.adapters.python_adapter import PythonEngineAdapter
-        py_adapter = PythonEngineAdapter()
-        log = py_adapter.execute(ctx.scenario_id, ctx.planner_id, ctx.seed, ctx.split)
-        return log
+        return None
 
     def stream_progress(
         self,
@@ -137,7 +113,7 @@ class ReplayEngineAdapter(BaseEngineAdapter):
         ctx = execution_handle.context
         run_log = self._find_recorded_run(ctx)
         if not run_log:
-            raise FileNotFoundError(f"No replay recording found for {ctx.run_id}")
+            raise FileNotFoundError(f"No replay recording found on disk for run {ctx.run_id}")
 
         # Ensure engine is tagged as recorded_dataset
         run_log.engine = EngineInfo(name=self.adapter_name, version="1.0.0")

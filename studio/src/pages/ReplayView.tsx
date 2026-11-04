@@ -163,10 +163,7 @@ export const ReplayView: React.FC = () => {
       // 2. Offline Fallback to bundled JSON
       const res = await fetch(`/sample_runs/${activeRunId}.json`);
       if (!res.ok) {
-        // If file doesn't match ID exactly, fall back to default P3 run
-        const fallbackRes = await fetch('/sample_runs/run_scenario_5_cattle_crossing_p3_tune_s1000.json');
-        if (!fallbackRes.ok) throw new Error(`Could not load run ${activeRunId}`);
-        return (await fallbackRes.json()) as RunLog;
+        throw new Error(`Run '${activeRunId}' not found (HTTP ${res.status})`);
       }
       return (await res.json()) as RunLog;
     },
@@ -444,11 +441,17 @@ export const ReplayView: React.FC = () => {
   }
 
   if (error || !runLog) {
+    const errorMsg = error instanceof Error ? error.message : String(error || '');
+    const isNotFound = errorMsg.toLowerCase().includes('not found') || errorMsg.includes('404');
     return (
       <div style={{ padding: '1.5rem', maxWidth: '1440px', margin: '0 auto' }}>
         <ErrorState
-          title="Failed to load simulation run"
-          message="Could not stream run frames or load fallback run log."
+          title={isNotFound ? 'Run Not Found (404)' : 'Failed to load simulation run'}
+          message={
+            isNotFound
+              ? `Simulation run "${activeRunId}" could not be found in active storage or offline runs.`
+              : 'Could not stream run frames or load run log.'
+          }
           onRetry={() => refetch()}
         />
       </div>

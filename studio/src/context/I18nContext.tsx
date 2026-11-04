@@ -74,7 +74,7 @@ const DICTIONARY: Translations = {
   speed_metric: { en: 'Vehicle Speed', hi: 'वाहन गति', te: 'వాహన వేగం' },
   replan_count: { en: 'Path Adjustments', hi: 'पुनर्निर्मित पथ', te: 'రీప్లాన్‌లు' },
   max_jerk: { en: 'Ride Smoothness (Jerk)', hi: 'अधिकतम जर्क', te: 'గరిష్ట జెర్క్' },
-  p95_latency: { en: 'Average Planning Time', hi: 'P95 विलंबता', te: 'P95 ఆలస్యం' },
+  p95_latency: { en: 'Mean P95 Latency', hi: 'P95 विलंबता', te: 'P95 ఆలస్యం' },
 
   // Risk badges (Never color alone)
   risk_low: { en: 'LOW HAZARD', hi: 'कम जोखिम', te: 'తక్కువ ప్రమాదం' },

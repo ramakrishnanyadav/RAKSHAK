@@ -63,14 +63,14 @@ export const Dashboard: React.FC = () => {
         is_shipped: true,
         owner_id: null,
         created_at: '2026-10-14T00:00:00Z',
-        duration_s: m.duration_s || 16.0,
-        completed_goal: m.completed_goal ?? true,
-        collision_occurred: m.collision_occurred ?? false,
-        min_clearance_m: m.min_clearance_m || 2.4,
-        mean_speed_m_s: m.mean_speed_m_s || 6.2,
-        max_jerk_m_s3: m.max_jerk_m_s3 || 1.8,
-        replan_count: m.replan_count || 3,
-        p95_latency_ms: m.p95_latency_ms || 18.5,
+        duration_s: m.duration_s != null ? Number(m.duration_s) : null,
+        completed_goal: m.completed_goal != null ? Boolean(m.completed_goal) : null,
+        collision_occurred: m.collision_occurred != null ? Boolean(m.collision_occurred) : null,
+        min_clearance_m: m.min_clearance_m != null ? Number(m.min_clearance_m) : null,
+        mean_speed_m_s: m.mean_speed_m_s != null ? Number(m.mean_speed_m_s) : null,
+        max_jerk_m_s3: m.max_jerk_m_s3 != null ? Number(m.max_jerk_m_s3) : null,
+        replan_count: m.replan_count != null ? Number(m.replan_count) : null,
+        p95_latency_ms: m.p95_latency_ms != null ? Number(m.p95_latency_ms) : null,
         failure_tag: m.failure_tag || null,
       }));
       return { items: mapped, isOffline: true };
@@ -82,13 +82,18 @@ export const Dashboard: React.FC = () => {
 
   // Compute summary metrics with verified sources and calculations
   const totalRuns = runs.length;
-  const completedCount = runs.filter((r) => r.completed_goal).length;
-  const collisionCount = runs.filter((r) => r.collision_occurred).length;
-  const collisionFreeCount = totalRuns - collisionCount;
-  const avgPlanningTimeMs =
-    totalRuns > 0
-      ? (runs.reduce((acc, r) => acc + r.p95_latency_ms, 0) / totalRuns).toFixed(1)
-      : '0.0';
+  const validGoalRuns = runs.filter((r) => r.completed_goal !== null && r.completed_goal !== undefined);
+  const completedCount = validGoalRuns.filter((r) => r.completed_goal === true).length;
+
+  const validCollisionRuns = runs.filter((r) => r.collision_occurred !== null && r.collision_occurred !== undefined);
+  const collisionCount = validCollisionRuns.filter((r) => r.collision_occurred === true).length;
+  const collisionFreeCount = validCollisionRuns.length - collisionCount;
+
+  const validLatencyRuns = runs.filter((r) => r.p95_latency_ms !== null && r.p95_latency_ms !== undefined && !isNaN(r.p95_latency_ms));
+  const meanP95LatencyMs =
+    validLatencyRuns.length > 0
+      ? (validLatencyRuns.reduce((acc, r) => acc + (r.p95_latency_ms as number), 0) / validLatencyRuns.length).toFixed(1)
+      : null;
 
   const tableColumns: ColumnDef<RunSummary>[] = [
     {
@@ -138,39 +143,53 @@ export const Dashboard: React.FC = () => {
       key: 'min_clearance_m',
       header: 'Min Clearance',
       sortable: true,
-      render: (r) => `${r.min_clearance_m.toFixed(2)} m`,
+      render: (r) => (r.min_clearance_m != null ? `${r.min_clearance_m.toFixed(2)} m` : '—'),
     },
     {
       key: 'mean_speed_m_s',
       header: 'Speed',
       sortable: true,
-      render: (r) => `${(r.mean_speed_m_s * 3.6).toFixed(1)} km/h`,
+      render: (r) => (r.mean_speed_m_s != null ? `${(r.mean_speed_m_s * 3.6).toFixed(1)} km/h` : '—'),
     },
     {
       key: 'replan_count',
       header: 'Replans',
       sortable: true,
-      render: (r) => r.replan_count,
+      render: (r) => (r.replan_count != null ? r.replan_count : '—'),
     },
     {
       key: 'p95_latency_ms',
       header: 'P95 Latency',
       sortable: true,
-      render: (r) => `${r.p95_latency_ms.toFixed(1)} ms`,
+      render: (r) => (r.p95_latency_ms != null ? `${r.p95_latency_ms.toFixed(1)} ms` : '—'),
     },
     {
       key: 'status',
       header: 'Result',
-      render: (r) =>
-        r.collision_occurred ? (
-          <span style={{ color: 'var(--risk-critical)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
-            <AlertTriangle size={14} /> Collision
-          </span>
-        ) : (
-          <span style={{ color: 'var(--accent-teal)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
-            <CheckCircle2 size={14} /> Success
-          </span>
-        ),
+      render: (r) => {
+        if (r.collision_occurred === true) {
+          return (
+            <span style={{ color: 'var(--risk-critical)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <AlertTriangle size={14} /> Collision
+            </span>
+          );
+        }
+        if (r.completed_goal === true) {
+          return (
+            <span style={{ color: 'var(--accent-teal)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <CheckCircle2 size={14} /> Success
+            </span>
+          );
+        }
+        if (r.completed_goal === false) {
+          return (
+            <span style={{ color: 'var(--risk-medium)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
+              Incomplete
+            </span>
+          );
+        }
+        return <span style={{ color: 'var(--text-secondary)' }}>—</span>;
+      },
     },
   ];
 
@@ -306,10 +325,10 @@ export const Dashboard: React.FC = () => {
             <CheckCircle2 size={16} color="var(--accent-teal)" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: 'var(--accent-teal)' }}>
-            {totalRuns > 0 ? `${((completedCount / totalRuns) * 100).toFixed(0)}%` : '--'}
+            {validGoalRuns.length > 0 ? `${((completedCount / validGoalRuns.length) * 100).toFixed(0)}%` : '—'}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-            {totalRuns > 0 ? `${completedCount} of ${totalRuns} test runs reached goal` : 'No runs loaded'}
+            {validGoalRuns.length > 0 ? `${completedCount} of ${validGoalRuns.length} runs reached goal` : 'No outcome data recorded'}
           </div>
         </div>
 
@@ -319,23 +338,23 @@ export const Dashboard: React.FC = () => {
             <ShieldCheck size={16} color="var(--accent-teal)" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: collisionCount > 0 ? 'var(--risk-critical)' : 'var(--accent-teal)' }}>
-            {totalRuns > 0 ? `${((collisionFreeCount / totalRuns) * 100).toFixed(0)}%` : '--'}
+            {validCollisionRuns.length > 0 ? `${((collisionFreeCount / validCollisionRuns.length) * 100).toFixed(0)}%` : '—'}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-            {totalRuns > 0 ? `${collisionFreeCount} of ${totalRuns} runs with zero collisions` : 'No runs loaded'}
+            {validCollisionRuns.length > 0 ? `${collisionFreeCount} of ${validCollisionRuns.length} runs with zero collisions` : 'No collision data recorded'}
           </div>
         </div>
 
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
-            <span>AVERAGE PLANNING TIME</span>
+            <span>MEAN P95 LATENCY</span>
             <Clock size={16} color="var(--risk-medium)" />
           </div>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: 'var(--text-primary)' }}>
-            {avgPlanningTimeMs} <span style={{ fontSize: '1rem', fontWeight: 500 }}>ms</span>
+            {meanP95LatencyMs !== null ? `${meanP95LatencyMs} ms` : '—'}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--accent-teal)', marginTop: '0.2rem' }}>
-            Average computation time per step
+            {validLatencyRuns.length > 0 ? `Mean across ${validLatencyRuns.length} of ${totalRuns} runs` : 'No latency data recorded'}
           </div>
         </div>
       </div>
@@ -438,9 +457,9 @@ export const Dashboard: React.FC = () => {
                   </h3>
 
                   <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
-                    <span>Clr: <strong>{run.min_clearance_m.toFixed(1)}m</strong></span>
-                    <span>Speed: <strong>{(run.mean_speed_m_s * 3.6).toFixed(1)} km/h</strong></span>
-                    <span>Replans: <strong>{run.replan_count}</strong></span>
+                    <span>Clr: <strong>{run.min_clearance_m != null ? `${run.min_clearance_m.toFixed(1)}m` : '—'}</strong></span>
+                    <span>Speed: <strong>{run.mean_speed_m_s != null ? `${(run.mean_speed_m_s * 3.6).toFixed(1)} km/h` : '—'}</strong></span>
+                    <span>Replans: <strong>{run.replan_count != null ? run.replan_count : '—'}</strong></span>
                   </div>
                 </div>
 
@@ -454,8 +473,24 @@ export const Dashboard: React.FC = () => {
                     fontSize: '0.8rem',
                   }}
                 >
-                  <span style={{ color: run.collision_occurred ? 'var(--risk-critical)' : 'var(--accent-teal)', fontWeight: 600 }}>
-                    {run.collision_occurred ? 'Collision Occurred' : 'Goal Completed'}
+                  <span
+                    style={{
+                      color:
+                        run.collision_occurred === true
+                          ? 'var(--risk-critical)'
+                          : run.completed_goal === true
+                          ? 'var(--accent-teal)'
+                          : 'var(--text-secondary)',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {run.collision_occurred === true
+                      ? 'Collision Occurred'
+                      : run.completed_goal === true
+                      ? 'Goal Completed'
+                      : run.completed_goal === false
+                      ? 'Incomplete'
+                      : '—'}
                   </span>
                   <span style={{ color: 'var(--accent-primary)', display: 'inline-flex', alignItems: 'center', gap: '2px', fontWeight: 600 }}>
                     Replay <ArrowRight size={13} />

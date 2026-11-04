@@ -299,3 +299,17 @@ def test_partial_log_isolation(storage_manager):
     assert partial_path.name.endswith(".partial.json")
     # Primary log must NOT exist
     assert not storage_manager.get_run_path(run_id).exists()
+
+
+def test_replay_adapter_unrecorded_run_raises_filenotfound():
+    """
+    Contract Test 10: ReplayAdapter raises FileNotFoundError when run does not exist on disk,
+    strictly refusing fallbacks 2 and 3 (no scenario globbing or random log substitution).
+    """
+    adapter = ReplayAdapter()
+    ctx = adapter.prepare("SCENARIO_5_CATTLE_CROSSING", "P3", seed=999999, split="nonexistent")
+    handle = adapter.start(ctx)
+
+    with pytest.raises(FileNotFoundError, match="No replay recording found on disk"):
+        list(adapter.stream_progress(handle))
+
