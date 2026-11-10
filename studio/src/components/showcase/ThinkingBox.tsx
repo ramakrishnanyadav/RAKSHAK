@@ -95,7 +95,7 @@ export const ThinkingBox: React.FC<ThinkingBoxProps> = ({ frame, variant, planne
         </div>
       </div>
 
-      {/* Plain-English Live Caption */}
+      {/* Plain-English Live Caption (Logged decision trace or active state only) */}
       <div
         style={{
           background: 'rgba(0, 0, 0, 0.25)',
@@ -110,9 +110,10 @@ export const ThinkingBox: React.FC<ThinkingBoxProps> = ({ frame, variant, planne
             fontSize: '0.85rem',
             color: '#E2E8F0',
             lineHeight: 1.45,
+            fontFamily: 'monospace',
           }}
         >
-          {frame?.caption || 'Vehicle tracking path.'}
+          {(frame as any)?.decision_trace || (frame?.ego ? `[${frame.ego.active_state}] Nominal tracking` : 'Not logged')}
         </p>
       </div>
 

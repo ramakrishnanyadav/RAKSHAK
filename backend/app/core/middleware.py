@@ -122,6 +122,19 @@ def register_exception_handlers(app: FastAPI) -> None:
             },
         )
 
+    @app.exception_handler(FileNotFoundError)
+    async def file_not_found_handler(request: Request, exc: FileNotFoundError):
+        request_id = getattr(request.state, "request_id", None)
+        return JSONResponse(
+            status_code=404,
+            content={
+                "code": "NOT_FOUND",
+                "message": str(exc),
+                "details": {},
+                "request_id": request_id,
+            },
+        )
+
     @app.exception_handler(RequestValidationError)
     async def validation_exception_handler(request: Request, exc: RequestValidationError):
         request_id = getattr(request.state, "request_id", None)

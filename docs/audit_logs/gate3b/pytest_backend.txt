@@ -1,0 +1,41 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\Ramakrishna\Downloads\MINI
+plugins: anyio-4.12.0, hypothesis-6.151.6, asyncio-1.4.0, cov-7.0.0, timeout-2.4.0, typeguard-4.5.2
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 92 items
+
+backend\tests\test_admin.py ...                                          [  3%]
+backend\tests\test_api.py ......                                         [  9%]
+backend\tests\test_auth.py .........                                     [ 19%]
+backend\tests\test_auth_matrix.py ....................                   [ 41%]
+backend\tests\test_backup_restore.py ..                                  [ 43%]
+backend\tests\test_coverage_boost.py ........                            [ 52%]
+backend\tests\test_logs_range.py .....                                   [ 57%]
+backend\tests\test_migrations.py .                                       [ 58%]
+backend\tests\test_resources.py .......                                  [ 66%]
+backend\tests\test_runs_and_worker.py .....                              [ 71%]
+backend\tests\test_security_audit.py ..................                  [ 91%]
+backend\tests\test_services.py ........                                  [100%]
+
+============================== warnings summary ===============================
+backend/tests/test_auth.py::test_refresh_token_rotation_and_reuse_detection
+backend/tests/test_auth.py::test_refresh_token_rotation_and_reuse_detection
+backend/tests/test_coverage_boost.py::test_csrf_protection_on_cookie_auth
+  C:\Users\Ramakrishna\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py:445: DeprecationWarning: Setting per-request cookies=<...> is being deprecated, because the expected behaviour on cookie persistence is ambiguous. Set cookies directly on the client instance instead.
+    return super().request(
+
+backend/tests/test_migrations.py::test_alembic_upgrade_and_downgrade
+backend/tests/test_migrations.py::test_alembic_upgrade_and_downgrade
+backend/tests/test_migrations.py::test_alembic_upgrade_and_downgrade
+  C:\Users\Ramakrishna\AppData\Roaming\Python\Python314\site-packages\alembic\config.py:612: DeprecationWarning: No path_separator found in configuration; falling back to legacy splitting on spaces, commas, and colons for prepend_sys_path.  Consider adding path_separator=os to Alembic config.
+    util.warn_deprecated(
+
+backend/tests/test_migrations.py::test_alembic_upgrade_and_downgrade
+backend/tests/test_migrations.py::test_alembic_upgrade_and_downgrade
+backend/tests/test_migrations.py::test_alembic_upgrade_and_downgrade
+  C:\Users\Ramakrishna\AppData\Roaming\Python\Python314\site-packages\alembic\config.py:580: DeprecationWarning: No path_separator found in configuration; falling back to legacy splitting on spaces/commas for version_locations.  Consider adding path_separator=os to Alembic config.
+    util.warn_deprecated(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 92 passed, 9 warnings in 8.12s ========================

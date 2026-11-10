@@ -201,44 +201,65 @@ export const Dashboard: React.FC = () => {
       <div
         className="glass-panel"
         style={{
-          background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.18) 0%, rgba(99, 102, 241, 0.12) 100%)',
-          border: '1px solid rgba(56, 189, 248, 0.3)',
-          padding: '1.75rem',
+          background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(99, 102, 241, 0.1) 50%, rgba(20, 184, 166, 0.08) 100%)',
+          border: '1px solid rgba(56, 189, 248, 0.28)',
+          padding: '2rem',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+        {/* Decorative background glow */}
+        <div style={{
+          position: 'absolute', top: '-60px', right: '-60px', width: '240px', height: '240px',
+          borderRadius: '50%', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
           <div
             style={{
               display: 'inline-block',
-              padding: '0.2rem 0.6rem',
-              background: 'rgba(56, 189, 248, 0.2)',
+              padding: '0.2rem 0.65rem',
+              background: 'rgba(56, 189, 248, 0.15)',
               color: '#38bdf8',
               borderRadius: '4px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
+              fontSize: '0.7rem',
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+              border: '1px solid rgba(56, 189, 248, 0.25)',
             }}
           >
-            SMART INDIA HACKATHON 2026 • SIH26037 • MATHWORKS
+            SMART INDIA HACKATHON 2026 · SIH26037 · MATHWORKS
           </div>
           <div
             style={{
               display: 'inline-block',
-              padding: '0.2rem 0.6rem',
-              background: isResearch ? 'rgba(168, 85, 247, 0.2)' : 'rgba(16, 185, 129, 0.2)',
-              color: isResearch ? '#c084fc' : '#34d399',
+              padding: '0.2rem 0.65rem',
+              background: isResearch ? 'rgba(99, 102, 241, 0.2)' : 'rgba(16, 185, 129, 0.15)',
+              color: isResearch ? '#818cf8' : '#34d399',
               borderRadius: '4px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
+              fontSize: '0.7rem',
+              fontWeight: 800,
+              letterSpacing: '0.04em',
+              border: `1px solid ${isResearch ? 'rgba(99, 102, 241, 0.3)' : 'rgba(16, 185, 129, 0.25)'}`,
             }}
           >
             {isResearch ? '🔬 RESEARCH MODE' : '✨ SIMPLE MODE'}
           </div>
         </div>
 
-        <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 0.5rem', letterSpacing: '-0.02em' }}>
+        <h1 style={{
+          fontSize: '2rem',
+          fontWeight: 900,
+          margin: '0 0 0.5rem',
+          letterSpacing: '-0.03em',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}>
           {t('app_title')}
         </h1>
-        <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', maxWidth: '800px', lineHeight: 1.6, margin: '0 0 1.25rem' }}>
+        <p style={{ fontSize: '0.9rem', color: '#64748b', maxWidth: '800px', lineHeight: 1.65, margin: '0 0 1.5rem' }}>
           {t('app_subtitle')}
         </p>
 
@@ -250,7 +271,7 @@ export const Dashboard: React.FC = () => {
             }}
             className="btn-primary"
             style={{
-              padding: '0.6rem 1.1rem',
+              padding: '0.65rem 1.25rem',
               fontSize: '0.9rem',
               display: 'inline-flex',
               alignItems: 'center',
@@ -266,7 +287,7 @@ export const Dashboard: React.FC = () => {
             to="/app/runs/new"
             className="btn-secondary"
             style={{
-              padding: '0.6rem 1.1rem',
+              padding: '0.65rem 1.25rem',
               fontSize: '0.9rem',
               textDecoration: 'none',
               display: 'inline-flex',
@@ -283,7 +304,7 @@ export const Dashboard: React.FC = () => {
             to="/app/benchmark"
             className="btn-secondary"
             style={{
-              padding: '0.6rem 1.1rem',
+              padding: '0.65rem 1.25rem',
               fontSize: '0.9rem',
               textDecoration: 'none',
               display: 'inline-flex',
@@ -306,55 +327,63 @@ export const Dashboard: React.FC = () => {
           gap: '1rem',
         }}
       >
-        <div className="glass-panel" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
+        {/* Total Runs card */}
+        <div className="glass-panel" style={{ padding: '1.35rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #38bdf8, #818cf8)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748b', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase' }}>
             <span>TOTAL TEST RUNS</span>
-            <PlayCircle size={16} color="var(--accent-primary)" />
+            <PlayCircle size={16} color="#38bdf8" />
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: '2rem', fontWeight: 900, marginTop: '0.5rem', color: '#f8fafc', letterSpacing: '-0.03em' }}>
             {totalRuns}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+          <div style={{ fontSize: '0.72rem', color: '#475569', marginTop: '0.25rem' }}>
             Across 5 canonical Indian road scenarios
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
+        {/* Goal Completion card */}
+        <div className="glass-panel" style={{ padding: '1.35rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #10b981, #34d399)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748b', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase' }}>
             <span>COMPLETED TRIPS</span>
-            <CheckCircle2 size={16} color="var(--accent-teal)" />
+            <CheckCircle2 size={16} color="#10b981" />
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: 'var(--accent-teal)' }}>
+          <div style={{ fontSize: '2rem', fontWeight: 900, marginTop: '0.5rem', color: '#10b981', letterSpacing: '-0.03em' }}>
             {validGoalRuns.length > 0 ? `${((completedCount / validGoalRuns.length) * 100).toFixed(0)}%` : '—'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+          <div style={{ fontSize: '0.72rem', color: '#475569', marginTop: '0.25rem' }}>
             {validGoalRuns.length > 0 ? `${completedCount} of ${validGoalRuns.length} runs reached goal` : 'No outcome data recorded'}
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
+        {/* Collision-free card */}
+        <div className="glass-panel" style={{ padding: '1.35rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: collisionCount > 0 ? 'linear-gradient(90deg, #ef4444, #f97316)' : 'linear-gradient(90deg, #10b981, #14b8a6)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748b', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase' }}>
             <span>COLLISION-FREE RUNS</span>
-            <ShieldCheck size={16} color="var(--accent-teal)" />
+            <ShieldCheck size={16} color={collisionCount > 0 ? '#ef4444' : '#10b981'} />
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: collisionCount > 0 ? 'var(--risk-critical)' : 'var(--accent-teal)' }}>
+          <div style={{ fontSize: '2rem', fontWeight: 900, marginTop: '0.5rem', color: collisionCount > 0 ? '#ef4444' : '#10b981', letterSpacing: '-0.03em' }}>
             {validCollisionRuns.length > 0 ? `${((collisionFreeCount / validCollisionRuns.length) * 100).toFixed(0)}%` : '—'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+          <div style={{ fontSize: '0.72rem', color: '#475569', marginTop: '0.25rem' }}>
             {validCollisionRuns.length > 0 ? `${collisionFreeCount} of ${validCollisionRuns.length} runs with zero collisions` : 'No collision data recorded'}
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
+        {/* Latency card */}
+        <div className="glass-panel" style={{ padding: '1.35rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #f59e0b, #fbbf24)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748b', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase' }}>
             <span>MEAN P95 LATENCY</span>
-            <Clock size={16} color="var(--risk-medium)" />
+            <Clock size={16} color="#f59e0b" />
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: '0.35rem', color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: '2rem', fontWeight: 900, marginTop: '0.5rem', color: '#f8fafc', letterSpacing: '-0.03em' }}>
             {meanP95LatencyMs !== null ? `${meanP95LatencyMs} ms` : '—'}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--accent-teal)', marginTop: '0.2rem' }}>
-            {validLatencyRuns.length > 0 ? `Mean across ${validLatencyRuns.length} of ${totalRuns} runs` : 'No latency data recorded'}
+          <div style={{ fontSize: '0.72rem', color: '#14b8a6', marginTop: '0.25rem' }}>
+            {validLatencyRuns.length > 0 ? `Mean across ${validLatencyRuns.length} of ${totalRuns} runs [LOGGED: metrics.p95_latency_ms]` : 'No latency data recorded'}
           </div>
         </div>
       </div>
@@ -366,16 +395,16 @@ export const Dashboard: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: '1rem',
+            marginBottom: '1.25rem',
             flexWrap: 'wrap',
             gap: '0.75rem',
           }}
         >
           <div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 0.25rem' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, margin: '0 0 0.25rem', letterSpacing: '-0.01em', color: '#f8fafc' }}>
               Experiment Runs Directory
             </h2>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
+            <p style={{ fontSize: '0.82rem', color: '#64748b', margin: 0 }}>
               Inspect live synchronized replays, conformal prediction cones, and risk traces.
             </p>
           </div>
@@ -416,11 +445,12 @@ export const Dashboard: React.FC = () => {
                 style={{
                   padding: '1.1rem',
                   cursor: 'pointer',
-                  border: '1px solid var(--border-default)',
-                  transition: 'var(--transition-fast)',
+                  transition: 'all 0.18s ease',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
+                  position: 'relative',
+                  overflow: 'hidden',
                 }}
                 tabIndex={0}
                 role="button"
@@ -432,34 +462,47 @@ export const Dashboard: React.FC = () => {
                   }
                 }}
               >
+                {/* Planner color accent strip */}
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
+                  background: run.planner_id === 'P3'
+                    ? 'linear-gradient(90deg, #38bdf8, #818cf8)'
+                    : run.planner_id.startsWith('B')
+                    ? 'linear-gradient(90deg, #f59e0b, #f97316)'
+                    : 'linear-gradient(90deg, #10b981, #14b8a6)',
+                }} />
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                     <span
                       style={{
                         fontFamily: 'var(--font-mono)',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        padding: '2px 6px',
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        padding: '2px 8px',
                         borderRadius: '4px',
-                        background: run.planner_id === 'P3' ? 'rgba(59, 130, 246, 0.2)' : 'var(--bg-surface-elevated)',
-                        color: run.planner_id === 'P3' ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                        background: run.planner_id === 'P3'
+                          ? 'rgba(56, 189, 248, 0.15)'
+                          : 'rgba(100, 116, 139, 0.15)',
+                        color: run.planner_id === 'P3' ? '#38bdf8' : '#94a3b8',
+                        letterSpacing: '0.06em',
+                        border: `1px solid ${run.planner_id === 'P3' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(100, 116, 139, 0.2)'}`,
                       }}
                     >
                       {run.planner_id}
                     </span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>
-                      {run.split} • Seed {run.seed}
+                    <span style={{ fontSize: '0.7rem', color: '#475569', textTransform: 'capitalize' }}>
+                      {run.split} · Seed {run.seed}
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 0.5rem', color: 'var(--text-primary)' }}>
+                  <h3 style={{ fontSize: '0.9rem', fontWeight: 700, margin: '0 0 0.5rem', color: '#e2e8f0', lineHeight: 1.3 }}>
                     {run.scenario_id.replace(/_/g, ' ')}
                   </h3>
 
-                  <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
-                    <span>Clr: <strong>{run.min_clearance_m != null ? `${run.min_clearance_m.toFixed(1)}m` : '—'}</strong></span>
-                    <span>Speed: <strong>{run.mean_speed_m_s != null ? `${(run.mean_speed_m_s * 3.6).toFixed(1)} km/h` : '—'}</strong></span>
-                    <span>Replans: <strong>{run.replan_count != null ? run.replan_count : '—'}</strong></span>
+                  <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.78rem', color: '#64748b', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+                    <span>Clr: <strong style={{ color: '#94a3b8' }}>{run.min_clearance_m != null ? `${run.min_clearance_m.toFixed(1)}m` : '—'}</strong></span>
+                    <span>Speed: <strong style={{ color: '#94a3b8' }}>{run.mean_speed_m_s != null ? `${(run.mean_speed_m_s * 3.6).toFixed(1)} km/h` : '—'}</strong></span>
+                    <span>Replans: <strong style={{ color: '#94a3b8' }}>{run.replan_count != null ? run.replan_count : '—'}</strong></span>
                   </div>
                 </div>
 
@@ -468,32 +511,32 @@ export const Dashboard: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    borderTop: '1px solid var(--border-subtle)',
+                    borderTop: '1px solid rgba(56, 189, 248, 0.08)',
                     paddingTop: '0.5rem',
-                    fontSize: '0.8rem',
+                    fontSize: '0.78rem',
                   }}
                 >
                   <span
                     style={{
                       color:
                         run.collision_occurred === true
-                          ? 'var(--risk-critical)'
+                          ? '#ef4444'
                           : run.completed_goal === true
-                          ? 'var(--accent-teal)'
-                          : 'var(--text-secondary)',
-                      fontWeight: 600,
+                          ? '#10b981'
+                          : '#64748b',
+                      fontWeight: 700,
                     }}
                   >
                     {run.collision_occurred === true
-                      ? 'Collision Occurred'
+                      ? '⚠ Collision Occurred'
                       : run.completed_goal === true
-                      ? 'Goal Completed'
+                      ? '✓ Goal Completed'
                       : run.completed_goal === false
                       ? 'Incomplete'
                       : '—'}
                   </span>
-                  <span style={{ color: 'var(--accent-primary)', display: 'inline-flex', alignItems: 'center', gap: '2px', fontWeight: 600 }}>
-                    Replay <ArrowRight size={13} />
+                  <span style={{ color: '#38bdf8', display: 'inline-flex', alignItems: 'center', gap: '2px', fontWeight: 700, fontSize: '0.75rem' }}>
+                    Replay <ArrowRight size={12} />
                   </span>
                 </div>
               </div>

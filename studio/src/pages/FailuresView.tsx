@@ -178,11 +178,22 @@ export const FailuresView: React.FC = () => {
     <div style={{ padding: '1.5rem', maxWidth: '1280px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <AlertTriangle size={24} color="var(--risk-medium)" />
+          <h1 style={{
+            fontSize: '1.9rem',
+            fontWeight: 900,
+            margin: '0 0 0.4rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.6rem',
+            letterSpacing: '-0.03em',
+            background: 'linear-gradient(135deg, #f97316 0%, #ef4444 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            <AlertTriangle size={24} color="#f97316" style={{ WebkitTextFillColor: 'initial' }} />
             {t('nav_failures')}
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
+          <p style={{ color: '#64748b', fontSize: '0.88rem', margin: 0 }}>
             Systematic failure mode attribution across Perception, Motion Forecasting, Risk Field, and Path Optimization.
           </p>
         </div>
@@ -194,10 +205,12 @@ export const FailuresView: React.FC = () => {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            background: 'var(--bg-surface-elevated)',
-            border: '1px solid var(--border-default)',
-            borderRadius: 'var(--radius-md)',
-            padding: '2px',
+            background: 'rgba(16, 22, 35, 0.6)',
+            border: '1px solid rgba(56, 189, 248, 0.18)',
+            borderRadius: '10px',
+            padding: '3px',
+            gap: '2px',
+            backdropFilter: 'blur(8px)',
           }}
         >
           {['ALL', 'PERCEPTION', 'PREDICTION', 'RISK', 'PLANNING'].map((tag) => (
@@ -207,15 +220,19 @@ export const FailuresView: React.FC = () => {
               onClick={() => setFilterTag(tag)}
               aria-pressed={filterTag === tag}
               style={{
-                background: filterTag === tag ? 'var(--accent-primary)' : 'transparent',
-                color: filterTag === tag ? '#ffffff' : 'var(--text-secondary)',
+                background: filterTag === tag
+                  ? 'linear-gradient(135deg, #ef4444, #f97316)'
+                  : 'transparent',
+                color: filterTag === tag ? '#fff' : '#64748b',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
-                padding: '0.35rem 0.65rem',
-                fontSize: '0.75rem',
-                fontWeight: 700,
+                borderRadius: '7px',
+                padding: '0.3rem 0.65rem',
+                fontSize: '0.7rem',
+                fontWeight: 800,
                 cursor: 'pointer',
                 minHeight: 'var(--min-target-size)',
+                letterSpacing: '0.04em',
+                transition: 'all 0.15s ease',
               }}
             >
               {tag}

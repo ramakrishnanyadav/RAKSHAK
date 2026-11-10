@@ -1,0 +1,28 @@
+﻿
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Users/Ramakrishna/Downloads/MINI/studio[39m
+
+ [32mΓ£ô[39m src/test/SceneModelAdapter.test.ts [2m ([22m[2m4 tests[22m[2m)[22m[90m 7[2mms[22m[39m
+ [32mΓ£ô[39m src/test/ProceduralModels.test.ts [2m ([22m[2m5 tests[22m[2m)[22m[90m 15[2mms[22m[39m
+ [32mΓ£ô[39m src/test/Scene2DCanvas.test.tsx [2m ([22m[2m2 tests[22m[2m)[22m[90m 84[2mms[22m[39m
+ [32mΓ£ô[39m src/test/UPlotStrip.test.tsx [2m ([22m[2m2 tests[22m[2m)[22m[90m 124[2mms[22m[39m
+ [32mΓ£ô[39m src/test/ReplayCanvas.test.tsx [2m ([22m[2m5 tests[22m[2m)[22m[33m 327[2mms[22m[39m
+ [32mΓ£ô[39m src/test/ScenariosRegistry.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[90m 9[2mms[22m[39m
+ [32mΓ£ô[39m src/test/ReplayTimeline.test.tsx [2m ([22m[2m3 tests[22m[2m)[22m[33m 368[2mms[22m[39m
+ [32mΓ£ô[39m src/test/ReplayView404.test.tsx [2m ([22m[2m2 tests[22m[2m)[22m[33m 314[2mms[22m[39m
+ [32mΓ£ô[39m src/test/PresentationMode.test.tsx [2m ([22m[2m2 tests[22m[2m)[22m[33m 509[2mms[22m[39m
+ [32mΓ£ô[39m src/test/SceneWorkstation.test.tsx [2m ([22m[2m3 tests[22m[2m)[22m[33m 511[2mms[22m[39m
+ [32mΓ£ô[39m src/test/Dashboard.test.tsx [2m ([22m[2m2 tests[22m[2m)[22m[33m 557[2mms[22m[39m
+ [32mΓ£ô[39m src/test/NavigationRail.test.tsx [2m ([22m[2m5 tests[22m[2m)[22m[33m 960[2mms[22m[39m
+ [32mΓ£ô[39m src/test/BenchmarkView.test.tsx [2m ([22m[2m4 tests[22m[2m)[22m[33m 756[2mms[22m[39m
+ [32mΓ£ô[39m src/test/Showcase.test.tsx [2m ([22m[2m4 tests[22m[2m)[22m[33m 664[2mms[22m[39m
+ [32mΓ£ô[39m src/test/I18n.test.tsx [2m ([22m[2m3 tests[22m[2m)[22m[90m 45[2mms[22m[39m
+ [32mΓ£ô[39m src/test/CollisionCauseBanner.test.tsx [2m ([22m[2m3 tests[22m[2m)[22m[90m 69[2mms[22m[39m
+ [32mΓ£ô[39m src/test/AccessibleTable.test.tsx [2m ([22m[2m3 tests[22m[2m)[22m[90m 227[2mms[22m[39m
+ [32mΓ£ô[39m src/test/StatusState.test.tsx [2m ([22m[2m4 tests[22m[2m)[22m[90m 192[2mms[22m[39m
+ [32mΓ£ô[39m src/test/NewRun.test.tsx [2m ([22m[2m6 tests[22m[2m)[22m[33m 2160[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m19 passed[39m[22m[90m (19)[39m
+[2m      Tests [22m [1m[32m69 passed[39m[22m[90m (69)[39m
+[2m   Start at [22m 05:07:30
+[2m   Duration [22m 6.09s[2m (transform 5.90s, setup 3.53s, collect 16.58s, tests 7.90s, environment 35.27s, prepare 4.91s)[22m
+

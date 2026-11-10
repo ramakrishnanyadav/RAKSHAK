@@ -31,11 +31,11 @@ export const DataTableToggle: React.FC<DataTableToggleProps> = ({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        background: 'var(--bg-surface-elevated)',
-        border: '1px solid var(--border-default)',
+        background: 'rgba(16, 22, 35, 0.85)',
+        border: '1px solid rgba(56, 189, 248, 0.22)',
         borderRadius: 'var(--radius-md)',
-        padding: '2px',
-        gap: '2px',
+        padding: '3px',
+        gap: '3px',
       }}
     >
       <span id={`${id}-label`} className="sr-only">
@@ -51,16 +51,18 @@ export const DataTableToggle: React.FC<DataTableToggleProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '0.4rem',
-          padding: '0.35rem 0.65rem',
+          padding: '0.35rem 0.75rem',
           fontSize: '0.8rem',
-          fontWeight: 600,
+          fontWeight: 700,
           border: 'none',
           borderRadius: 'var(--radius-sm)',
           cursor: 'pointer',
-          background: !isTableView ? 'var(--accent-primary)' : 'transparent',
-          color: !isTableView ? '#ffffff' : 'var(--text-secondary)',
+          background: !isTableView ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'transparent',
+          color: !isTableView ? '#07080a' : '#94a3b8',
+          boxShadow: !isTableView ? '0 2px 8px rgba(14, 165, 233, 0.3)' : 'none',
           minHeight: 'var(--min-target-size)',
           minWidth: 'var(--min-target-size)',
+          transition: 'all 0.15s ease',
         }}
       >
         <LineChart size={14} aria-hidden="true" />
@@ -76,16 +78,18 @@ export const DataTableToggle: React.FC<DataTableToggleProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '0.4rem',
-          padding: '0.35rem 0.65rem',
+          padding: '0.35rem 0.75rem',
           fontSize: '0.8rem',
-          fontWeight: 600,
+          fontWeight: 700,
           border: 'none',
           borderRadius: 'var(--radius-sm)',
           cursor: 'pointer',
-          background: isTableView ? 'var(--accent-primary)' : 'transparent',
-          color: isTableView ? '#ffffff' : 'var(--text-secondary)',
+          background: isTableView ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'transparent',
+          color: isTableView ? '#07080a' : '#94a3b8',
+          boxShadow: isTableView ? '0 2px 8px rgba(14, 165, 233, 0.3)' : 'none',
           minHeight: 'var(--min-target-size)',
           minWidth: 'var(--min-target-size)',
+          transition: 'all 0.15s ease',
         }}
       >
         <Table size={14} aria-hidden="true" />

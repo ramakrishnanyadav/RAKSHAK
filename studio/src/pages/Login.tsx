@@ -49,7 +49,8 @@ export const Login: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '1.5rem',
-        background: 'var(--bg-app)',
+        background: '#07080a',
+        backgroundImage: 'radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 70%)',
       }}
     >
       <div
@@ -58,31 +59,42 @@ export const Login: React.FC = () => {
           maxWidth: '440px',
           width: '100%',
           padding: '2.5rem 2rem',
-          border: '1px solid var(--border-default)',
+          border: '1px solid rgba(56, 189, 248, 0.22)',
+          background: 'linear-gradient(135deg, rgba(16, 22, 35, 0.9) 0%, rgba(11, 15, 23, 0.95) 100%)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 25px rgba(56, 189, 248, 0.1)',
         }}
       >
         <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
           <div
             style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '10px',
-              background: 'var(--accent-primary)',
-              color: '#ffffff',
+              width: '46px',
+              height: '46px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #0ea5e9, #38bdf8)',
+              color: '#07080a',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 1rem',
-              fontWeight: 800,
-              fontSize: '1.2rem',
+              fontWeight: 900,
+              fontSize: '1.3rem',
+              boxShadow: '0 4px 15px rgba(14, 165, 233, 0.35)',
             }}
           >
             A
           </div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, marginBottom: '0.4rem' }}>
+          <h1 style={{
+            fontSize: '1.6rem',
+            fontWeight: 900,
+            margin: 0,
+            marginBottom: '0.4rem',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
             Sign in to Studio
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0 }}>
+          <p style={{ color: '#94a3b8', fontSize: '0.875rem', margin: 0 }}>
             Smart India Hackathon 2026 Simulation Platform
           </p>
         </div>

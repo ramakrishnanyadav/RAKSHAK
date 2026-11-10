@@ -148,7 +148,7 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose, p
             <span>Ablation Reconciliation</span>
           </div>
           <p style={{ margin: 0, fontSize: '0.825rem', color: '#94A3B8', lineHeight: 1.5 }}>
-            Why early test suites reported 0% completion while Validation B reports 56%:
+            Separation between independent frozen benchmarks and the 5-scenario tuning split:
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
@@ -163,10 +163,10 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose, p
                 gap: '0.35rem',
               }}
             >
-              <div style={{ fontSize: '0.7rem', color: '#F87171', fontWeight: 700 }}>FROZEN TEST (EARLY)</div>
+              <div style={{ fontSize: '0.7rem', color: '#F87171', fontWeight: 700 }}>FROZEN BENCHMARK (TEST SPLIT)</div>
               <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF' }}>0.0%</div>
               <div style={{ fontSize: '0.725rem', color: '#94A3B8', lineHeight: 1.4 }}>
-                <code>w_stall = 0.0</code> (no stall penalty). Vehicle halted indefinitely before obstacles due to livelock.
+                Independent frozen test suite where stationary persistence was disabled.
               </div>
               <div style={{ fontSize: '0.65rem', color: '#64748B', fontFamily: 'monospace', marginTop: '0.25rem' }}>
                 engine/experiments/results/frozen_test_results.json
@@ -184,10 +184,10 @@ export const DetailsDrawer: React.FC<DetailsDrawerProps> = ({ isOpen, onClose, p
                 gap: '0.35rem',
               }}
             >
-              <div style={{ fontSize: '0.7rem', color: '#2DD4BF', fontWeight: 700 }}>VALIDATION B (CURRENT)</div>
+              <div style={{ fontSize: '0.7rem', color: '#2DD4BF', fontWeight: 700 }}>VALIDATION B (TUNING SPLIT)</div>
               <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF' }}>56.0%</div>
               <div style={{ fontSize: '0.725rem', color: '#94A3B8', lineHeight: 1.4 }}>
-                <code>w_stall = 4.00, w_prog = 2.20</code>. Stall persistence enables vehicle to actively bypass obstacles.
+                14/25 goals completed in the 5 canonical scenarios (same for both P3 Baseline and Corrected).
               </div>
               <div style={{ fontSize: '0.65rem', color: '#64748B', fontFamily: 'monospace', marginTop: '0.25rem' }}>
                 runs/val_b_manifest.json

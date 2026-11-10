@@ -81,14 +81,16 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0.65rem 1.25rem',
-        background: 'var(--bg-surface)',
-        borderBottom: '1px solid var(--border-default)',
+        padding: '0 1.25rem',
+        height: '56px',
+        background: 'linear-gradient(90deg, #0b0f17 0%, #07080a 50%, #0b0f17 100%)',
+        borderBottom: '1px solid rgba(56, 189, 248, 0.14)',
         flexWrap: 'wrap',
         gap: '0.75rem',
         position: 'sticky',
         top: 0,
         zIndex: 100,
+        boxShadow: '0 2px 20px rgba(0, 0, 0, 0.5)',
       }}
     >
       {/* Brand & Status */}
@@ -100,29 +102,32 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             position: 'absolute',
             top: '0.5rem',
             left: '0.5rem',
-            background: 'var(--accent-primary)',
-            color: '#fff',
+            background: '#38bdf8',
+            color: '#07080a',
             padding: '0.5rem 1rem',
             zIndex: 9999,
-            borderRadius: 'var(--radius-sm)',
+            borderRadius: '6px',
+            fontWeight: 700,
           }}
         >
           Skip to main content
         </a>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
           <div
             style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #3b82f6 0%, #14b8a6 100%)',
+              width: '34px',
+              height: '34px',
+              borderRadius: '9px',
+              background: 'linear-gradient(135deg, #0ea5e9 0%, #38bdf8 50%, #818cf8 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#ffffff',
-              fontWeight: 800,
+              color: '#07080a',
+              fontWeight: 900,
               fontSize: '1rem',
+              boxShadow: '0 0 12px rgba(56, 189, 248, 0.4)',
+              flexShrink: 0,
             }}
             aria-hidden="true"
           >
@@ -132,23 +137,26 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span
                 style={{
-                  fontWeight: 800,
-                  fontSize: '1.05rem',
+                  fontWeight: 900,
+                  fontSize: '1rem',
                   letterSpacing: '-0.02em',
-                  color: 'var(--text-primary)',
+                  background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 60%, #34d399 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                 }}
               >
                 ADAPTIVE-PATH
               </span>
               <span
                 style={{
-                  fontSize: '0.65rem',
+                  fontSize: '0.62rem',
                   fontWeight: 700,
-                  background: 'rgba(59, 130, 246, 0.15)',
-                  color: 'var(--accent-primary)',
+                  background: 'rgba(56, 189, 248, 0.15)',
+                  color: '#38bdf8',
                   padding: '1px 6px',
                   borderRadius: '4px',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  border: '1px solid rgba(56, 189, 248, 0.3)',
+                  letterSpacing: '0.04em',
                 }}
               >
                 SIH2026
@@ -156,20 +164,23 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             </div>
             <div
               style={{
-                fontSize: '0.75rem',
-                color: 'var(--text-secondary)',
+                fontSize: '0.7rem',
+                color: 'var(--text-muted)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.4rem',
+                marginTop: '1px',
               }}
             >
               <span
                 style={{
                   display: 'inline-block',
-                  width: '7px',
-                  height: '7px',
+                  width: '6px',
+                  height: '6px',
                   borderRadius: '50%',
-                  background: isBackendConnected ? 'var(--risk-low)' : 'var(--risk-medium)',
+                  background: isBackendConnected ? '#10b981' : '#f59e0b',
+                  boxShadow: isBackendConnected ? '0 0 6px #10b981' : '0 0 6px #f59e0b',
+                  flexShrink: 0,
                 }}
                 aria-hidden="true"
               />
@@ -197,9 +208,9 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            background: 'var(--bg-surface-elevated)',
-            border: '1px solid var(--border-default)',
-            borderRadius: 'var(--radius-sm)',
+            background: 'rgba(16, 22, 35, 0.6)',
+            border: '1px solid rgba(56, 189, 248, 0.2)',
+            borderRadius: '8px',
             padding: '2px',
             gap: '2px',
           }}
@@ -215,18 +226,21 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.35rem',
-              padding: '0.25rem 0.6rem',
-              borderRadius: 'var(--radius-sm)',
+              padding: '0.25rem 0.65rem',
+              borderRadius: '6px',
               border: 'none',
-              background: presentationMode === 'simple' ? 'var(--accent-primary)' : 'transparent',
-              color: presentationMode === 'simple' ? '#ffffff' : 'var(--text-secondary)',
+              background: presentationMode === 'simple'
+                ? 'linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%)'
+                : 'transparent',
+              color: presentationMode === 'simple' ? '#07080a' : '#64748b',
               fontSize: '0.75rem',
-              fontWeight: presentationMode === 'simple' ? 700 : 500,
+              fontWeight: presentationMode === 'simple' ? 800 : 500,
               cursor: 'pointer',
               minHeight: 'var(--min-target-size)',
+              transition: 'all 0.2s ease',
             }}
           >
-            <Sparkles size={13} aria-hidden="true" />
+            <Sparkles size={12} aria-hidden="true" />
             <span>{t('mode_simple')}</span>
           </button>
           <button
@@ -240,23 +254,26 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.35rem',
-              padding: '0.25rem 0.6rem',
-              borderRadius: 'var(--radius-sm)',
+              padding: '0.25rem 0.65rem',
+              borderRadius: '6px',
               border: 'none',
-              background: presentationMode === 'research' ? 'var(--accent-primary)' : 'transparent',
-              color: presentationMode === 'research' ? '#ffffff' : 'var(--text-secondary)',
+              background: presentationMode === 'research'
+                ? 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)'
+                : 'transparent',
+              color: presentationMode === 'research' ? '#ffffff' : '#64748b',
               fontSize: '0.75rem',
-              fontWeight: presentationMode === 'research' ? 700 : 500,
+              fontWeight: presentationMode === 'research' ? 800 : 500,
               cursor: 'pointer',
               minHeight: 'var(--min-target-size)',
+              transition: 'all 0.2s ease',
             }}
           >
-            <FlaskConical size={13} aria-hidden="true" />
+            <FlaskConical size={12} aria-hidden="true" />
             <span>{t('mode_research')}</span>
           </button>
         </div>
 
-        <div style={{ width: '1px', height: '18px', background: 'var(--border-default)' }} />
+        <div style={{ width: '1px', height: '20px', background: 'rgba(56, 189, 248, 0.15)' }} />
 
         {/* Language Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
@@ -267,23 +284,24 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               aria-pressed={language === lang}
               aria-label={`Switch language to ${lang === 'en' ? 'English' : lang === 'hi' ? 'Hindi' : 'Telugu'}`}
               style={{
-                background: language === lang ? 'var(--bg-surface-elevated)' : 'transparent',
-                color: language === lang ? 'var(--text-primary)' : 'var(--text-secondary)',
-                border: language === lang ? '1px solid var(--border-default)' : '1px solid transparent',
-                borderRadius: 'var(--radius-sm)',
+                background: language === lang ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
+                color: language === lang ? '#38bdf8' : '#64748b',
+                border: language === lang ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid transparent',
+                borderRadius: '6px',
                 padding: '0.25rem 0.5rem',
-                fontSize: '0.75rem',
+                fontSize: '0.72rem',
                 fontWeight: language === lang ? 700 : 500,
                 cursor: 'pointer',
                 minHeight: 'var(--min-target-size)',
+                transition: 'all 0.15s ease',
               }}
             >
-              {lang === 'en' ? 'EN' : lang === 'hi' ? 'हिन्दी' : 'తెలుగు'}
+              {lang === 'en' ? 'EN' : lang === 'hi' ? 'हिन्दी' : 'తె'}
             </button>
           ))}
         </div>
 
-        <div style={{ width: '1px', height: '18px', background: 'var(--border-default)' }} />
+        <div style={{ width: '1px', height: '20px', background: 'rgba(56, 189, 248, 0.15)' }} />
 
         {/* Text Scale Stepper */}
         <button
@@ -296,12 +314,12 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             alignItems: 'center',
             gap: '0.3rem',
             padding: '0.25rem 0.55rem',
-            fontSize: '0.75rem',
+            fontSize: '0.72rem',
             fontWeight: 700,
             minHeight: 'var(--min-target-size)',
           }}
         >
-          <Type size={14} aria-hidden="true" />
+          <Type size={13} aria-hidden="true" />
           <span>{textScale}%</span>
         </button>
 
@@ -316,13 +334,13 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             alignItems: 'center',
             gap: '0.3rem',
             padding: '0.25rem 0.55rem',
-            fontSize: '0.75rem',
+            fontSize: '0.72rem',
             minHeight: 'var(--min-target-size)',
           }}
         >
-          {theme === 'dark' && <Moon size={14} aria-hidden="true" />}
-          {theme === 'light' && <Sun size={14} aria-hidden="true" />}
-          {theme === 'high-contrast' && <Contrast size={14} aria-hidden="true" />}
+          {theme === 'dark' && <Moon size={13} aria-hidden="true" />}
+          {theme === 'light' && <Sun size={13} aria-hidden="true" />}
+          {theme === 'high-contrast' && <Contrast size={13} aria-hidden="true" />}
           <span style={{ textTransform: 'capitalize' }}>{theme}</span>
         </button>
 
@@ -337,10 +355,10 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             padding: '0.25rem 0.45rem',
             minHeight: 'var(--min-target-size)',
             minWidth: 'var(--min-target-size)',
-            color: audioAnnouncer ? 'var(--accent-teal)' : 'var(--text-secondary)',
+            color: audioAnnouncer ? '#14b8a6' : '#64748b',
           }}
         >
-          {audioAnnouncer ? <Volume2 size={16} /> : <VolumeX size={16} />}
+          {audioAnnouncer ? <Volume2 size={15} /> : <VolumeX size={15} />}
         </button>
 
         {/* Keyboard Shortcut Modal */}
@@ -355,10 +373,10 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             minWidth: 'var(--min-target-size)',
           }}
         >
-          <HelpCircle size={16} />
+          <HelpCircle size={15} />
         </button>
 
-        <div style={{ width: '1px', height: '18px', background: 'var(--border-default)' }} />
+        <div style={{ width: '1px', height: '20px', background: 'rgba(56, 189, 248, 0.15)' }} />
 
         {/* User Account / Guest State */}
         {isAuthenticated ? (
@@ -366,16 +384,16 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             <span
               style={{
                 fontSize: '0.75rem',
-                color: 'var(--text-secondary)',
+                color: '#94a3b8',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.3rem',
               }}
             >
               {user?.role === 'admin' ? (
-                <Shield size={14} color="var(--accent-primary)" />
+                <Shield size={13} color="#38bdf8" />
               ) : (
-                <User size={14} />
+                <User size={13} />
               )}
               <span>{isGuest ? 'Guest' : user?.email.split('@')[0]}</span>
             </span>
@@ -389,7 +407,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                 minHeight: 'var(--min-target-size)',
               }}
             >
-              <LogOut size={14} />
+              <LogOut size={13} />
             </button>
           </div>
         ) : (

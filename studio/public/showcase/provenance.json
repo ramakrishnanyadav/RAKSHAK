@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T18:21:14.909359+00:00",
+  "generated_at": "2026-11-04T23:19:27.169290+00:00",
   "scan_summary": {
     "real_trajectories_count": 0,
     "simulated_trajectories_count": 75,
@@ -40,9 +40,9 @@
       "summary": "Crowdsourced and research camera tracks capturing Indian road user dynamics and potholes.",
       "used_for": "Future scenario parameter tuning (traffic mix, speeds, gaps).",
       "item_count": 0,
-      "unit": "sequences",
-      "licence": "CC BY 4.0 (per individual Mendeley repository)",
-      "attribution": "Mendeley Data repository contributors.",
+      "unit": "sequences verified in repo",
+      "licence": "Unknown",
+      "attribution": "Unknown",
       "adapter_file": null,
       "mapped_classes": [
         "auto_rickshaw",
@@ -57,18 +57,18 @@
         "Place bounding box CSV/JSON sequences in data/mendeley/.",
         "Run python engine/ml/data/mendeley_adapter.py to extract agent velocities and collision profiles."
       ],
-      "audit_note": "Status honestly computed as 'Not yet ingested'. Dataset fields are pre-mapped to engine classes."
+      "audit_note": "Status honestly computed as 'Not yet ingested'. Licence and publisher unknown until raw dataset is downloaded."
     },
     {
       "id": "mathworks",
       "name": "MathWorks Built-In Datasets & RoadRunner Scenes",
       "url": "https://www.mathworks.com/products/roadrunner.html",
-      "status": "In use (Runs in MATLAB)",
-      "badge_tone": "teal",
+      "status": "Assets and scripts present, not executed in this repo",
+      "badge_tone": "slate",
       "summary": "Automated Driving Toolbox scenario definitions and RoadRunner 3D scenes for Village Road & Urban Intersection.",
-      "used_for": "ASAM OpenDRIVE (.xodr) and OpenSCENARIO (.xosc) co-simulation and Simulink Stateflow synthesis.",
-      "item_count": 9,
-      "unit": "assets & co-sim specs",
+      "used_for": "ASAM OpenDRIVE (.xodr) and OpenSCENARIO (.xosc) co-simulation specifications.",
+      "item_count": null,
+      "unit": "scripts and scenes present",
       "licence": "MathWorks Product Licensing",
       "attribution": "The MathWorks, Inc.",
       "adapter_file": "matlab_adapter/roadrunner_co_sim_spec.json",
@@ -82,7 +82,7 @@
         "matlab_adapter/behaviour/behaviour_state_machine.m",
         "matlab_adapter/control/pure_pursuit_pid.m"
       ],
-      "audit_note": "Marked 'Runs in MATLAB'. Live web studio runs Python reference engine for instant zero-dependency execution."
+      "audit_note": "Assets and scripts present, not executed in this repo. Web studio runs Python reference engine."
     },
     {
       "id": "synthetic",

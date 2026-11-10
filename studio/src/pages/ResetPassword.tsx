@@ -38,7 +38,8 @@ export const ResetPassword: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '1.5rem',
-        background: 'var(--bg-app)',
+        background: '#07080a',
+        backgroundImage: 'radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 70%)',
       }}
     >
       <div
@@ -47,17 +48,20 @@ export const ResetPassword: React.FC = () => {
           maxWidth: '440px',
           width: '100%',
           padding: '2.5rem 2rem',
-          border: '1px solid var(--border-default)',
+          border: '1px solid rgba(56, 189, 248, 0.22)',
+          background: 'linear-gradient(135deg, rgba(16, 22, 35, 0.9) 0%, rgba(11, 15, 23, 0.95) 100%)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 25px rgba(56, 189, 248, 0.1)',
         }}
       >
         <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
           <div
             style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '10px',
-              background: 'rgba(59, 130, 246, 0.15)',
-              color: 'var(--accent-primary)',
+              width: '46px',
+              height: '46px',
+              borderRadius: '12px',
+              background: 'rgba(56, 189, 248, 0.15)',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              color: '#38bdf8',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -66,10 +70,18 @@ export const ResetPassword: React.FC = () => {
           >
             <KeyRound size={22} />
           </div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, marginBottom: '0.4rem' }}>
+          <h1 style={{
+            fontSize: '1.6rem',
+            fontWeight: 900,
+            margin: 0,
+            marginBottom: '0.4rem',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
             Reset Password
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0 }}>
+          <p style={{ color: '#94a3b8', fontSize: '0.875rem', margin: 0 }}>
             Enter your verified institutional email to receive a password recovery link
           </p>
         </div>

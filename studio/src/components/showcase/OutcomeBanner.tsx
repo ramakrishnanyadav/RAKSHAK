@@ -10,9 +10,10 @@ import { CheckCircle2, AlertOctagon, RefreshCw, Zap } from 'lucide-react';
 interface OutcomeBannerProps {
   metrics: ShowcaseRunMetrics | undefined;
   variant: 'adaptive' | 'standard';
+  closestGapM?: number | null;
 }
 
-export const OutcomeBanner: React.FC<OutcomeBannerProps> = ({ metrics, variant }) => {
+export const OutcomeBanner: React.FC<OutcomeBannerProps> = ({ metrics, variant, closestGapM }) => {
   if (!metrics) {
     return (
       <div
@@ -81,13 +82,16 @@ export const OutcomeBanner: React.FC<OutcomeBannerProps> = ({ metrics, variant }
       {/* Outcome statistics */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', fontSize: '0.75rem', color: '#94A3B8' }}>
         <div>
-          Closest Gap: <strong style={{ color: '#E2E8F0', fontFamily: 'monospace' }}>{metrics.min_clearance_m.toFixed(1)}m</strong>
+          Closest Gap [DERIVED]:{' '}
+          <strong style={{ color: '#E2E8F0', fontFamily: 'monospace' }}>
+            {closestGapM != null ? `${closestGapM.toFixed(2)} m` : (metrics.min_clearance_m > 0 ? `${metrics.min_clearance_m.toFixed(2)} m` : '—')}
+          </strong>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
           <RefreshCw size={11} /> Replans: <strong style={{ color: '#E2E8F0', fontFamily: 'monospace' }}>{metrics.replan_count}</strong>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-          <Zap size={11} /> Think: <strong style={{ color: '#E2E8F0', fontFamily: 'monospace' }}>{metrics.p95_latency_ms.toFixed(1)}ms</strong>
+          <Zap size={11} /> P95 Latency: <strong style={{ color: '#E2E8F0', fontFamily: 'monospace' }}>{metrics.p95_latency_ms.toFixed(1)} ms</strong> <span style={{ fontSize: '0.65rem', color: '#64748B' }}>[LOGGED: metrics.p95_latency_ms]</span>
         </div>
       </div>
     </div>

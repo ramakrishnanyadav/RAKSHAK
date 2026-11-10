@@ -65,3 +65,16 @@ def test_run_manifest_and_chunked_frames(client, researcher_headers):
     assert f_data["frame_count"] > 0
     for frame in f_data["frames"]:
         assert 0.0 <= frame["t"] <= 0.2
+
+
+def test_unrecorded_run_returns_http_404_with_json_body(client, researcher_headers):
+    """
+    Contract: Querying an unrecorded/non-existent run ID must return HTTP 404
+    with a structured JSON response (code == 'NOT_FOUND'), not a 500 or plain crash.
+    """
+    unrecorded_id = "run_nonexistent_unrecorded_99999"
+    response = client.get(f"/api/runs/{unrecorded_id}", headers=researcher_headers)
+    assert response.status_code == 404
+    data = response.json()
+    assert data["code"] == "NOT_FOUND"
+    assert "message" in data

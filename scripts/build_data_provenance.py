@@ -66,13 +66,8 @@ def scan_provenance() -> dict:
         mendeley_status = "Not yet ingested"
         mendeley_count = 0
 
-    # 3. Inspect MathWorks Built-in Datasets & RoadRunner Scenes
-    roadrunner_dir = PROJECT_ROOT / "matlab_adapter" / "roadrunner"
-    rr_village_xodr = roadrunner_dir / "VillageRoad.xodr"
-    rr_village_xosc = roadrunner_dir / "VillageRoad.xosc"
-    rr_urban_xodr = roadrunner_dir / "UrbanIntersection.xodr"
-    rr_urban_xosc = roadrunner_dir / "UrbanIntersection.xosc"
-    
+    # 3. MathWorks Built-in Datasets & RoadRunner Scenes
+    # Status strictly: "Assets and scripts present, not executed in this repo"
     mathworks_scripts = [
         "matlab_adapter/roadrunner/VillageRoad.xodr",
         "matlab_adapter/roadrunner/VillageRoad.xosc",
@@ -85,11 +80,7 @@ def scan_provenance() -> dict:
         "matlab_adapter/prediction/physics_baseline_predictor.m",
     ]
     existing_mw_files = [f for f in mathworks_scripts if (PROJECT_ROOT / f).exists()]
-    
-    if len(existing_mw_files) >= 4:
-        mathworks_status = "In use (Runs in MATLAB)"
-    else:
-        mathworks_status = "Adapter only (no data loaded)"
+    mathworks_status = "Assets and scripts present, not executed in this repo"
 
     # 4. Inspect Synthetic Multi-Scenario Simulation Stream
     scenario_impl = PROJECT_ROOT / "engine" / "scenarios" / "scenarios_impl.py"
@@ -103,9 +94,9 @@ def scan_provenance() -> dict:
                 vbm = json.load(f)
                 synthetic_episodes_count = vbm.get("metadata", {}).get("total_episodes_per_planner", 25) * len(vbm.get("configurations", {}))
         except Exception:
-            synthetic_episodes_count = 75
+            synthetic_episodes_count = 0
     else:
-        synthetic_episodes_count = 75
+        synthetic_episodes_count = 0
 
     synthetic_status = "In use" if (scenario_impl.exists() and scenario_registry.exists()) else "Not yet ingested"
 
@@ -152,9 +143,9 @@ def scan_provenance() -> dict:
                 "summary": "Crowdsourced and research camera tracks capturing Indian road user dynamics and potholes.",
                 "used_for": "Future scenario parameter tuning (traffic mix, speeds, gaps).",
                 "item_count": mendeley_count,
-                "unit": "sequences",
-                "licence": "CC BY 4.0 (per individual Mendeley repository)",
-                "attribution": "Mendeley Data repository contributors.",
+                "unit": "sequences verified in repo",
+                "licence": "Unknown",
+                "attribution": "Unknown",
                 "adapter_file": None,
                 "mapped_classes": ["auto_rickshaw", "two_wheeler", "pedestrian", "cattle", "truck", "handcart"],
                 "steps_to_add": [
@@ -162,18 +153,18 @@ def scan_provenance() -> dict:
                     "Place bounding box CSV/JSON sequences in data/mendeley/.",
                     "Run python engine/ml/data/mendeley_adapter.py to extract agent velocities and collision profiles.",
                 ],
-                "audit_note": "Status honestly computed as 'Not yet ingested'. Dataset fields are pre-mapped to engine classes.",
+                "audit_note": "Status honestly computed as 'Not yet ingested'. Licence and publisher unknown until raw dataset is downloaded.",
             },
             {
                 "id": "mathworks",
                 "name": "MathWorks Built-In Datasets & RoadRunner Scenes",
                 "url": "https://www.mathworks.com/products/roadrunner.html",
-                "status": mathworks_status,
-                "badge_tone": "teal",
+                "status": "Assets and scripts present, not executed in this repo",
+                "badge_tone": "slate",
                 "summary": "Automated Driving Toolbox scenario definitions and RoadRunner 3D scenes for Village Road & Urban Intersection.",
-                "used_for": "ASAM OpenDRIVE (.xodr) and OpenSCENARIO (.xosc) co-simulation and Simulink Stateflow synthesis.",
-                "item_count": len(existing_mw_files),
-                "unit": "assets & co-sim specs",
+                "used_for": "ASAM OpenDRIVE (.xodr) and OpenSCENARIO (.xosc) co-simulation specifications.",
+                "item_count": None,
+                "unit": "scripts and scenes present",
                 "licence": "MathWorks Product Licensing",
                 "attribution": "The MathWorks, Inc.",
                 "adapter_file": "matlab_adapter/roadrunner_co_sim_spec.json",
@@ -187,7 +178,7 @@ def scan_provenance() -> dict:
                     "matlab_adapter/behaviour/behaviour_state_machine.m",
                     "matlab_adapter/control/pure_pursuit_pid.m",
                 ],
-                "audit_note": "Marked 'Runs in MATLAB'. Live web studio runs Python reference engine for instant zero-dependency execution.",
+                "audit_note": "Assets and scripts present, not executed in this repo. Web studio runs Python reference engine.",
             },
             {
                 "id": "synthetic",

@@ -31,6 +31,7 @@ import {
   Activity,
   Layers,
   ChevronRight,
+  Box,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../context/I18nContext';
@@ -104,13 +105,19 @@ export const NavigationRail: React.FC = () => {
       title: t('workspace_results'),
       subtext: 'Replay & Comparison',
       icon: <Activity size={18} aria-hidden="true" />,
-      primaryPath: '/app/runs',
+      primaryPath: '/app/workstation',
       isActive: (pathname) =>
+        pathname === '/app/workstation' ||
         pathname === '/app/runs' ||
         (pathname.startsWith('/app/runs/') && !pathname.startsWith('/app/runs/new')) ||
         pathname.startsWith('/app/compare') ||
         pathname.startsWith('/app/reports'),
       subItems: [
+        {
+          to: '/app/workstation',
+          label: '3D Workstation',
+          icon: <Box size={14} aria-hidden="true" />,
+        },
         {
           to: '/app/runs',
           label: t('nav_runs'),
@@ -160,8 +167,6 @@ export const NavigationRail: React.FC = () => {
       style={{
         width: '240px',
         minWidth: '240px',
-        background: 'var(--bg-surface)',
-        borderRight: '1px solid var(--border-default)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -169,126 +174,160 @@ export const NavigationRail: React.FC = () => {
         overflowY: 'auto',
       }}
     >
-      {/* Primary 4 Workspaces Navigation List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        {workspaces.map((ws) => {
-          const isWsActive = ws.isActive(location.pathname);
+      {/* Brand Logo at top of nav */}
+      <div>
+        <div style={{
+          padding: '0.5rem 0.5rem 1rem',
+          marginBottom: '0.5rem',
+          borderBottom: '1px solid rgba(56, 189, 248, 0.14)',
+        }}>
+          <div className="brand-title" style={{ fontSize: '1rem', fontWeight: 900 }}>
+            <Layers size={18} aria-hidden="true" />
+            ADAPTIVE-PATH
+          </div>
+          <div style={{
+            fontSize: '0.65rem',
+            color: '#38bdf8',
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            marginTop: '0.25rem',
+            opacity: 0.8,
+          }}>
+            SIH26037 · MathWorks
+          </div>
+        </div>
 
-          return (
-            <div key={ws.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-              {/* Primary Workspace Header Button */}
-              <NavLink
-                to={ws.primaryPath}
-                aria-label={`${ws.title} Workspace: ${ws.subtext}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0.55rem 0.75rem',
-                  borderRadius: 'var(--radius-md)',
-                  textDecoration: 'none',
-                  background: isWsActive ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
-                  borderLeft: isWsActive ? '3px solid var(--accent-primary)' : '3px solid transparent',
-                  color: isWsActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  transition: 'all 0.15s ease',
-                  minHeight: 'var(--min-target-size)',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                  <span
-                    style={{
-                      color: isWsActive ? 'var(--accent-primary)' : 'var(--text-muted)',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {ws.icon}
-                  </span>
-                  <div>
-                    <div
-                      style={{
-                        fontSize: '0.875rem',
-                        fontWeight: 700,
-                        letterSpacing: '0.01em',
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {ws.title}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: '0.7rem',
-                        color: 'var(--text-muted)',
-                        fontWeight: 500,
-                      }}
-                    >
-                      {ws.subtext}
-                    </div>
-                  </div>
-                </div>
+        {/* Primary 4 Workspaces Navigation List */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          {workspaces.map((ws) => {
+            const isWsActive = ws.isActive(location.pathname);
 
-                <ChevronRight
-                  size={14}
+            return (
+              <div key={ws.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', marginBottom: '0.5rem' }}>
+                {/* Primary Workspace Header Button */}
+                <NavLink
+                  to={ws.primaryPath}
+                  aria-label={`${ws.title} Workspace: ${ws.subtext}`}
                   style={{
-                    color: isWsActive ? 'var(--accent-primary)' : 'var(--text-muted)',
-                    opacity: isWsActive ? 1 : 0.4,
-                    transform: isWsActive ? 'rotate(90deg)' : 'none',
-                    transition: 'transform 0.15s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.55rem 0.75rem',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    background: isWsActive
+                      ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(99, 102, 241, 0.1) 100%)'
+                      : 'transparent',
+                    border: isWsActive ? '1px solid rgba(56, 189, 248, 0.28)' : '1px solid transparent',
+                    color: isWsActive ? '#f8fafc' : '#94a3b8',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    minHeight: '44px',
+                    boxShadow: isWsActive ? '0 0 14px rgba(56, 189, 248, 0.08)' : 'none',
                   }}
-                  aria-hidden="true"
-                />
-              </NavLink>
-
-              {/* Sub-Destinations List */}
-              <ul
-                role="menu"
-                aria-label={`${ws.title} sub-pages`}
-                style={{
-                  listStyle: 'none',
-                  padding: 0,
-                  margin: '0.15rem 0 0 1.25rem',
-                  borderLeft: '1px solid var(--border-subtle)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.2rem',
-                }}
-              >
-                {ws.subItems.map((sub) => (
-                  <li key={sub.to} role="none">
-                    <NavLink
-                      to={sub.to}
-                      end={sub.end}
-                      role="menuitem"
-                      style={({ isActive }) => ({
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                    <span
+                      style={{
+                        color: isWsActive ? '#38bdf8' : '#64748b',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.55rem',
-                        padding: '0.4rem 0.65rem',
-                        borderRadius: 'var(--radius-sm)',
-                        textDecoration: 'none',
-                        fontSize: '0.8rem',
-                        fontWeight: isActive ? 700 : 500,
-                        color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                        background: isActive ? 'var(--bg-surface-elevated)' : 'transparent',
-                        transition: 'all 0.15s ease',
-                        minHeight: 'var(--min-target-size)',
-                      })}
+                        transition: 'color 0.2s ease',
+                      }}
                     >
-                      <span style={{ display: 'flex', alignItems: 'center' }}>{sub.icon}</span>
-                      <span>{sub.label}</span>
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+                      {ws.icon}
+                    </span>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.01em',
+                          lineHeight: 1.2,
+                          color: isWsActive ? '#f8fafc' : '#cbd5e1',
+                        }}
+                      >
+                        {ws.title}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '0.68rem',
+                          color: isWsActive ? 'rgba(56, 189, 248, 0.75)' : '#475569',
+                          fontWeight: 500,
+                          marginTop: '1px',
+                        }}
+                      >
+                        {ws.subtext}
+                      </div>
+                    </div>
+                  </div>
+
+                  <ChevronRight
+                    size={13}
+                    style={{
+                      color: isWsActive ? '#38bdf8' : '#475569',
+                      opacity: isWsActive ? 1 : 0.5,
+                      transform: isWsActive ? 'rotate(90deg)' : 'none',
+                      transition: 'transform 0.2s ease, color 0.2s ease',
+                    }}
+                    aria-hidden="true"
+                  />
+                </NavLink>
+
+                {/* Sub-Destinations List */}
+                <ul
+                  role="menu"
+                  aria-label={`${ws.title} sub-pages`}
+                  style={{
+                    listStyle: 'none',
+                    padding: 0,
+                    margin: '0.1rem 0 0 1.5rem',
+                    borderLeft: `1px solid ${isWsActive ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.07)'}`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.1rem',
+                    transition: 'border-color 0.2s ease',
+                  }}
+                >
+                  {ws.subItems.map((sub) => (
+                    <li key={sub.to} role="none">
+                      <NavLink
+                        to={sub.to}
+                        end={sub.end}
+                        role="menuitem"
+                        style={({ isActive }) => ({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.38rem 0.6rem',
+                          borderRadius: '6px',
+                          textDecoration: 'none',
+                          fontSize: '0.78rem',
+                          fontWeight: isActive ? 700 : 400,
+                          color: isActive ? '#38bdf8' : '#64748b',
+                          background: isActive ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+                          transition: 'all 0.15s ease',
+                          minHeight: '32px',
+                          marginLeft: '0.5rem',
+                          letterSpacing: isActive ? '0.01em' : 'normal',
+                        })}
+                      >
+                        <span style={{ display: 'flex', alignItems: 'center', opacity: 0.9 }}>{sub.icon}</span>
+                        <span>{sub.label}</span>
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Secondary Utility Navigation (Settings & Admin Pinned at Bottom) */}
       <div
         style={{
-          borderTop: '1px solid var(--border-subtle)',
+          borderTop: '1px solid rgba(56, 189, 248, 0.12)',
           paddingTop: '0.85rem',
           display: 'flex',
           flexDirection: 'column',
@@ -303,16 +342,18 @@ export const NavigationRail: React.FC = () => {
             alignItems: 'center',
             gap: '0.65rem',
             padding: '0.5rem 0.75rem',
-            borderRadius: 'var(--radius-md)',
+            borderRadius: '8px',
             textDecoration: 'none',
-            fontSize: '0.825rem',
+            fontSize: '0.8rem',
             fontWeight: isActive ? 700 : 500,
-            color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
-            background: isActive ? 'var(--bg-surface-elevated)' : 'transparent',
-            minHeight: 'var(--min-target-size)',
+            color: isActive ? '#38bdf8' : '#64748b',
+            background: isActive ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+            border: `1px solid ${isActive ? 'rgba(56, 189, 248, 0.25)' : 'transparent'}`,
+            minHeight: '40px',
+            transition: 'all 0.15s ease',
           })}
         >
-          <Settings size={16} aria-hidden="true" />
+          <Settings size={15} aria-hidden="true" />
           <span>{t('nav_settings')}</span>
         </NavLink>
 
@@ -325,16 +366,17 @@ export const NavigationRail: React.FC = () => {
               alignItems: 'center',
               gap: '0.65rem',
               padding: '0.5rem 0.75rem',
-              borderRadius: 'var(--radius-md)',
+              borderRadius: '8px',
               textDecoration: 'none',
-              fontSize: '0.825rem',
+              fontSize: '0.8rem',
               fontWeight: isActive ? 700 : 500,
-              color: isActive ? 'var(--risk-critical)' : 'var(--text-secondary)',
-              background: isActive ? 'var(--bg-surface-elevated)' : 'transparent',
-              minHeight: 'var(--min-target-size)',
+              color: isActive ? '#ef4444' : '#64748b',
+              background: isActive ? 'rgba(239, 68, 68, 0.1)' : 'transparent',
+              minHeight: '40px',
+              transition: 'all 0.15s ease',
             })}
           >
-            <ShieldAlert size={16} aria-hidden="true" />
+            <ShieldAlert size={15} aria-hidden="true" />
             <span>{t('nav_admin')}</span>
           </NavLink>
         )}
@@ -343,14 +385,14 @@ export const NavigationRail: React.FC = () => {
         <div
           style={{
             paddingTop: '0.65rem',
-            fontSize: '0.7rem',
-            color: 'var(--text-muted)',
+            fontSize: '0.65rem',
+            color: '#334155',
             textAlign: 'center',
-            lineHeight: 1.4,
+            lineHeight: 1.5,
           }}
         >
-          <div>MathWorks SIH26037</div>
-          <div style={{ color: 'var(--status-success)', fontWeight: 600 }}>WCAG 2.2 AA Verified</div>
+          <div style={{ color: '#475569' }}>MathWorks SIH26037</div>
+          <div style={{ color: '#10b981', fontWeight: 600, letterSpacing: '0.03em' }}>✓ WCAG 2.2 AA</div>
         </div>
       </div>
     </nav>

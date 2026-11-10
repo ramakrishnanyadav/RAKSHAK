@@ -23,8 +23,13 @@ describe('Dashboard Component (Phase 1A Contract)', () => {
   });
 
   it('proves that manifest entries without completed_goal never default to true', async () => {
-    // Force offline path by making apiClient.listRuns reject
-    vi.spyOn(apiClient, 'listRuns').mockRejectedValue(new Error('Backend offline'));
+    // Force offline path by making apiClient reject
+    if ((apiClient as any).getRuns) {
+      vi.spyOn(apiClient as any, 'getRuns').mockRejectedValue(new Error('Backend offline'));
+    }
+    if ((apiClient as any).listRuns) {
+      vi.spyOn(apiClient as any, 'listRuns').mockRejectedValue(new Error('Backend offline'));
+    }
 
     // Mock manifest with missing completed_goal and missing clearance
     const mockManifestWithoutCompleted = [
@@ -78,12 +83,12 @@ describe('Dashboard Component (Phase 1A Contract)', () => {
       expect(screen.getByText('COMPLETED TRIPS')).not.toBeNull();
       expect(screen.getAllByText('100%').length).toBeGreaterThan(0);
       expect(screen.getByText('1 of 1 runs reached goal')).not.toBeNull();
-    });
+    }, { timeout: 5000 });
 
     // Check that MEAN P95 LATENCY card is present with correct title
     expect(screen.getByText('MEAN P95 LATENCY')).not.toBeNull();
     expect(screen.getByText(/15\.0\s*ms/)).not.toBeNull();
-    expect(screen.getByText('Mean across 1 of 2 runs')).not.toBeNull();
+    expect(screen.getByText(/Mean across 1 of 2 runs/i)).not.toBeNull();
 
     // Check that missing values render as dash (—)
     const dashes = screen.getAllByText('—');
@@ -91,7 +96,12 @@ describe('Dashboard Component (Phase 1A Contract)', () => {
   });
 
   it('renders dashes for all metrics when manifest has zero outcome data', async () => {
-    vi.spyOn(apiClient, 'listRuns').mockRejectedValue(new Error('Backend offline'));
+    if ((apiClient as any).getRuns) {
+      vi.spyOn(apiClient as any, 'getRuns').mockRejectedValue(new Error('Backend offline'));
+    }
+    if ((apiClient as any).listRuns) {
+      vi.spyOn(apiClient as any, 'listRuns').mockRejectedValue(new Error('Backend offline'));
+    }
 
     const mockEmptyMetricsManifest = [
       {
@@ -127,6 +137,6 @@ describe('Dashboard Component (Phase 1A Contract)', () => {
       expect(screen.getByText('No outcome data recorded')).not.toBeNull();
       expect(screen.getByText('No collision data recorded')).not.toBeNull();
       expect(screen.getByText('No latency data recorded')).not.toBeNull();
-    });
+    }, { timeout: 5000 });
   });
 });

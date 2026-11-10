@@ -1,0 +1,111 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\Ramakrishna\Downloads\MINI
+plugins: anyio-4.12.0, hypothesis-6.151.6, asyncio-1.4.0, cov-7.0.0, timeout-2.4.0, typeguard-4.5.2
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 152 items
+
+tests\test_behaviour.py .....                                            [  3%]
+tests\test_conformal_calibrator.py ............                          [ 11%]
+tests\test_controllers.py ...                                            [ 13%]
+tests\test_cost_weights.py ..                                            [ 14%]
+tests\test_determinism.py .                                              [ 15%]
+tests\test_engine_adapters_contract.py ..............                    [ 24%]
+tests\test_f3_recovery.py ......                                         [ 28%]
+tests\test_metrics.py .........                                          [ 34%]
+tests\test_ml.py ..........                                              [ 40%]
+tests\test_nightly_regression.py ..                                      [ 42%]
+tests\test_planners.py ........                                          [ 47%]
+tests\test_properties.py F.                                              [ 48%]
+tests\test_qa_traceability.py ......                                     [ 52%]
+tests\test_regression.py ..........................................      [ 80%]
+tests\test_scenarios.py ......                                           [ 84%]
+tests\test_schema.py .                                                   [ 84%]
+tests\test_sensors.py ....                                               [ 87%]
+tests\test_tracker.py ...                                                [ 89%]
+tests\test_validation_statistics.py ................                     [100%]
+
+================================== FAILURES ===================================
+__ test_property_planned_path_never_intersects_static_obstacle_at_zero_noise __
+
+    @settings(max_examples=15, suppress_health_check=[HealthCheck.too_slow], deadline=None)
+>   @given(
+            
+        obs_x=st.floats(min_value=15.0, max_value=35.0),
+        obs_y=st.floats(min_value=-1.0, max_value=1.0),
+        obs_r=st.floats(min_value=0.5, max_value=1.0),
+        planner_id=st.sampled_from(["B2", "P2", "P3", "P2-ML", "P3-ML"]),
+    )
+
+tests\test_properties.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obs_x = 18.25, obs_y = 0.0, obs_r = 1.0, planner_id = 'P3-ML'
+
+    @settings(max_examples=15, suppress_health_check=[HealthCheck.too_slow], deadline=None)
+    @given(
+        obs_x=st.floats(min_value=15.0, max_value=35.0),
+        obs_y=st.floats(min_value=-1.0, max_value=1.0),
+        obs_r=st.floats(min_value=0.5, max_value=1.0),
+        planner_id=st.sampled_from(["B2", "P2", "P3", "P2-ML", "P3-ML"]),
+    )
+    def test_property_planned_path_never_intersects_static_obstacle_at_zero_noise(
+        obs_x, obs_y, obs_r, planner_id
+    ):
+        """
+        Property: Planned collision-free path must maintain clearance > 0 to static obstacles
+        under zero sensor noise.
+        """
+        planner = create_planner(planner_id)
+        planner.reset()
+    
+        # Create world with a static obstacle
+        bounds = WorldBounds(x_min=-10.0, x_max=60.0, y_min=-6.0, y_max=6.0)
+        static_obs = [
+            StaticObstacle(id="test_obs", kind="pothole", x=obs_x, y=obs_y, length=obs_r * 2, width=obs_r * 2)
+        ]
+        road_boundaries = [
+            RoadBoundary(side="left", points=[[-10.0, 4.5], [60.0, 4.5]]),
+            RoadBoundary(side="right", points=[[-10.0, -4.5], [60.0, -4.5]]),
+        ]
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs)
+    
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+    
+        result = planner.step(
+            ego=ego,
+            world=world,
+            visible_agents=[],
+            dt=0.1,
+            current_time=0.1,
+        )
+    
+        # Verify that none of the planned waypoints penetrate the obstacle core
+        for pt in result.planned_trajectory:
+            dist_to_center = math.hypot(pt[0] - obs_x, pt[1] - obs_y)
+            # Point should either steer around the obstacle or stop before it
+            if pt[0] > (obs_x - obs_r) and pt[0] < (obs_x + obs_r):
+>               assert dist_to_center >= (obs_r * 0.4), (
+                    f"{planner_id} planned trajectory point ({pt[0]:.2f}, {pt[1]:.2f}) penetrates static obstacle at ({obs_x:.2f}, {obs_y:.2f}) with radius {obs_r:.2f}"
+                )
+E               AssertionError: P3-ML planned trajectory point (17.92, 0.00) penetrates static obstacle at (18.25, 0.00) with radius 1.00
+E               assert 0.3299999999999912 >= (1.0 * 0.4)
+E               Falsifying example: test_property_planned_path_never_intersects_static_obstacle_at_zero_noise(
+E                   obs_x=18.25,
+E                   obs_y=0.0,
+E                   obs_r=1.0,
+E                   planner_id='P3-ML',
+E               )
+
+tests\test_properties.py:69: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_properties.py::test_property_planned_path_never_intersects_static_obstacle_at_zero_noise
+======================= 1 failed, 151 passed in 20.78s ========================

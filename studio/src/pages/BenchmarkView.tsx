@@ -353,28 +353,36 @@ export const BenchmarkView: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
             <span
               style={{
-                fontSize: '0.75rem',
+                fontSize: '0.68rem',
                 fontWeight: 800,
                 padding: '3px 8px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'rgba(59, 130, 246, 0.15)',
-                color: 'var(--accent-primary)',
-                border: '1px solid rgba(59, 130, 246, 0.3)',
-                letterSpacing: '0.04em',
+                borderRadius: '6px',
+                background: 'rgba(56, 189, 248, 0.14)',
+                color: '#38bdf8',
+                border: '1px solid rgba(56, 189, 248, 0.28)',
+                letterSpacing: '0.06em',
                 textTransform: 'uppercase',
               }}
             >
               Validation B — Research Experiment
             </span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+            <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
               Independent Verification Artifact (Gate G3)
             </span>
           </div>
 
-          <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: 0 }}>
+          <h1 style={{
+            fontSize: '1.9rem',
+            fontWeight: 900,
+            margin: 0,
+            letterSpacing: '-0.03em',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
             {t('nav_benchmark')}
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: '0.25rem 0 0' }}>
+          <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0.25rem 0 0' }}>
             Empirical validation results comparing proposed P3 Adaptive Replanner against baseline ablation architectures.
           </p>
         </div>
@@ -386,12 +394,14 @@ export const BenchmarkView: React.FC = () => {
             onChange={(e) => setSelectedScope(e.target.value)}
             style={{
               padding: '0.55rem 0.85rem',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-default)',
-              background: 'var(--bg-surface)',
-              color: 'var(--text-primary)',
+              borderRadius: '8px',
+              border: '1px solid rgba(56, 189, 248, 0.22)',
+              background: 'rgba(16, 22, 35, 0.6)',
+              color: '#e2e8f0',
               fontSize: '0.875rem',
               minHeight: 'var(--min-target-size)',
+              cursor: 'pointer',
+              backdropFilter: 'blur(8px)',
             }}
             aria-label="Select scenario scope for benchmark evaluation"
           >

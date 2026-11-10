@@ -22,9 +22,9 @@ export const SkeletonLoader: React.FC<{
     style={{
       height,
       width,
-      backgroundColor: 'var(--border-default)',
+      backgroundColor: 'rgba(56, 189, 248, 0.08)',
       borderRadius: 'var(--radius-sm)',
-      opacity: 0.5,
+      border: '1px solid rgba(56, 189, 248, 0.12)',
     }}
   >
     <span className="sr-only">{label}</span>
@@ -34,10 +34,18 @@ export const SkeletonLoader: React.FC<{
 export const SkeletonCard: React.FC = () => (
   <div
     className="glass-panel"
-    style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
+    style={{
+      padding: '1.25rem',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.75rem',
+      position: 'relative',
+      overflow: 'hidden',
+    }}
     role="status"
     aria-label="Loading card"
   >
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #38bdf8, #818cf8)' }} />
     <SkeletonLoader height="1.5rem" width="60%" />
     <SkeletonLoader height="1rem" width="90%" />
     <SkeletonLoader height="1rem" width="40%" />
@@ -92,24 +100,35 @@ export const EmptyState: React.FC<{
       justifyContent: 'center',
       gap: '0.75rem',
       margin: '1.5rem 0',
+      background: 'linear-gradient(135deg, rgba(16, 22, 35, 0.7) 0%, rgba(11, 15, 23, 0.85) 100%)',
+      border: '1px solid rgba(56, 189, 248, 0.16)',
     }}
   >
     <div
       style={{
-        width: '48px',
-        height: '48px',
+        width: '52px',
+        height: '52px',
         borderRadius: '50%',
-        background: 'var(--bg-surface-elevated)',
+        background: 'rgba(56, 189, 248, 0.1)',
+        border: '1px solid rgba(56, 189, 248, 0.25)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'var(--text-secondary)',
+        color: '#38bdf8',
+        boxShadow: '0 0 20px rgba(56, 189, 248, 0.15)',
       }}
     >
       <FolderOpen size={24} />
     </div>
-    <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text-primary)' }}>{title}</h3>
-    <p style={{ margin: 0, maxWidth: '450px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+    <h3 style={{
+      margin: 0,
+      fontSize: '1.2rem',
+      fontWeight: 800,
+      background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+    }}>{title}</h3>
+    <p style={{ margin: 0, maxWidth: '450px', color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.5 }}>
       {description}
     </p>
     {actionText && onAction && (
@@ -135,18 +154,24 @@ export const ErrorState: React.FC<{
     className="glass-panel"
     style={{
       padding: '2rem 1.5rem',
-      borderLeft: '4px solid var(--risk-critical)',
+      position: 'relative',
+      overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
       gap: '0.75rem',
       margin: '1.5rem 0',
+      background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(16, 22, 35, 0.8) 100%)',
+      border: '1px solid rgba(239, 68, 68, 0.3)',
     }}
   >
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #ef4444, #f87171)' }} />
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-      <AlertCircle size={22} color="var(--risk-critical)" />
-      <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{title}</h3>
+      <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <AlertCircle size={20} color="#f87171" />
+      </div>
+      <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#f87171' }}>{title}</h3>
     </div>
-    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{message}</p>
+    <p style={{ margin: 0, color: '#cbd5e1', fontSize: '0.9rem' }}>{message}</p>
     {onRetry && (
       <div>
         <button
@@ -181,10 +206,10 @@ export const OfflineBanner: React.FC<{ isOffline: boolean; runCount?: number }> 
     <div
       role="status"
       style={{
-        background: 'rgba(245, 158, 11, 0.12)',
+        background: 'linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(16, 22, 35, 0.95) 100%)',
         borderBottom: '1px solid rgba(245, 158, 11, 0.3)',
-        color: 'var(--risk-medium)',
-        padding: '0.5rem 1rem',
+        color: '#fbbf24',
+        padding: '0.5rem 1.25rem',
         fontSize: '0.85rem',
         display: 'flex',
         alignItems: 'center',
@@ -193,20 +218,24 @@ export const OfflineBanner: React.FC<{ isOffline: boolean; runCount?: number }> 
         gap: '0.5rem',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <WifiOff size={16} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+        <WifiOff size={16} color="#fbbf24" />
         <span>
-          <strong>Offline Mode:</strong> Studio is currently disconnected from the live worker.
+          <strong style={{ color: '#fef08a' }}>Offline Mode:</strong> Studio is currently disconnected from the live worker.
           Browsing {runCount} verified pre-bundled SIH2026 runs.
         </span>
       </div>
       <span
         style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.75rem',
+          fontSize: '0.72rem',
+          fontWeight: 700,
           background: 'rgba(245, 158, 11, 0.2)',
+          color: '#fbbf24',
+          border: '1px solid rgba(245, 158, 11, 0.35)',
           padding: '2px 8px',
           borderRadius: '4px',
+          letterSpacing: '0.05em',
         }}
       >
         STANDALONE CLIENT

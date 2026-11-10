@@ -1,376 +1,286 @@
 {
-  "provenance": {
-    "source": "runs/val_b_manifest.json and engine runner/metrics geometry",
-    "evidence_level": "DERIVED",
-    "rule": "min_clearance_m == 0.00 -> CONTACT (SAT polygon intersection with obstacle/agent); min_clearance_m > 0.00 -> ROAD_EDGE_EXCURSION (|y| > 4.70 m shoulder exceedance)",
-    "generated_at": "2026-11-04T21:37:32.338267+00:00"
-  },
-  "summary": {
-    "P3_Corrected": {
-      "total_collisions": 5,
-      "contact": 3,
-      "road_edge_excursion": 2,
-      "other": 0,
-      "by_scenario": {
-        "SCENARIO_1_VILLAGE_ROAD": {
-          "total_collisions": 1,
-          "contact": 1,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_2_URBAN_INTERSECTION": {
-          "total_collisions": 2,
-          "contact": 0,
-          "road_edge_excursion": 2,
-          "other": 0
-        },
-        "SCENARIO_3_HIGHWAY_MERGE": {
-          "total_collisions": 0,
-          "contact": 0,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_4_DENSE_MARKET": {
-          "total_collisions": 2,
-          "contact": 2,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_5_CATTLE_CROSSING": {
-          "total_collisions": 0,
-          "contact": 0,
-          "road_edge_excursion": 0,
-          "other": 0
-        }
-      }
-    },
-    "P3_Baseline": {
-      "total_collisions": 5,
-      "contact": 3,
-      "road_edge_excursion": 2,
-      "other": 0,
-      "by_scenario": {
-        "SCENARIO_1_VILLAGE_ROAD": {
-          "total_collisions": 1,
-          "contact": 1,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_2_URBAN_INTERSECTION": {
-          "total_collisions": 2,
-          "contact": 0,
-          "road_edge_excursion": 2,
-          "other": 0
-        },
-        "SCENARIO_3_HIGHWAY_MERGE": {
-          "total_collisions": 0,
-          "contact": 0,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_4_DENSE_MARKET": {
-          "total_collisions": 2,
-          "contact": 2,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_5_CATTLE_CROSSING": {
-          "total_collisions": 0,
-          "contact": 0,
-          "road_edge_excursion": 0,
-          "other": 0
-        }
-      }
-    },
-    "B1_Baseline": {
-      "total_collisions": 15,
-      "contact": 11,
-      "road_edge_excursion": 4,
-      "other": 0,
-      "by_scenario": {
-        "SCENARIO_1_VILLAGE_ROAD": {
-          "total_collisions": 5,
-          "contact": 5,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_2_URBAN_INTERSECTION": {
-          "total_collisions": 0,
-          "contact": 0,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_3_HIGHWAY_MERGE": {
-          "total_collisions": 0,
-          "contact": 0,
-          "road_edge_excursion": 0,
-          "other": 0
-        },
-        "SCENARIO_4_DENSE_MARKET": {
-          "total_collisions": 5,
-          "contact": 1,
-          "road_edge_excursion": 4,
-          "other": 0
-        },
-        "SCENARIO_5_CATTLE_CROSSING": {
-          "total_collisions": 5,
-          "contact": 5,
-          "road_edge_excursion": 0,
-          "other": 0
-        }
-      }
-    }
+  "metadata": {
+    "schema": "val_b_collision_classification/v1",
+    "generated_by": "scripts/reclassify_all_val_b_collisions_from_frames.py",
+    "description": "Authoritative ground-truth collision classification for all 25 validation B collision runs.",
+    "scoring_corridor_width_m": 9.4,
+    "road_y_bound_m": 4.7
   },
   "episodes": [
     {
-      "config_name": "P3_Corrected",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
+      "config": "P3_Corrected",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
       "seed": 2009,
-      "duration_s": 7.3,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 7.3,
+      "final_step": 73,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "agent:oncoming_truck(truck) [gap=0.28m at step 73]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "P3_Corrected",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_2_URBAN_INTERSECTION",
+      "config": "P3_Corrected",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
       "seed": 2008,
-      "duration_s": 13.5,
-      "min_clearance_m": 11.74,
-      "classification": "ROAD_EDGE_EXCURSION",
-      "detail": "Ego bounding box breached road edge (|y| > 4.70 m) with obstacle clearance 11.74 m"
+      "duration": 13.5,
+      "final_step": 135,
+      "first_excursion_step": 78,
+      "first_excursion_t": 7.8,
+      "contact_target": null,
+      "has_sat_contact": false
     },
     {
-      "config_name": "P3_Corrected",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_2_URBAN_INTERSECTION",
+      "config": "P3_Corrected",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
       "seed": 2009,
-      "duration_s": 11.9,
-      "min_clearance_m": 10.15,
-      "classification": "ROAD_EDGE_EXCURSION",
-      "detail": "Ego bounding box breached road edge (|y| > 4.70 m) with obstacle clearance 10.15 m"
+      "duration": 11.9,
+      "final_step": 119,
+      "first_excursion_step": 38,
+      "first_excursion_t": 3.8,
+      "contact_target": null,
+      "has_sat_contact": false
     },
     {
-      "config_name": "P3_Corrected",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "P3_Corrected",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2006,
-      "duration_s": 7.2,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 7.2,
+      "final_step": 72,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:parked_auto(parked_vehicle) [gap=0.06m at step 72]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "P3_Corrected",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "P3_Corrected",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2009,
-      "duration_s": 6.6,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 6.6,
+      "final_step": 66,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:parked_auto(parked_vehicle) [gap=0.23m at step 66]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "P3_Baseline",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
+      "config": "P3_Baseline",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
       "seed": 2009,
-      "duration_s": 7.3,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 7.3,
+      "final_step": 73,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "agent:oncoming_truck(truck) [gap=0.28m at step 73]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "P3_Baseline",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_2_URBAN_INTERSECTION",
+      "config": "P3_Baseline",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
       "seed": 2008,
-      "duration_s": 13.5,
-      "min_clearance_m": 11.74,
-      "classification": "ROAD_EDGE_EXCURSION",
-      "detail": "Ego bounding box breached road edge (|y| > 4.70 m) with obstacle clearance 11.74 m"
+      "duration": 13.5,
+      "final_step": 135,
+      "first_excursion_step": 78,
+      "first_excursion_t": 7.8,
+      "contact_target": null,
+      "has_sat_contact": false
     },
     {
-      "config_name": "P3_Baseline",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_2_URBAN_INTERSECTION",
+      "config": "P3_Baseline",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
       "seed": 2009,
-      "duration_s": 11.9,
-      "min_clearance_m": 10.15,
-      "classification": "ROAD_EDGE_EXCURSION",
-      "detail": "Ego bounding box breached road edge (|y| > 4.70 m) with obstacle clearance 10.15 m"
+      "duration": 11.9,
+      "final_step": 119,
+      "first_excursion_step": 38,
+      "first_excursion_t": 3.8,
+      "contact_target": null,
+      "has_sat_contact": false
     },
     {
-      "config_name": "P3_Baseline",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "P3_Baseline",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2006,
-      "duration_s": 7.2,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 7.2,
+      "final_step": 72,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:parked_auto(parked_vehicle) [gap=0.06m at step 72]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "P3_Baseline",
-      "planner_id": "P3",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "P3_Baseline",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2009,
-      "duration_s": 6.6,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 6.6,
+      "final_step": 66,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:parked_auto(parked_vehicle) [gap=0.23m at step 66]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
       "seed": 2005,
-      "duration_s": 5.6,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 5.6,
+      "final_step": 56,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:pothole_1(pothole) [gap=0.18m at step 56]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
       "seed": 2006,
-      "duration_s": 5.5,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 5.5,
+      "final_step": 55,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:pothole_1(pothole) [gap=0.04m at step 55]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
       "seed": 2007,
-      "duration_s": 5.0,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 5.0,
+      "final_step": 50,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:pothole_1(pothole) [gap=0.07m at step 50]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
       "seed": 2008,
-      "duration_s": 5.7,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 5.7,
+      "final_step": 57,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:pothole_1(pothole) [gap=0.14m at step 57]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_1_VILLAGE_ROAD",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
       "seed": 2009,
-      "duration_s": 5.1,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 5.1,
+      "final_step": 51,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "static:pothole_1(pothole) [gap=0.05m at step 51]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2005,
-      "duration_s": 6.6,
-      "min_clearance_m": 1.41,
-      "classification": "ROAD_EDGE_EXCURSION",
-      "detail": "Ego bounding box breached road edge (|y| > 4.70 m) with obstacle clearance 1.41 m"
+      "duration": 6.6,
+      "final_step": 66,
+      "first_excursion_step": 57,
+      "first_excursion_t": 5.7,
+      "contact_target": null,
+      "has_sat_contact": false
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2006,
-      "duration_s": 7.6,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 7.6,
+      "final_step": 76,
+      "first_excursion_step": 65,
+      "first_excursion_t": 6.5,
+      "contact_target": "agent:occluded_pedestrian(pedestrian) [gap=0.00m at step 76]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2007,
-      "duration_s": 6.0,
-      "min_clearance_m": 1.64,
-      "classification": "ROAD_EDGE_EXCURSION",
-      "detail": "Ego bounding box breached road edge (|y| > 4.70 m) with obstacle clearance 1.64 m"
+      "duration": 6.0,
+      "final_step": 60,
+      "first_excursion_step": 49,
+      "first_excursion_t": 4.9,
+      "contact_target": null,
+      "has_sat_contact": false
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2008,
-      "duration_s": 6.1,
-      "min_clearance_m": 1.35,
-      "classification": "ROAD_EDGE_EXCURSION",
-      "detail": "Ego bounding box breached road edge (|y| > 4.70 m) with obstacle clearance 1.35 m"
+      "duration": 6.1,
+      "final_step": 61,
+      "first_excursion_step": 53,
+      "first_excursion_t": 5.3,
+      "contact_target": null,
+      "has_sat_contact": false
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_4_DENSE_MARKET",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
       "seed": 2009,
-      "duration_s": 10.9,
-      "min_clearance_m": 0.52,
-      "classification": "ROAD_EDGE_EXCURSION",
-      "detail": "Ego bounding box breached road edge (|y| > 4.70 m) with obstacle clearance 0.52 m"
+      "duration": 10.9,
+      "final_step": 109,
+      "first_excursion_step": 63,
+      "first_excursion_t": 6.3,
+      "contact_target": null,
+      "has_sat_contact": false
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
       "seed": 2005,
-      "duration_s": 7.3,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 7.3,
+      "final_step": 73,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "agent:crossing_cattle(cattle) [gap=0.25m at step 73]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
       "seed": 2006,
-      "duration_s": 8.2,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 8.2,
+      "final_step": 82,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "agent:crossing_cattle(cattle) [gap=0.24m at step 82]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
       "seed": 2007,
-      "duration_s": 7.8,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 7.8,
+      "final_step": 78,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "agent:crossing_cattle(cattle) [gap=0.07m at step 78]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
       "seed": 2008,
-      "duration_s": 8.3,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 8.3,
+      "final_step": 83,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "agent:crossing_cattle(cattle) [gap=0.03m at step 83]",
+      "has_sat_contact": true
     },
     {
-      "config_name": "B1_Baseline",
-      "planner_id": "B1",
-      "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
+      "config": "B1_Baseline",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
       "seed": 2009,
-      "duration_s": 7.7,
-      "min_clearance_m": 0.0,
-      "classification": "CONTACT",
-      "detail": "Physical intersection with dynamic agent or static obstacle (min_clearance == 0.00 m)"
+      "duration": 7.7,
+      "final_step": 77,
+      "first_excursion_step": null,
+      "first_excursion_t": null,
+      "contact_target": "agent:crossing_cattle(cattle) [gap=0.26m at step 77]",
+      "has_sat_contact": true
     }
   ]
 }

@@ -70,10 +70,17 @@ export const SettingsView: React.FC = () => {
   return (
     <div style={{ padding: '1.5rem', maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div>
-        <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 0.4rem' }}>
+        <h1 style={{
+          fontSize: '1.85rem',
+          fontWeight: 900,
+          margin: '0 0 0.4rem',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}>
           {t('nav_settings')}
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
+        <p style={{ color: '#94a3b8', fontSize: '0.95rem', margin: 0 }}>
           Manage display themes, WCAG accessibility options, language preferences, and security sessions.
         </p>
       </div>
@@ -83,10 +90,10 @@ export const SettingsView: React.FC = () => {
           role="status"
           style={{
             background: 'rgba(16, 185, 129, 0.15)',
-            border: '1px solid var(--accent-teal)',
+            border: '1px solid #10b981',
             borderRadius: 'var(--radius-sm)',
             padding: '0.75rem 1rem',
-            color: 'var(--accent-teal)',
+            color: '#34d399',
             fontSize: '0.85rem',
             display: 'flex',
             alignItems: 'center',
@@ -112,7 +119,7 @@ export const SettingsView: React.FC = () => {
           className="glass-panel"
           role="tablist"
           aria-label="Settings categories"
-          style={{ padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}
+          style={{ padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem', border: '1px solid rgba(56, 189, 248, 0.18)' }}
         >
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -128,14 +135,16 @@ export const SettingsView: React.FC = () => {
                   gap: '0.65rem',
                   padding: '0.65rem 0.85rem',
                   borderRadius: 'var(--radius-sm)',
-                  border: 'none',
-                  background: isActive ? 'var(--accent-primary)' : 'transparent',
-                  color: isActive ? '#ffffff' : 'var(--text-secondary)',
-                  fontWeight: isActive ? 700 : 500,
+                  border: isActive ? '1px solid #38bdf8' : 'none',
+                  background: isActive ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'transparent',
+                  color: isActive ? '#07080a' : '#94a3b8',
+                  boxShadow: isActive ? '0 2px 8px rgba(14, 165, 233, 0.3)' : 'none',
+                  fontWeight: isActive ? 800 : 600,
                   fontSize: '0.875rem',
                   textAlign: 'left',
                   cursor: 'pointer',
                   minHeight: 'var(--min-target-size)',
+                  transition: 'all 0.15s ease',
                 }}
               >
                 {tab.icon}
@@ -146,7 +155,7 @@ export const SettingsView: React.FC = () => {
         </div>
 
         {/* Tab Content Panel */}
-        <div className="glass-panel" style={{ padding: '1.75rem' }}>
+        <div className="glass-panel" style={{ padding: '1.75rem', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
           {/* PROFILE */}
           {activeTab === 'profile' && (
             <div>

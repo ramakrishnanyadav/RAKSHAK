@@ -36,22 +36,32 @@ export const NotFound: React.FC = () => {
     >
       <div
         style={{
-          fontSize: '4rem',
+          fontSize: '4.5rem',
           fontWeight: 900,
-          color: 'var(--accent-primary)',
+          background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
           lineHeight: 1,
           fontFamily: 'var(--font-mono)',
           marginBottom: '0.5rem',
+          letterSpacing: '-0.03em',
         }}
       >
         404
       </div>
 
-      <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.75rem' }}>
+      <h1 style={{
+        fontSize: '1.75rem',
+        fontWeight: 800,
+        marginBottom: '0.75rem',
+        background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+      }}>
         {t('not_found_title')}
       </h1>
 
-      <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '520px', lineHeight: 1.6, marginBottom: '2rem' }}>
+      <p style={{ color: '#94a3b8', fontSize: '1rem', maxWidth: '520px', lineHeight: 1.6, marginBottom: '2rem' }}>
         {t('not_found_desc')}
       </p>
 

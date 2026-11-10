@@ -36,6 +36,7 @@ import { ReportsView } from './pages/ReportsView';
 import { SettingsView } from './pages/SettingsView';
 import { AdminView } from './pages/AdminView';
 import { NotFound } from './pages/NotFound';
+import { SceneWorkstation } from './components/scene/SceneWorkstation';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +61,7 @@ const StudioLayout: React.FC<{ isBackendConnected: boolean }> = ({ isBackendConn
     }
     const routeTitles: Record<string, string> = {
       '/app': 'Dashboard',
+      '/app/workstation': '3D Workstation',
       '/app/scenarios': 'Scenarios Library',
       '/app/runs/new': 'Launch Simulation Run',
       '/app/runs': 'Simulation Replay Viewer',
@@ -146,6 +148,8 @@ export const App: React.FC = () => {
       setIsBackendConnected(false);
     };
     checkBackend();
+    const interval = setInterval(checkBackend, 8000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -166,6 +170,7 @@ export const App: React.FC = () => {
                   {/* Authenticated / Guest Studio App Shell */}
                   <Route path="/app" element={<StudioLayout isBackendConnected={isBackendConnected} />}>
                     <Route index element={<Dashboard />} />
+                    <Route path="workstation" element={<SceneWorkstation />} />
                     <Route path="scenarios" element={<Scenarios />} />
                     <Route path="scenarios/:id" element={<ScenarioDetail />} />
                     <Route path="runs/new" element={<NewRun />} />

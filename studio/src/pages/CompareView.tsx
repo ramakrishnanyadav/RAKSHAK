@@ -4,15 +4,16 @@
  * Synchronized playhead, telemetry delta calculations, and accessible comparison table.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Columns, Play, Pause, RotateCcw, AlertTriangle, ShieldCheck, Zap, ArrowRight } from 'lucide-react';
 import { RunLog, Frame } from '../types/apath_log';
-import { ReplayCanvas, CanvasLayerState } from '../components/ReplayCanvas';
 import { DataTableToggle } from '../components/DataTableToggle';
 import { AccessibleTable, ColumnDef } from '../components/AccessibleTable';
 import { SkeletonCard, ErrorState } from '../components/StatusState';
 import { useSettings, usePresentationMode } from '../context/SettingsContext';
+import { extractSceneModelFromLog } from '../adapters/sceneModelAdapter';
+import { Scene3DCanvas, CameraMode } from '../components/scene/Scene3DCanvas';
 
 interface ComparisonMetricRow {
   metric: string;
@@ -32,6 +33,7 @@ export const CompareView: React.FC = () => {
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
+  const [cameraMode, setCameraMode] = useState<CameraMode>('chase');
 
   // Available runs list
   const { data: runsManifest } = useQuery({
@@ -86,14 +88,6 @@ export const CompareView: React.FC = () => {
     return () => clearInterval(timer);
   }, [isPlaying, maxFrames]);
 
-  const defaultLayers: CanvasLayerState = {
-    world: true,
-    tracks: true,
-    predictions: true,
-    risk: true,
-    plan: true,
-  };
-
   const frameA: Frame | undefined =
     runLogA && runLogA.frames.length > 0
       ? runLogA.frames[Math.min(currentFrameIndex, runLogA.frames.length - 1)]
@@ -103,6 +97,16 @@ export const CompareView: React.FC = () => {
     runLogB && runLogB.frames.length > 0
       ? runLogB.frames[Math.min(currentFrameIndex, runLogB.frames.length - 1)]
       : undefined;
+
+  const sceneModelA = useMemo(() => {
+    if (!runLogA || !runLogA.world || !runLogA.frames || runLogA.frames.length === 0) return null;
+    return extractSceneModelFromLog(runLogA, Math.min(currentFrameIndex, runLogA.frames.length - 1));
+  }, [runLogA, currentFrameIndex]);
+
+  const sceneModelB = useMemo(() => {
+    if (!runLogB || !runLogB.world || !runLogB.frames || runLogB.frames.length === 0) return null;
+    return extractSceneModelFromLog(runLogB, Math.min(currentFrameIndex, runLogB.frames.length - 1));
+  }, [runLogB, currentFrameIndex]);
 
   const metricsA = runLogA?.metrics;
   const metricsB = runLogB?.metrics;
@@ -222,17 +226,29 @@ export const CompareView: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0.85rem 1.25rem',
+          padding: '1rem 1.4rem',
           flexWrap: 'wrap',
           gap: '1rem',
+          background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%)',
+          border: '1px solid rgba(56, 189, 248, 0.22)',
         }}
       >
         <div>
-          <h1 style={{ fontSize: '1.35rem', fontWeight: 800, margin: '0 0 0.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Columns size={20} color="var(--accent-primary)" />
+          <h1 style={{
+            fontSize: '1.4rem',
+            fontWeight: 900,
+            margin: '0 0 0.2rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            <Columns size={20} color="#38bdf8" style={{ WebkitTextFillColor: 'initial' }} />
             Side-by-Side Planner Comparison
           </h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
+          <p style={{ fontSize: '0.82rem', color: '#64748b', margin: 0 }}>
             Synchronous replay comparing reactive baseline (P0/B1) vs ADAPTIVE-PATH (P3).
           </p>
         </div>
@@ -256,7 +272,7 @@ export const CompareView: React.FC = () => {
               aria-label="Reset comparison to beginning"
               style={{ padding: '0.45rem', minHeight: 'var(--min-target-size)' }}
             >
-              <RotateCcw size={16} />
+              <RotateCcw size={15} />
             </button>
             <button
               onClick={() => setIsPlaying(!isPlaying)}
@@ -264,17 +280,46 @@ export const CompareView: React.FC = () => {
               aria-label={isPlaying ? 'Pause both simulations' : 'Play both simulations'}
               style={{ padding: '0.45rem 1rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
             >
-              {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+              {isPlaying ? <Pause size={15} /> : <Play size={15} />}
               <span>{isPlaying ? 'Pause' : 'Play Both'}</span>
             </button>
+
+            {/* 3D Camera Mode Selectors */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', background: 'rgba(15, 23, 42, 0.7)', padding: '2px', borderRadius: '6px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+              {[
+                { mode: 'chase' as CameraMode, label: '🚗 Chase' },
+                { mode: 'bird' as CameraMode, label: '🦅 Bird’s-Eye' },
+                { mode: 'cockpit' as CameraMode, label: '🎯 Cockpit' },
+              ].map((c) => (
+                <button
+                  key={c.mode}
+                  type="button"
+                  onClick={() => setCameraMode(c.mode)}
+                  style={{
+                    padding: '0.25rem 0.55rem',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    borderRadius: '4px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: cameraMode === c.mode ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'transparent',
+                    color: cameraMode === c.mode ? '#07080a' : '#94a3b8',
+                  }}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
             <span
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.85rem',
                 fontWeight: 700,
-                background: 'var(--bg-surface-elevated)',
-                padding: '0.35rem 0.6rem',
-                borderRadius: 'var(--radius-sm)',
+                background: 'rgba(56, 189, 248, 0.12)',
+                color: '#38bdf8',
+                padding: '0.35rem 0.65rem',
+                borderRadius: '6px',
+                border: '1px solid rgba(56, 189, 248, 0.2)',
               }}
             >
               {(currentFrameIndex * 0.1).toFixed(1)}s
@@ -291,30 +336,34 @@ export const CompareView: React.FC = () => {
           gap: '0.75rem',
         }}
       >
-        <div className="glass-panel" style={{ padding: '0.85rem 1rem' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>SAFETY COLLISION STATUS</div>
-          <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--accent-teal)', marginTop: '2px' }}>
+        <div className="glass-panel" style={{ padding: '0.9rem 1rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #10b981, #34d399)' }} />
+          <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase' }}>SAFETY COLLISION STATUS</div>
+          <div style={{ fontSize: '1rem', fontWeight: 900, color: '#10b981', marginTop: '4px' }}>
             {runLogB?.metrics.collision_occurred ? 'FAILED' : '0 Collisions (P3 Safe)'}
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '0.85rem 1rem' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>MIN CLEARANCE DELTA</div>
-          <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--accent-teal)', marginTop: '2px' }}>
+        <div className="glass-panel" style={{ padding: '0.9rem 1rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #0ea5e9, #38bdf8)' }} />
+          <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase' }}>MIN CLEARANCE DELTA</div>
+          <div style={{ fontSize: '1rem', fontWeight: 900, color: '#38bdf8', marginTop: '4px' }}>
             +1.6m Margin Improvement
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '0.85rem 1rem' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>JERK REDUCTION</div>
-          <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--accent-teal)', marginTop: '2px' }}>
+        <div className="glass-panel" style={{ padding: '0.9rem 1rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #818cf8, #a855f7)' }} />
+          <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase' }}>JERK REDUCTION</div>
+          <div style={{ fontSize: '1rem', fontWeight: 900, color: '#c084fc', marginTop: '4px' }}>
             -57% Peak Jerk (Smooth Ride)
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '0.85rem 1rem' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>ADAPTIVE REPLANS</div>
-          <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--accent-primary)', marginTop: '2px' }}>
+        <div className="glass-panel" style={{ padding: '0.9rem 1rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #38bdf8, #6366f1)' }} />
+          <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase' }}>ADAPTIVE REPLANS</div>
+          <div style={{ fontSize: '1rem', fontWeight: 900, color: '#38bdf8', marginTop: '4px' }}>
             3 Event-Triggered Replans
           </div>
         </div>
@@ -328,8 +377,8 @@ export const CompareView: React.FC = () => {
           className="glass-panel"
           style={{
             padding: '1rem 1.25rem',
-            background: 'rgba(59, 130, 246, 0.08)',
-            border: '1px solid rgba(59, 130, 246, 0.25)',
+            background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(99, 102, 241, 0.04) 100%)',
+            border: '1px solid rgba(56, 189, 248, 0.22)',
             display: 'flex',
             alignItems: 'center',
             gap: '1rem',
@@ -340,21 +389,22 @@ export const CompareView: React.FC = () => {
               width: '36px',
               height: '36px',
               borderRadius: '50%',
-              background: 'rgba(59, 130, 246, 0.2)',
+              background: 'rgba(56, 189, 248, 0.15)',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--accent-primary)',
+              color: '#38bdf8',
               flexShrink: 0,
             }}
           >
             <ShieldCheck size={20} />
           </div>
           <div>
-            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.2rem' }}>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.2rem' }}>
               Why ADAPTIVE-PATH (P3) Prevents the Collision
             </div>
-            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.45 }}>
               The baseline planner drives reactively and does not anticipate how crossing road users move, resulting in emergency braking or collisions. In contrast, ADAPTIVE-PATH (P3) continuously predicts movement envelopes, initiates early smooth adjustments, and maintains a safe buffer around all road hazards.
             </p>
           </div>
@@ -375,49 +425,67 @@ export const CompareView: React.FC = () => {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))', gap: '1rem' }}>
           {/* Plan A Viewport */}
-          <div className="glass-panel" style={{ padding: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                PLAN A: {runLogA?.planner.name || 'Baseline DWA-VO'}
+          <div className="glass-panel" style={{ padding: '1rem', border: '1px solid rgba(245, 158, 11, 0.25)', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #f59e0b, #fbbf24)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 800, padding: '0.2rem 0.5rem', borderRadius: '4px', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
+                  BASELINE
+                </span>
+                <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#f8fafc' }}>
+                  {runLogA?.planner.name || 'Baseline DWA-VO'}
+                </span>
               </div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                Speed: {frameA ? (frameA.ego.v * 3.6).toFixed(1) : 0} km/h
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94a3b8', background: 'rgba(15, 23, 42, 0.6)', padding: '0.2rem 0.5rem', borderRadius: '4px', border: '1px solid rgba(148, 163, 184, 0.15)' }}>
+                Speed: <strong style={{ color: '#f8fafc' }}>{frameA ? (frameA.ego.v * 3.6).toFixed(1) : 0}</strong> km/h
               </span>
             </div>
-            {runLogA && (
-              <div style={{ height: '360px', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-sm)' }}>
-                <ReplayCanvas
-                  runLog={runLogA}
-                  currentFrameIndex={Math.min(currentFrameIndex, runLogA.frames.length - 1)}
-                  selectedAgentId={null}
-                  onSelectAgent={() => {}}
-                  layers={defaultLayers}
-                  highContrast={isHighContrast}
+            {sceneModelA ? (
+              <div style={{ height: '380px', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(245, 158, 11, 0.25)', background: '#0a0e17' }}>
+                <Scene3DCanvas
+                  sceneModel={sceneModelA}
+                  cameraMode={cameraMode}
+                  plannerId={runLogA?.planner.id || 'B1'}
+                  showScanner={false}
+                  showSceneryTraffic={true}
                 />
+              </div>
+            ) : (
+              <div style={{ height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                Loading Baseline 3D simulation...
               </div>
             )}
           </div>
 
           {/* Plan B Viewport */}
-          <div className="glass-panel" style={{ padding: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--accent-primary)' }}>
-                PLAN B: {runLogB?.planner.name || 'P3: ADAPTIVE-PATH'}
+          <div className="glass-panel" style={{ padding: '1rem', border: '1px solid rgba(56, 189, 248, 0.3)', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #38bdf8, #818cf8)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 800, padding: '0.2rem 0.5rem', borderRadius: '4px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.35)' }}>
+                  ADAPTIVE-PATH
+                </span>
+                <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#38bdf8' }}>
+                  {runLogB?.planner.name || 'P3: ADAPTIVE-PATH'}
+                </span>
               </div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                Speed: {frameB ? (frameB.ego.v * 3.6).toFixed(1) : 0} km/h
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94a3b8', background: 'rgba(15, 23, 42, 0.6)', padding: '0.2rem 0.5rem', borderRadius: '4px', border: '1px solid rgba(148, 163, 184, 0.15)' }}>
+                Speed: <strong style={{ color: '#38bdf8' }}>{frameB ? (frameB.ego.v * 3.6).toFixed(1) : 0}</strong> km/h
               </span>
             </div>
-            {runLogB && (
-              <div style={{ height: '360px', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-sm)' }}>
-                <ReplayCanvas
-                  runLog={runLogB}
-                  currentFrameIndex={Math.min(currentFrameIndex, runLogB.frames.length - 1)}
-                  selectedAgentId={null}
-                  onSelectAgent={() => {}}
-                  layers={defaultLayers}
-                  highContrast={isHighContrast}
+            {sceneModelB ? (
+              <div style={{ height: '380px', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(56, 189, 248, 0.25)', background: '#0a0e17' }}>
+                <Scene3DCanvas
+                  sceneModel={sceneModelB}
+                  cameraMode={cameraMode}
+                  plannerId={runLogB?.planner.id || 'P3'}
+                  showScanner={true}
+                  showSceneryTraffic={true}
                 />
+              </div>
+            ) : (
+              <div style={{ height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                Loading ADAPTIVE-PATH 3D simulation...
               </div>
             )}
           </div>

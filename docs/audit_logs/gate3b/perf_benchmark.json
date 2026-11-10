@@ -1,0 +1,146 @@
+{
+  "benchmark_date": "2026-11-05 17:49:28",
+  "total_captures": 12,
+  "captures": [
+    {
+      "file": "cattle_key_moment_1080p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "resolution": "1920x1080",
+      "frame_index": 25,
+      "simulation_time": "2.5 s",
+      "description": "Cow steps into roadway; P3 vehicle slows and executes smooth left bypass"
+    },
+    {
+      "file": "village_key_moment_1080p.png",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
+      "resolution": "1920x1080",
+      "frame_index": 50,
+      "simulation_time": "5.0 s",
+      "description": "Narrow road negotiation approaching oncoming truck"
+    },
+    {
+      "file": "intersection_key_moment_1080p.png",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
+      "resolution": "1920x1080",
+      "frame_index": 25,
+      "simulation_time": "2.5 s",
+      "description": "Unprotected turn negotiation with cross traffic"
+    },
+    {
+      "file": "highway_key_moment_1080p.png",
+      "scenario": "SCENARIO_3_HIGHWAY_MERGE",
+      "resolution": "1920x1080",
+      "frame_index": 35,
+      "simulation_time": "3.5 s",
+      "description": "High-speed highway lateral merge gap matching"
+    },
+    {
+      "file": "market_key_moment_1080p.png",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
+      "resolution": "1920x1080",
+      "frame_index": 60,
+      "simulation_time": "6.0 s",
+      "description": "Narrow corridor crawl past parked autorickshaws and pedestrians"
+    },
+    {
+      "file": "compare_p3_vs_b1_scissor_1080p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "resolution": "1920x1080",
+      "frame_index": 25,
+      "simulation_time": "2.5 s",
+      "description": "Single-canvas dual viewport (scissor split): P3 Adaptive left vs B1 Standard right at cow step-out"
+    },
+    {
+      "file": "cattle_key_moment_720p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "resolution": "1280x720",
+      "frame_index": 25,
+      "simulation_time": "2.5 s",
+      "description": "Cow steps into roadway; P3 vehicle slows and executes smooth left bypass"
+    },
+    {
+      "file": "village_key_moment_720p.png",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
+      "resolution": "1280x720",
+      "frame_index": 50,
+      "simulation_time": "5.0 s",
+      "description": "Narrow road negotiation approaching oncoming truck"
+    },
+    {
+      "file": "intersection_key_moment_720p.png",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
+      "resolution": "1280x720",
+      "frame_index": 25,
+      "simulation_time": "2.5 s",
+      "description": "Unprotected turn negotiation with cross traffic"
+    },
+    {
+      "file": "highway_key_moment_720p.png",
+      "scenario": "SCENARIO_3_HIGHWAY_MERGE",
+      "resolution": "1280x720",
+      "frame_index": 35,
+      "simulation_time": "3.5 s",
+      "description": "High-speed highway lateral merge gap matching"
+    },
+    {
+      "file": "market_key_moment_720p.png",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
+      "resolution": "1280x720",
+      "frame_index": 60,
+      "simulation_time": "6.0 s",
+      "description": "Narrow corridor crawl past parked autorickshaws and pedestrians"
+    },
+    {
+      "file": "compare_p3_vs_b1_scissor_720p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "resolution": "1280x720",
+      "frame_index": 25,
+      "simulation_time": "2.5 s",
+      "description": "Single-canvas dual viewport (scissor split): P3 Adaptive left vs B1 Standard right at cow step-out"
+    }
+  ],
+  "resolutions": {
+    "1080p": {
+      "resolution": "1920x1080",
+      "diagnostics": {
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 16,
+        "platform": "Win32",
+        "devicePixelRatio": 1,
+        "contextType": "WebGL2RenderingContext",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "vendor": "Google Inc. (Google)"
+      },
+      "performance": {
+        "samples": 119,
+        "avgFrameTimeMs": 16.665546218487393,
+        "p95FrameTimeMs": 16.800000000000182,
+        "minFrameTimeMs": 16.5,
+        "maxFrameTimeMs": 16.800000000000182,
+        "avgFps": 60.00403388463091
+      }
+    },
+    "720p": {
+      "resolution": "1280x720",
+      "diagnostics": {
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 16,
+        "platform": "Win32",
+        "devicePixelRatio": 1,
+        "contextType": "WebGL2RenderingContext",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "vendor": "Google Inc. (Google)"
+      },
+      "performance": {
+        "samples": 119,
+        "avgFrameTimeMs": 16.66638655462185,
+        "p95FrameTimeMs": 16.700000000000728,
+        "minFrameTimeMs": 16.599999999999454,
+        "maxFrameTimeMs": 16.800000000000182,
+        "avgFps": 60.001008420309574
+      }
+    }
+  },
+  "console_errors": [],
+  "page_errors": []
+}

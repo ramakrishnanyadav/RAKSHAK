@@ -109,17 +109,25 @@ export const ScenarioDetail: React.FC = () => {
             <span
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                color: 'var(--accent-primary)',
-                background: 'rgba(59, 130, 246, 0.15)',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                color: '#38bdf8',
+                background: 'rgba(56, 189, 248, 0.15)',
+                border: '1px solid rgba(56, 189, 248, 0.3)',
                 padding: '2px 8px',
                 borderRadius: '4px',
               }}
             >
               {scenario.id}
             </span>
-            <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0.5rem 0' }}>
+            <h1 style={{
+              fontSize: '1.85rem',
+              fontWeight: 900,
+              margin: '0.5rem 0',
+              background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
               {scenario.name}
             </h1>
           </div>
@@ -156,11 +164,11 @@ export const ScenarioDetail: React.FC = () => {
       </div>
 
       {/* Description & Operational Dimensions */}
-      <div className="glass-panel" style={{ padding: '1.5rem' }}>
-        <h2 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+      <div className="glass-panel" style={{ padding: '1.5rem', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+        <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f8fafc', marginBottom: '0.5rem' }}>
           Scenario Overview & Challenge Dimensions
         </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
           {scenario.description}
         </p>
 
@@ -170,24 +178,24 @@ export const ScenarioDetail: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             gap: '0.65rem',
-            background: 'var(--bg-surface-elevated)',
-            padding: '1rem',
+            background: 'rgba(16, 22, 35, 0.7)',
+            padding: '1.1rem 1.25rem',
             borderRadius: 'var(--radius-sm)',
-            border: '1px solid var(--border-subtle)',
+            border: '1px solid rgba(56, 189, 248, 0.15)',
             marginBottom: '1.25rem',
           }}
         >
           <div>
-            <strong style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>Environment:</strong>{' '}
-            <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{scenario.environment}</span>
+            <strong style={{ color: '#f8fafc', fontSize: '0.85rem' }}>Environment:</strong>{' '}
+            <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{scenario.environment}</span>
           </div>
           <div>
-            <strong style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>Main Traffic Challenge:</strong>{' '}
-            <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{scenario.trafficChallenge}</span>
+            <strong style={{ color: '#38bdf8', fontSize: '0.85rem' }}>Main Traffic Challenge:</strong>{' '}
+            <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{scenario.trafficChallenge}</span>
           </div>
           <div>
-            <strong style={{ color: 'var(--text-primary)', fontSize: '0.85rem' }}>What The Simulator Evaluates:</strong>{' '}
-            <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{scenario.evaluates}</span>
+            <strong style={{ color: '#34d399', fontSize: '0.85rem' }}>What The Simulator Evaluates:</strong>{' '}
+            <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{scenario.evaluates}</span>
           </div>
         </div>
 

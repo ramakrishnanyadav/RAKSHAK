@@ -168,10 +168,18 @@ export const Scenarios: React.FC = () => {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 0.4rem' }}>
+          <h1 style={{
+            fontSize: '1.9rem',
+            fontWeight: 900,
+            margin: '0 0 0.4rem',
+            letterSpacing: '-0.03em',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
             {t('nav_scenarios')}
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
+          <p style={{ color: '#64748b', fontSize: '0.9rem', margin: 0 }}>
             Canonical simulation environments representing real-world challenges on Indian roads without painted lanes.
           </p>
         </div>
@@ -247,6 +255,15 @@ export const Scenarios: React.FC = () => {
         >
           {filteredScenarios.map((sc) => {
             const isSelected = sc.id === selectedScenarioId;
+            const scenarioGradients: Record<string, string> = {
+              'SCENARIO_1_VILLAGE_ROAD': 'linear-gradient(135deg, #10b981, #14b8a6)',
+              'SCENARIO_2_URBAN_INTERSECTION': 'linear-gradient(135deg, #f59e0b, #f97316)',
+              'SCENARIO_3_HIGHWAY_MERGE': 'linear-gradient(135deg, #6366f1, #818cf8)',
+              'SCENARIO_4_DENSE_MARKET': 'linear-gradient(135deg, #ef4444, #f97316)',
+              'SCENARIO_5_CATTLE_CROSSING': 'linear-gradient(135deg, #38bdf8, #0ea5e9)',
+            };
+            const accentGrad = scenarioGradients[sc.id] || 'linear-gradient(135deg, #38bdf8, #818cf8)';
+
             return (
               <div
                 key={sc.id}
@@ -266,27 +283,33 @@ export const Scenarios: React.FC = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  border: isSelected ? '2px solid var(--accent-primary)' : '1px solid var(--border-default)',
-                  borderRadius: 'var(--radius-md)',
-                  boxShadow: isSelected ? '0 0 16px rgba(59, 130, 246, 0.2)' : 'none',
+                  border: isSelected ? '1px solid rgba(56, 189, 248, 0.5)' : '1px solid rgba(56, 189, 248, 0.1)',
+                  borderRadius: '12px',
+                  boxShadow: isSelected ? '0 0 24px rgba(56, 189, 248, 0.15), 0 8px 24px rgba(0,0,0,0.3)' : '0 4px 16px rgba(0,0,0,0.3)',
                   cursor: 'pointer',
-                  transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                   gap: '1rem',
                   position: 'relative',
+                  overflow: 'hidden',
                 }}
               >
+                {/* Top accent gradient bar */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: accentGrad }} />
+
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                       <span
                         style={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.68rem',
                           fontFamily: 'var(--font-mono)',
-                          fontWeight: 700,
-                          padding: '2px 6px',
+                          fontWeight: 800,
+                          padding: '2px 7px',
                           borderRadius: '4px',
-                          background: 'rgba(59, 130, 246, 0.15)',
-                          color: 'var(--accent-primary)',
+                          background: 'rgba(56, 189, 248, 0.12)',
+                          color: '#38bdf8',
+                          border: '1px solid rgba(56, 189, 248, 0.2)',
+                          letterSpacing: '0.05em',
                         }}
                       >
                         {sc.id.replace('SCENARIO_', 'SCN-')}
@@ -294,42 +317,44 @@ export const Scenarios: React.FC = () => {
                       {isSelected && (
                         <span
                           style={{
-                            fontSize: '0.7rem',
-                            fontWeight: 700,
-                            padding: '2px 6px',
+                            fontSize: '0.68rem',
+                            fontWeight: 800,
+                            padding: '2px 7px',
                             borderRadius: '4px',
-                            background: 'var(--accent-primary)',
-                            color: '#ffffff',
+                            background: 'rgba(56, 189, 248, 0.2)',
+                            color: '#38bdf8',
+                            border: '1px solid rgba(56, 189, 248, 0.35)',
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '3px',
                           }}
                         >
-                          <CheckCircle size={11} /> Selected
+                          <CheckCircle size={10} /> SELECTED
                         </span>
                       )}
                     </div>
                     <span
                       style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
+                        fontSize: '0.68rem',
+                        fontWeight: 800,
                         textTransform: 'uppercase',
-                        padding: '2px 6px',
+                        padding: '2px 7px',
                         borderRadius: '4px',
-                        background: 'var(--bg-surface-elevated)',
-                        color: sc.split === 'test' ? 'var(--risk-critical)' : 'var(--accent-teal)',
-                        border: '1px solid var(--border-subtle)',
+                        background: 'rgba(16, 22, 35, 0.6)',
+                        color: sc.split === 'test' ? '#ef4444' : '#10b981',
+                        border: `1px solid ${sc.split === 'test' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`,
+                        letterSpacing: '0.05em',
                       }}
                     >
                       {sc.split} Split
                     </span>
                   </div>
 
-                  <h2 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.5rem', color: 'var(--text-primary)' }}>
+                  <h2 style={{ fontSize: '1.1rem', fontWeight: 800, margin: '0 0 0.5rem', color: '#e2e8f0', letterSpacing: '-0.01em' }}>
                     {sc.name}
                   </h2>
 
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
+                  <p style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.55, marginBottom: '0.75rem' }}>
                     {sc.description}
                   </p>
 
@@ -338,26 +363,26 @@ export const Scenarios: React.FC = () => {
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '0.45rem',
-                      fontSize: '0.8rem',
-                      background: 'var(--bg-surface-elevated)',
+                      gap: '0.4rem',
+                      fontSize: '0.78rem',
+                      background: 'rgba(7, 8, 10, 0.5)',
                       padding: '0.75rem',
-                      borderRadius: 'var(--radius-sm)',
+                      borderRadius: '8px',
                       marginBottom: '0.75rem',
-                      border: '1px solid var(--border-subtle)',
+                      border: '1px solid rgba(56, 189, 248, 0.08)',
                     }}
                   >
                     <div>
-                      <strong style={{ color: 'var(--text-primary)' }}>Environment:</strong>{' '}
-                      <span style={{ color: 'var(--text-secondary)' }}>{sc.environment}</span>
+                      <strong style={{ color: '#94a3b8' }}>Environment: </strong>
+                      <span style={{ color: '#64748b' }}>{sc.environment}</span>
                     </div>
                     <div>
-                      <strong style={{ color: 'var(--text-primary)' }}>Traffic Challenge:</strong>{' '}
-                      <span style={{ color: 'var(--text-secondary)' }}>{sc.trafficChallenge}</span>
+                      <strong style={{ color: '#94a3b8' }}>Traffic Challenge: </strong>
+                      <span style={{ color: '#64748b' }}>{sc.trafficChallenge}</span>
                     </div>
                     <div>
-                      <strong style={{ color: 'var(--text-primary)' }}>Evaluates:</strong>{' '}
-                      <span style={{ color: 'var(--text-secondary)' }}>{sc.evaluates}</span>
+                      <strong style={{ color: '#94a3b8' }}>Evaluates: </strong>
+                      <span style={{ color: '#64748b' }}>{sc.evaluates}</span>
                     </div>
                   </div>
 
@@ -367,22 +392,22 @@ export const Scenarios: React.FC = () => {
                       display: 'grid',
                       gridTemplateColumns: '1fr 1fr',
                       gap: '0.4rem',
-                      fontSize: '0.75rem',
-                      color: 'var(--text-secondary)',
+                      fontSize: '0.72rem',
+                      color: '#64748b',
                       marginBottom: '0.75rem',
                     }}
                   >
-                    <div>Speed: <strong style={{ color: 'var(--text-primary)' }}>{sc.speed}</strong></div>
-                    <div>Distance: <strong style={{ color: 'var(--text-primary)' }}>{sc.distance}</strong></div>
-                    <div>Road Width: <strong style={{ color: 'var(--text-primary)' }}>{sc.roadWidth}</strong></div>
-                    <div>Curvature: <strong style={{ color: 'var(--text-primary)' }}>{sc.curvature}</strong></div>
+                    <div>Speed: <strong style={{ color: '#94a3b8' }}>{sc.speed}</strong></div>
+                    <div>Distance: <strong style={{ color: '#94a3b8' }}>{sc.distance}</strong></div>
+                    <div>Road Width: <strong style={{ color: '#94a3b8' }}>{sc.roadWidth}</strong></div>
+                    <div>Curvature: <strong style={{ color: '#94a3b8' }}>{sc.curvature}</strong></div>
                   </div>
 
                   <div>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                      Road Users:
-                    </span>{' '}
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      Road Users:{' '}
+                    </span>
+                    <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>
                       {sc.agentMix.join(', ')}
                     </span>
                   </div>
@@ -392,7 +417,7 @@ export const Scenarios: React.FC = () => {
                   style={{
                     display: 'flex',
                     gap: '0.5rem',
-                    borderTop: '1px solid var(--border-subtle)',
+                    borderTop: '1px solid rgba(56, 189, 248, 0.08)',
                     paddingTop: '0.75rem',
                   }}
                   onClick={(e) => e.stopPropagation()}
@@ -407,12 +432,12 @@ export const Scenarios: React.FC = () => {
                       justifyContent: 'center',
                       gap: '0.4rem',
                       padding: '0.5rem',
-                      fontSize: '0.85rem',
+                      fontSize: '0.82rem',
                       textDecoration: 'none',
                       minHeight: 'var(--min-target-size)',
                     }}
                   >
-                    <Eye size={15} />
+                    <Eye size={14} />
                     <span>Inspect Config</span>
                   </Link>
 
@@ -427,11 +452,11 @@ export const Scenarios: React.FC = () => {
                       justifyContent: 'center',
                       gap: '0.4rem',
                       padding: '0.5rem',
-                      fontSize: '0.85rem',
+                      fontSize: '0.82rem',
                       minHeight: 'var(--min-target-size)',
                     }}
                   >
-                    <PlusCircle size={15} />
+                    <PlusCircle size={14} />
                     <span>New Run</span>
                   </button>
 
@@ -446,11 +471,11 @@ export const Scenarios: React.FC = () => {
                       justifyContent: 'center',
                       gap: '0.4rem',
                       padding: '0.5rem',
-                      fontSize: '0.85rem',
+                      fontSize: '0.82rem',
                       minHeight: 'var(--min-target-size)',
                     }}
                   >
-                    <Play size={15} />
+                    <Play size={14} />
                     <span>Replay</span>
                   </button>
                 </div>

@@ -60,4 +60,35 @@ describe('ReplayView 404 Contract Test', () => {
     const retryBtn = screen.getByText('Retry Request');
     expect(retryBtn).not.toBeNull();
   });
+
+  it('renders "Failed to load simulation run" on 500 server error or network failure, NOT "Run Not Found (404)"', async () => {
+    // 1. Mock apiClient.getRunManifest to reject with a 500 internal server error
+    vi.spyOn(apiClient, 'getRunManifest').mockRejectedValue(new Error('Internal Server Error 500'));
+
+    // 2. Mock fetch for sample_runs offline fallback to reject with network failure
+    globalThis.fetch = vi.fn().mockImplementation(() =>
+      Promise.reject(new TypeError('Failed to fetch (Network connection refused)'))
+    );
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <I18nProvider>
+          <SettingsProvider>
+            <MemoryRouter initialEntries={['/app/runs/run_with_server_error_500']}>
+              <Routes>
+                <Route path="/app/runs/:id" element={<ReplayView />} />
+              </Routes>
+            </MemoryRouter>
+          </SettingsProvider>
+        </I18nProvider>
+      </QueryClientProvider>
+    );
+
+    // Verify "Failed to load simulation run" appears
+    const genericErrorTitle = await screen.findByText('Failed to load simulation run');
+    expect(genericErrorTitle).not.toBeNull();
+
+    // Verify "Run Not Found (404)" NEVER appears
+    expect(screen.queryByText('Run Not Found (404)')).toBeNull();
+  });
 });

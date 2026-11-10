@@ -1,0 +1,232 @@
+{
+  "webgl_info": {
+    "contextType": "WebGL2RenderingContext",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)"
+  },
+  "total_screenshots": 24,
+  "captures": [
+    {
+      "file": "cattle_3d_1080p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Passed the 65 m mark at t = 10.8 s; run ended at t = 12.6 s."
+    },
+    {
+      "file": "cattle_2d_1080p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Passed the 65 m mark at t = 10.8 s; run ended at t = 12.6 s."
+    },
+    {
+      "file": "village_3d_1080p.png",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Final position x = 20.2 m at t = 5.8 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "village_2d_1080p.png",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Final position x = 20.2 m at t = 5.8 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "intersection_3d_1080p.png",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Final position x = 15.5 m at t = 2.7 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "intersection_2d_1080p.png",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Final position x = 15.5 m at t = 2.7 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "highway_3d_1080p.png",
+      "scenario": "SCENARIO_3_HIGHWAY_MERGE",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Passed the 65 m mark at t = 7.9 s; run ended at t = 11.2 s."
+    },
+    {
+      "file": "highway_2d_1080p.png",
+      "scenario": "SCENARIO_3_HIGHWAY_MERGE",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Passed the 65 m mark at t = 7.9 s; run ended at t = 11.2 s."
+    },
+    {
+      "file": "market_3d_1080p.png",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Final position x = 42.4 m at t = 11.9 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "market_2d_1080p.png",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 0,
+      "time_text": "Final position x = 42.4 m at t = 11.9 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "cattle_stepout_p3_1080p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1920x1080",
+      "frame_index": 25,
+      "time_text": "Passed the 65 m mark at t = 10.8 s; run ended at t = 12.6 s.",
+      "event": "Cow enters roadway at t=2.5s; P3 decelerates and smoothly plans bypass"
+    },
+    {
+      "file": "cattle_stepout_b1_1080p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "view": "3D Perspective",
+      "planner": "B1",
+      "resolution": "1920x1080",
+      "frame_index": 25,
+      "time_text": "Final position x = 25.7 m at t = 7.3 s (Goal threshold: 65 m).",
+      "event": "Cow enters roadway at t=2.5s; B1 velocity obstacles comparison"
+    },
+    {
+      "file": "cattle_3d_720p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Passed the 65 m mark at t = 10.8 s; run ended at t = 12.6 s."
+    },
+    {
+      "file": "cattle_2d_720p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Passed the 65 m mark at t = 10.8 s; run ended at t = 12.6 s."
+    },
+    {
+      "file": "village_3d_720p.png",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Final position x = 20.2 m at t = 5.8 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "village_2d_720p.png",
+      "scenario": "SCENARIO_1_VILLAGE_ROAD",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Final position x = 20.2 m at t = 5.8 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "intersection_3d_720p.png",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Final position x = 15.5 m at t = 2.7 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "intersection_2d_720p.png",
+      "scenario": "SCENARIO_2_URBAN_INTERSECTION",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Final position x = 15.5 m at t = 2.7 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "highway_3d_720p.png",
+      "scenario": "SCENARIO_3_HIGHWAY_MERGE",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Passed the 65 m mark at t = 7.9 s; run ended at t = 11.2 s."
+    },
+    {
+      "file": "highway_2d_720p.png",
+      "scenario": "SCENARIO_3_HIGHWAY_MERGE",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Passed the 65 m mark at t = 7.9 s; run ended at t = 11.2 s."
+    },
+    {
+      "file": "market_3d_720p.png",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Final position x = 42.4 m at t = 11.9 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "market_2d_720p.png",
+      "scenario": "SCENARIO_4_DENSE_MARKET",
+      "view": "2D Plan View",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 0,
+      "time_text": "Final position x = 42.4 m at t = 11.9 s (Goal threshold: 65 m)."
+    },
+    {
+      "file": "cattle_stepout_p3_720p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "view": "3D Perspective",
+      "planner": "P3",
+      "resolution": "1280x720",
+      "frame_index": 25,
+      "time_text": "Passed the 65 m mark at t = 10.8 s; run ended at t = 12.6 s.",
+      "event": "Cow enters roadway at t=2.5s; P3 decelerates and smoothly plans bypass"
+    },
+    {
+      "file": "cattle_stepout_b1_720p.png",
+      "scenario": "SCENARIO_5_CATTLE_CROSSING",
+      "view": "3D Perspective",
+      "planner": "B1",
+      "resolution": "1280x720",
+      "frame_index": 25,
+      "time_text": "Final position x = 25.7 m at t = 7.3 s (Goal threshold: 65 m).",
+      "event": "Cow enters roadway at t=2.5s; B1 velocity obstacles comparison"
+    }
+  ],
+  "console_errors": [],
+  "page_errors": []
+}

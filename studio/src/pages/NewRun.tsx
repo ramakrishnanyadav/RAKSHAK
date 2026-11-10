@@ -222,16 +222,23 @@ export const NewRun: React.FC = () => {
     <div style={{ padding: '1.5rem', maxWidth: '960px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
       {/* Header */}
       <div>
-        <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 0.35rem' }}>
+        <h1 style={{
+          fontSize: '1.85rem',
+          fontWeight: 900,
+          margin: '0 0 0.35rem',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}>
           Prepare Simulation Run
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
+        <p style={{ color: '#94a3b8', fontSize: '0.95rem', margin: 0 }}>
           Follow 3 simple steps to select a road environment, choose a driving strategy, and launch a real simulation test drive.
         </p>
       </div>
 
       {/* Progress Indicator (Breadcrumbs / Steps) */}
-      <nav aria-label="Simulation preparation steps" className="glass-panel" style={{ padding: '1rem 1.25rem' }}>
+      <nav aria-label="Simulation preparation steps" className="glass-panel" style={{ padding: '1rem 1.25rem', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', alignItems: 'center' }}>
           {/* Step 1 Pill */}
           <button
@@ -247,7 +254,7 @@ export const NewRun: React.FC = () => {
               gap: '0.65rem',
               cursor: 'pointer',
               textAlign: 'left',
-              borderBottom: currentStep === 1 ? '3px solid var(--accent-primary)' : '3px solid transparent',
+              borderBottom: currentStep === 1 ? '3px solid #38bdf8' : '3px solid transparent',
               opacity: currentStep === 1 ? 1 : 0.75,
               transition: 'all 0.15s ease',
             }}
@@ -257,23 +264,24 @@ export const NewRun: React.FC = () => {
                 width: '28px',
                 height: '28px',
                 borderRadius: '50%',
-                background: currentStep > 1 ? 'var(--status-success)' : currentStep === 1 ? 'var(--accent-primary)' : 'var(--bg-surface-elevated)',
-                color: '#ffffff',
+                background: currentStep > 1 ? '#10b981' : currentStep === 1 ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'rgba(16, 22, 35, 0.8)',
+                color: currentStep === 1 ? '#07080a' : '#ffffff',
+                border: currentStep === 1 ? 'none' : '1px solid rgba(56, 189, 248, 0.25)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '0.85rem',
-                fontWeight: 700,
+                fontWeight: 800,
                 flexShrink: 0,
               }}
             >
               {currentStep > 1 ? <Check size={16} /> : '1'}
             </div>
             <div>
-              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--text-secondary)', fontWeight: 700 }}>
+              <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: currentStep === 1 ? '#38bdf8' : '#64748b', fontWeight: 800 }}>
                 Step 1
               </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: currentStep === 1 ? '#f8fafc' : '#94a3b8' }}>
                 Environment
               </div>
             </div>
@@ -293,7 +301,7 @@ export const NewRun: React.FC = () => {
               gap: '0.65rem',
               cursor: 'pointer',
               textAlign: 'left',
-              borderBottom: currentStep === 2 ? '3px solid var(--accent-primary)' : '3px solid transparent',
+              borderBottom: currentStep === 2 ? '3px solid #38bdf8' : '3px solid transparent',
               opacity: currentStep === 2 ? 1 : currentStep > 2 ? 0.75 : 0.6,
               transition: 'all 0.15s ease',
             }}
@@ -303,23 +311,24 @@ export const NewRun: React.FC = () => {
                 width: '28px',
                 height: '28px',
                 borderRadius: '50%',
-                background: currentStep > 2 ? 'var(--status-success)' : currentStep === 2 ? 'var(--accent-primary)' : 'var(--bg-surface-elevated)',
-                color: '#ffffff',
+                background: currentStep > 2 ? '#10b981' : currentStep === 2 ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'rgba(16, 22, 35, 0.8)',
+                color: currentStep === 2 ? '#07080a' : '#ffffff',
+                border: currentStep === 2 ? 'none' : '1px solid rgba(56, 189, 248, 0.25)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '0.85rem',
-                fontWeight: 700,
+                fontWeight: 800,
                 flexShrink: 0,
               }}
             >
               {currentStep > 2 ? <Check size={16} /> : '2'}
             </div>
             <div>
-              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--text-secondary)', fontWeight: 700 }}>
+              <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: currentStep === 2 ? '#38bdf8' : '#64748b', fontWeight: 800 }}>
                 Step 2
               </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: currentStep === 2 ? '#f8fafc' : '#94a3b8' }}>
                 Driving Strategy
               </div>
             </div>
@@ -339,7 +348,7 @@ export const NewRun: React.FC = () => {
               gap: '0.65rem',
               cursor: 'pointer',
               textAlign: 'left',
-              borderBottom: currentStep === 3 ? '3px solid var(--accent-primary)' : '3px solid transparent',
+              borderBottom: currentStep === 3 ? '3px solid #38bdf8' : '3px solid transparent',
               opacity: currentStep === 3 ? 1 : 0.6,
               transition: 'all 0.15s ease',
             }}
@@ -349,23 +358,24 @@ export const NewRun: React.FC = () => {
                 width: '28px',
                 height: '28px',
                 borderRadius: '50%',
-                background: currentStep === 3 ? 'var(--accent-primary)' : 'var(--bg-surface-elevated)',
-                color: '#ffffff',
+                background: currentStep === 3 ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'rgba(16, 22, 35, 0.8)',
+                color: currentStep === 3 ? '#07080a' : '#ffffff',
+                border: currentStep === 3 ? 'none' : '1px solid rgba(56, 189, 248, 0.25)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '0.85rem',
-                fontWeight: 700,
+                fontWeight: 800,
                 flexShrink: 0,
               }}
             >
               3
             </div>
             <div>
-              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--text-secondary)', fontWeight: 700 }}>
+              <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: currentStep === 3 ? '#38bdf8' : '#64748b', fontWeight: 800 }}>
                 Step 3
               </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: currentStep === 3 ? '#f8fafc' : '#94a3b8' }}>
                 Review & Start
               </div>
             </div>
@@ -487,14 +497,14 @@ export const NewRun: React.FC = () => {
                   style={{
                     padding: '1.15rem 1.25rem',
                     borderRadius: 'var(--radius-md)',
-                    border: isSelected ? '2px solid var(--accent-primary)' : '1px solid var(--border-default)',
-                    background: isSelected ? 'rgba(59, 130, 246, 0.08)' : 'var(--bg-surface)',
+                    border: isSelected ? '1px solid #38bdf8' : '1px solid rgba(56, 189, 248, 0.16)',
+                    background: isSelected ? 'linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(16, 22, 35, 0.9) 100%)' : 'rgba(16, 22, 35, 0.65)',
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '0.5rem',
                     transition: 'all 0.15s ease',
-                    boxShadow: isSelected ? '0 0 0 1px var(--accent-primary)' : 'none',
+                    boxShadow: isSelected ? '0 0 20px rgba(56, 189, 248, 0.18)' : 'none',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -505,36 +515,36 @@ export const NewRun: React.FC = () => {
                         id={`scenario-${sc.id}`}
                         checked={isSelected}
                         onChange={() => setScenarioId(sc.id)}
-                        style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#38bdf8' }}
                         aria-label={sc.name}
                       />
-                      <label htmlFor={`scenario-${sc.id}`} style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)', cursor: 'pointer' }}>
+                      <label htmlFor={`scenario-${sc.id}`} style={{ fontWeight: 800, fontSize: '1.05rem', color: isSelected ? '#38bdf8' : '#f8fafc', cursor: 'pointer' }}>
                         {sc.name}
                       </label>
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                       <span
                         style={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.72rem',
                           fontWeight: 700,
                           padding: '0.2rem 0.55rem',
                           borderRadius: 'var(--radius-sm)',
-                          background: 'var(--bg-surface-elevated)',
-                          border: '1px solid var(--border-subtle)',
-                          color: 'var(--text-secondary)',
+                          background: 'rgba(11, 15, 23, 0.7)',
+                          border: '1px solid rgba(56, 189, 248, 0.18)',
+                          color: '#94a3b8',
                         }}
                       >
                         Road width: {sc.roadWidth}
                       </span>
                       <span
                         style={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.72rem',
                           fontWeight: 700,
                           padding: '0.2rem 0.55rem',
                           borderRadius: 'var(--radius-sm)',
-                          background: 'var(--bg-surface-elevated)',
-                          border: '1px solid var(--border-subtle)',
-                          color: 'var(--text-secondary)',
+                          background: 'rgba(11, 15, 23, 0.7)',
+                          border: '1px solid rgba(56, 189, 248, 0.18)',
+                          color: '#38bdf8',
                         }}
                       >
                         {sc.speed}
@@ -542,14 +552,14 @@ export const NewRun: React.FC = () => {
                     </div>
                   </div>
 
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.45, paddingLeft: '1.8rem' }}>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.45, paddingLeft: '1.8rem' }}>
                     {sc.description}
                   </p>
 
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', fontSize: '0.8rem', paddingLeft: '1.8rem', marginTop: '0.2rem' }}>
                     <div>
-                      <strong style={{ color: 'var(--text-primary)' }}>Traffic challenge:</strong>{' '}
-                      <span style={{ color: 'var(--text-secondary)' }}>{sc.trafficChallenge}</span>
+                      <strong style={{ color: '#f8fafc' }}>Traffic challenge:</strong>{' '}
+                      <span style={{ color: '#94a3b8' }}>{sc.trafficChallenge}</span>
                     </div>
                   </div>
                 </div>
@@ -594,24 +604,26 @@ export const NewRun: React.FC = () => {
               <div
                 style={{
                   display: 'flex',
-                  background: 'var(--bg-surface-elevated)',
-                  padding: '2px',
+                  background: 'rgba(16, 22, 35, 0.85)',
+                  padding: '3px',
                   borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-default)',
+                  border: '1px solid rgba(56, 189, 248, 0.22)',
+                  gap: '3px',
                 }}
               >
                 <button
                   type="button"
                   onClick={() => setStrategyMode('simple')}
                   style={{
-                    padding: '0.35rem 0.75rem',
+                    padding: '0.35rem 0.85rem',
                     fontSize: '0.8rem',
                     fontWeight: 700,
                     borderRadius: 'var(--radius-sm)',
                     border: 'none',
-                    background: strategyMode === 'simple' ? 'var(--accent-primary)' : 'transparent',
-                    color: strategyMode === 'simple' ? '#ffffff' : 'var(--text-secondary)',
+                    background: strategyMode === 'simple' ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'transparent',
+                    color: strategyMode === 'simple' ? '#07080a' : '#94a3b8',
                     cursor: 'pointer',
+                    transition: 'all 0.15s ease',
                   }}
                 >
                   Simple Mode
@@ -620,14 +632,15 @@ export const NewRun: React.FC = () => {
                   type="button"
                   onClick={() => setStrategyMode('research')}
                   style={{
-                    padding: '0.35rem 0.75rem',
+                    padding: '0.35rem 0.85rem',
                     fontSize: '0.8rem',
                     fontWeight: 700,
                     borderRadius: 'var(--radius-sm)',
                     border: 'none',
-                    background: strategyMode === 'research' ? 'var(--accent-primary)' : 'transparent',
-                    color: strategyMode === 'research' ? '#ffffff' : 'var(--text-secondary)',
+                    background: strategyMode === 'research' ? 'linear-gradient(135deg, #6366f1, #818cf8)' : 'transparent',
+                    color: strategyMode === 'research' ? '#ffffff' : '#94a3b8',
                     cursor: 'pointer',
+                    transition: 'all 0.15s ease',
                   }}
                 >
                   Research Mode (All 6 Planners)

@@ -42,6 +42,9 @@ import { ReplayTimeline } from '../components/ReplayTimeline';
 import { DataTableToggle } from '../components/DataTableToggle';
 import { AccessibleTable, AccessibleRiskBadge, ColumnDef } from '../components/AccessibleTable';
 import { SkeletonCard, SkeletonTable, ErrorState, OfflineBanner } from '../components/StatusState';
+import { EvidencePanel } from '../components/showcase/EvidencePanel';
+import { extractSceneModelFromLog } from '../adapters/sceneModelAdapter';
+import { Scene3DCanvas, CameraMode } from '../components/scene/Scene3DCanvas';
 
 export const ReplayView: React.FC = () => {
   const { id: paramRunId } = useParams<{ id: string }>();
@@ -89,6 +92,9 @@ export const ReplayView: React.FC = () => {
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(initialAgent || null);
   const [isTableView, setIsTableView] = useState<boolean>(false);
   const [showEventList, setShowEventList] = useState<boolean>(false);
+  const [cameraMode, setCameraMode] = useState<CameraMode>('chase');
+  const [showScanner, setShowScanner] = useState<boolean>(true);
+  const [showSceneryTraffic, setShowSceneryTraffic] = useState<boolean>(true);
 
   // Fetch Run Data via TanStack Query (supports live API + chunk streaming + offline sample_runs)
   const { data: runLog, isLoading, error, refetch } = useQuery<RunLog>({
@@ -184,27 +190,37 @@ export const ReplayView: React.FC = () => {
     }
   }, [runLog, initialTimeStr]);
 
-  // Synchronize URL parameters on state changes (throttled)
+  // Synchronize URL parameters ONLY when paused/stopped (debounced to prevent UI shaking/crashing)
   useEffect(() => {
-    if (!runLog) return;
-    const currentFrame = runLog.frames[currentFrameIndex];
-    const timeVal = currentFrame ? currentFrame.t.toFixed(1) : '0.0';
+    if (!runLog || isPlaying) return;
+    const timer = setTimeout(() => {
+      const currentFrame = runLog.frames[currentFrameIndex];
+      const timeVal = currentFrame ? currentFrame.t.toFixed(1) : '0.0';
 
-    const activeLayerKeys = Object.entries(layers)
-      .filter(([_, active]) => active)
-      .map(([key]) => key)
-      .join(',');
+      const activeLayerKeys = Object.entries(layers)
+        .filter(([_, active]) => active)
+        .map(([key]) => key)
+        .join(',');
 
-    const params: Record<string, string> = {
-      t: timeVal,
-      layers: activeLayerKeys,
-    };
-    if (selectedAgentId) {
-      params.agent = selectedAgentId;
-    }
+      const params: Record<string, string> = {
+        t: timeVal,
+        layers: activeLayerKeys,
+      };
+      if (selectedAgentId) {
+        params.agent = selectedAgentId;
+      }
 
-    setSearchParams(params, { replace: true });
-  }, [currentFrameIndex, layers, selectedAgentId, runLog, setSearchParams]);
+      setSearchParams(params, { replace: true });
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [currentFrameIndex, layers, selectedAgentId, runLog, isPlaying, setSearchParams]);
+
+  // Extract authoritative 3D SceneModel from current frame
+  const sceneModel = useMemo(() => {
+    if (!runLog || !runLog.world || !runLog.frames || runLog.frames.length === 0) return null;
+    return extractSceneModelFromLog(runLog, currentFrameIndex);
+  }, [runLog, currentFrameIndex]);
 
   // Animation Playback Timer Loop
   useEffect(() => {
@@ -476,31 +492,41 @@ export const ReplayView: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0.85rem 1.25rem',
+          padding: '1rem 1.4rem',
           flexWrap: 'wrap',
-          gap: '0.75rem',
+          gap: '0.85rem',
+          background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(99, 102, 241, 0.05) 100%)',
+          border: '1px solid rgba(56, 189, 248, 0.22)',
         }}
       >
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
             <span
               style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
+                fontSize: '0.72rem',
+                fontWeight: 800,
                 padding: '2px 8px',
                 borderRadius: '4px',
-                background: 'rgba(59, 130, 246, 0.15)',
-                color: 'var(--accent-primary)',
+                background: 'rgba(56, 189, 248, 0.15)',
+                color: '#38bdf8',
+                border: '1px solid rgba(56, 189, 248, 0.3)',
                 fontFamily: 'var(--font-mono)',
               }}
             >
               {runLog.planner.id} • {runLog.planner.name}
             </span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+            <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>
               Seed {runLog.scenario.seed} ({runLog.scenario.split.toUpperCase()})
             </span>
           </div>
-          <h1 style={{ fontSize: '1.35rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+          <h1 style={{
+            fontSize: '1.4rem',
+            fontWeight: 900,
+            margin: 0,
+            background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
             {runLog.scenario.name || runLog.scenario.id.replace(/_/g, ' ')}
           </h1>
         </div>
@@ -517,7 +543,7 @@ export const ReplayView: React.FC = () => {
               className="btn-primary"
               style={{
                 fontSize: '0.8rem',
-                padding: '0.4rem 0.85rem',
+                padding: '0.45rem 0.9rem',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.4rem',
@@ -535,7 +561,7 @@ export const ReplayView: React.FC = () => {
             className="btn-secondary"
             style={{
               fontSize: '0.8rem',
-              padding: '0.4rem 0.75rem',
+              padding: '0.45rem 0.8rem',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.4rem',
@@ -557,14 +583,14 @@ export const ReplayView: React.FC = () => {
             className="btn-secondary"
             style={{
               fontSize: '0.8rem',
-              padding: '0.4rem 0.75rem',
+              padding: '0.45rem 0.8rem',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.4rem',
             }}
             aria-label={audioAnnouncer ? 'Mute audible speech narration' : 'Enable audible speech narration'}
           >
-            {audioAnnouncer ? <Volume2 size={14} color="var(--accent-primary)" /> : <VolumeX size={14} />}
+            {audioAnnouncer ? <Volume2 size={14} color="#38bdf8" /> : <VolumeX size={14} />}
             <span>{audioAnnouncer ? 'Voice On (M)' : 'Voice Off (M)'}</span>
           </button>
 
@@ -581,18 +607,22 @@ export const ReplayView: React.FC = () => {
               alignItems: 'center',
               gap: '0.5rem',
               fontSize: '0.8rem',
-              background: 'var(--bg-surface-elevated)',
-              padding: '0.35rem 0.65rem',
+              background: 'rgba(16, 22, 35, 0.85)',
+              padding: '0.4rem 0.75rem',
               borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-subtle)',
+              border: '1px solid rgba(56, 189, 248, 0.2)',
+              color: '#94a3b8',
             }}
           >
-            <span>Replans: <strong>{runLog.metrics?.replan_count ?? 3}</strong></span>
+            <span>Replans: <strong style={{ color: '#38bdf8' }}>{runLog.metrics?.replan_count ?? '—'}</strong></span>
             <span>•</span>
-            <span>Min Clr: <strong>{runLog.metrics?.min_clearance_m.toFixed(1) ?? 2.4}m</strong></span>
+            <span>Min Clr [DERIVED]: <strong style={{ color: '#34d399' }}>{runLog.metrics?.min_clearance_m != null ? `${runLog.metrics.min_clearance_m.toFixed(2)}m` : '—'}</strong></span>
           </div>
         </div>
       </div>
+
+      {/* Permanent Research Truth & Evidence Panel */}
+      <EvidencePanel />
 
       {/* SIMPLE MODE: Vehicle Decision & Status Summary Card */}
       {isSimple && (
@@ -601,9 +631,9 @@ export const ReplayView: React.FC = () => {
           aria-label="Vehicle Decision and Status Summary"
           className="glass-panel"
           style={{
-            padding: '0.85rem 1.25rem',
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-default)',
+            padding: '1rem 1.25rem',
+            background: 'linear-gradient(135deg, rgba(16, 22, 35, 0.85) 0%, rgba(11, 15, 23, 0.9) 100%)',
+            border: '1px solid rgba(56, 189, 248, 0.22)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -614,26 +644,27 @@ export const ReplayView: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div
               style={{
-                width: '36px',
-                height: '36px',
+                width: '38px',
+                height: '38px',
                 borderRadius: '50%',
                 background: runLog.metrics?.collision_occurred ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                border: runLog.metrics?.collision_occurred ? '1px solid rgba(239, 68, 68, 0.35)' : '1px solid rgba(16, 185, 129, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: runLog.metrics?.collision_occurred ? 'var(--risk-critical)' : 'var(--accent-teal)',
+                color: runLog.metrics?.collision_occurred ? '#f87171' : '#34d399',
                 flexShrink: 0,
               }}
             >
               {runLog.metrics?.collision_occurred ? <AlertTriangle size={20} /> : <CheckCircle2 size={20} />}
             </div>
             <div>
-              <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#f8fafc' }}>
                 {runLog.metrics?.collision_occurred
                   ? 'Collision Detected — Safety Perimeter Breached'
                   : 'Simulation Completed — Safe Goal Arrival'}
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
                 {currentFrame?.planner_output.replan_triggered
                   ? `Active Decision: ${currentFrame.decision_trace || 'Adjusting trajectory to maintain safety clearance from moving traffic.'}`
                   : `Active Decision: Cruise speed maintained along planned path at ${(currentFrame ? currentFrame.ego.v * 3.6 : 0).toFixed(1)} km/h.`}
@@ -641,18 +672,18 @@ export const ReplayView: React.FC = () => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+          <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.8rem', color: '#94a3b8' }}>
             <div>
               <span>Trip Duration: </span>
-              <strong style={{ color: 'var(--text-primary)' }}>{runLog.metrics?.duration_s?.toFixed(1) ?? '--'}s</strong>
+              <strong style={{ color: '#f8fafc' }}>{runLog.metrics?.duration_s?.toFixed(1) ?? '--'}s</strong>
             </div>
             <div>
               <span>Avg Speed: </span>
-              <strong style={{ color: 'var(--text-primary)' }}>{((runLog.metrics?.mean_speed_m_s ?? 0) * 3.6).toFixed(1)} km/h</strong>
+              <strong style={{ color: '#f8fafc' }}>{((runLog.metrics?.mean_speed_m_s ?? 0) * 3.6).toFixed(1)} km/h</strong>
             </div>
             <div>
               <span>Min Hazard Buffer: </span>
-              <strong style={{ color: 'var(--accent-teal)' }}>{runLog.metrics?.min_clearance_m?.toFixed(2) ?? '--'}m</strong>
+              <strong style={{ color: '#34d399' }}>{runLog.metrics?.min_clearance_m?.toFixed(2) ?? '--'}m</strong>
             </div>
           </div>
         </div>
@@ -665,71 +696,73 @@ export const ReplayView: React.FC = () => {
           aria-label="Research Telemetry and Conformal Prediction Analysis"
           className="glass-panel"
           style={{
-            padding: '1rem 1.25rem',
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-default)',
+            padding: '1.1rem 1.4rem',
+            background: 'linear-gradient(135deg, rgba(16, 22, 35, 0.85) 0%, rgba(11, 15, 23, 0.95) 100%)',
+            border: '1px solid rgba(56, 189, 248, 0.22)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '0.75rem',
+            gap: '0.85rem',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <FlaskConical size={18} color="var(--accent-primary)" />
-              <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              <FlaskConical size={18} color="#38bdf8" />
+              <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#f8fafc' }}>
                 Research Telemetry & Conformal Uncertainty Analysis
               </h3>
               <span
                 style={{
                   fontSize: '0.7rem',
+                  fontWeight: 700,
                   padding: '1px 6px',
                   borderRadius: '4px',
                   background: 'rgba(56, 189, 248, 0.15)',
-                  color: 'var(--accent-primary)',
+                  color: '#38bdf8',
+                  border: '1px solid rgba(56, 189, 248, 0.3)',
                   fontFamily: 'var(--font-mono)',
                 }}
               >
                 Gate G3 Verified
               </span>
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
               Engine Adapter: <code>{(runLog as any).engine_adapter || 'python_inprocess'}</code> • Schema: <code>apath-log/1.0</code>
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
-            <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+            <div style={{ background: 'rgba(11, 15, 23, 0.7)', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(56, 189, 248, 0.15)' }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.06em', color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
                 CONFORMAL COVERAGE GUARANTEE
               </div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 700 }}>
+              <div style={{ fontSize: '0.9rem', color: '#38bdf8', fontWeight: 800 }}>
                 1 - α = 95.0% (ε = 0.05)
               </div>
-              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.35 }}>
                 Mondrian velocity-binned calibration. Guarantees finite-sample coverage when exchangeability holds.
               </p>
             </div>
 
-            <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+            <div style={{ background: 'rgba(11, 15, 23, 0.7)', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(56, 189, 248, 0.15)' }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.06em', color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
                 CALIBRATION PROVENANCE & INTEGRITY
               </div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--accent-teal)', fontWeight: 700 }}>
+              <div style={{ fontSize: '0.9rem', color: '#34d399', fontWeight: 800 }}>
                 Split: {runLog.scenario.split.toUpperCase()} • Seed: {runLog.scenario.seed}
               </div>
-              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.35 }}>
                 ⚠️ For baseline runs (B0-B2) or uncalibrated shifts, non-conformity bounds do not carry mathematical coverage guarantees.
               </p>
             </div>
 
-            <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+            <div style={{ background: 'rgba(11, 15, 23, 0.7)', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(56, 189, 248, 0.15)' }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.06em', color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
                 CONTINUOUS RISK FIELD & KINEMATICS
               </div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 700 }}>
-                Peak Jerk: {runLog.metrics?.max_jerk_m_s3?.toFixed(2) ?? '--'} m/s³ • P95 Latency: {runLog.metrics?.p95_latency_ms?.toFixed(1) ?? '--'} ms
+              <div style={{ fontSize: '0.9rem', color: '#f8fafc', fontWeight: 800 }}>
+                Peak Jerk: {runLog.metrics?.max_jerk_m_s3?.toFixed(2) ?? '—'} m/s³ • P95 Latency: {runLog.metrics?.p95_latency_ms != null ? `${runLog.metrics.p95_latency_ms.toFixed(1)} ms [LOGGED: metrics.p95_latency_ms]` : '— [Not logged]'}
               </div>
-              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+              <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.35 }}>
                 Current spatial risk R(t) = {currentFrame?.risk_field.ego_risk.toFixed(2)} [{currentFrame?.risk_field.risk_level}].
               </p>
             </div>
@@ -743,21 +776,24 @@ export const ReplayView: React.FC = () => {
         aria-label="Live Telemetry Narration"
         className="glass-panel"
         style={{
-          padding: '0.65rem 1rem',
-          borderLeft: '4px solid var(--accent-primary)',
+          padding: '0.75rem 1.25rem',
+          borderLeft: '3px solid #38bdf8',
           fontSize: '0.85rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: '0.75rem',
-          background: 'var(--bg-surface-elevated)',
+          background: 'rgba(16, 22, 35, 0.85)',
+          borderTop: '1px solid rgba(56, 189, 248, 0.15)',
+          borderRight: '1px solid rgba(56, 189, 248, 0.15)',
+          borderBottom: '1px solid rgba(56, 189, 248, 0.15)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Activity size={16} color="var(--accent-primary)" aria-hidden="true" />
-          <span><strong>Live Narration:</strong> {liveNarrationText}</span>
+          <Activity size={16} color="#38bdf8" aria-hidden="true" />
+          <span style={{ color: '#f8fafc' }}><strong style={{ color: '#38bdf8' }}>Live Narration:</strong> {liveNarrationText}</span>
         </div>
-        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '0.75rem', color: '#64748b', whiteSpace: 'nowrap' }}>
           Shortcut 'M' toggles voice
         </span>
       </div>
@@ -836,7 +872,7 @@ export const ReplayView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Simulation View: 2D Canvas OR Accessible Table */}
+      {/* Main Simulation View: 3D Immersive Canvas OR Accessible Table */}
       {isTableView ? (
         <div className="glass-panel" style={{ padding: '1rem' }}>
           <AccessibleTable
@@ -848,70 +884,130 @@ export const ReplayView: React.FC = () => {
           />
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-          {/* Top Layer Toggles Bar */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.85rem' }}>
+          {/* Top 3D Camera & Sensor Controls Toolbar */}
           <div
             role="toolbar"
-            aria-label="Simulation canvas layer toggles"
+            aria-label="3D simulation camera perspective and sensor visualization toggles"
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.4rem',
+              justifyContent: 'space-between',
+              gap: '0.6rem',
               flexWrap: 'wrap',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-default)',
-              padding: '0.4rem 0.75rem',
+              background: 'rgba(16, 22, 35, 0.85)',
+              border: '1px solid rgba(56, 189, 248, 0.2)',
+              padding: '0.5rem 0.9rem',
               borderRadius: 'var(--radius-md)',
             }}
           >
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', marginRight: '0.3rem' }}>
-              LAYERS:
-            </span>
+            {/* Left: 3D Camera Modes */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.06em', color: '#64748b', marginRight: '0.2rem', textTransform: 'uppercase' }}>
+                3D CAMERA:
+              </span>
 
-            {[
-              { key: 'world', label: '1: Road Edges', active: layers.world },
-              { key: 'tracks', label: '2: Dynamic Agents', active: layers.tracks },
-              { key: 'predictions', label: '3: Conformal Cones', active: layers.predictions },
-              { key: 'risk', label: '4: Risk Field', active: layers.risk },
-              { key: 'plan', label: '5: Ego Path', active: layers.plan },
-            ].map((layer) => (
+              {[
+                { mode: 'chase' as CameraMode, label: '🚗 Chase (Third-Person)' },
+                { mode: 'bird' as CameraMode, label: '🦅 Bird’s-Eye (3D)' },
+                { mode: 'cockpit' as CameraMode, label: '🎯 Cockpit (Driver)' },
+                { mode: 'orbit' as CameraMode, label: '🔄 360° Free Orbit' },
+              ].map((c) => (
+                <button
+                  key={c.mode}
+                  type="button"
+                  onClick={() => setCameraMode(c.mode)}
+                  aria-pressed={cameraMode === c.mode}
+                  style={{
+                    background: cameraMode === c.mode ? 'linear-gradient(135deg, #0ea5e9, #38bdf8)' : 'rgba(11, 15, 23, 0.7)',
+                    color: cameraMode === c.mode ? '#07080a' : '#94a3b8',
+                    border: cameraMode === c.mode ? '1px solid #38bdf8' : '1px solid rgba(56, 189, 248, 0.15)',
+                    boxShadow: cameraMode === c.mode ? '0 2px 8px rgba(14, 165, 233, 0.3)' : 'none',
+                    borderRadius: 'var(--radius-sm)',
+                    padding: '0.35rem 0.75rem',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    minHeight: 'var(--min-target-size)',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Right: Sensor Beam & Scenery Toggles */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
               <button
-                key={layer.key}
                 type="button"
-                onClick={() =>
-                  setLayers((prev) => ({
-                    ...prev,
-                    [layer.key]: !prev[layer.key as keyof CanvasLayerState],
-                  }))
-                }
-                aria-pressed={layer.active}
+                onClick={() => setShowScanner((s) => !s)}
+                aria-pressed={showScanner}
                 style={{
-                  background: layer.active ? 'var(--accent-primary)' : 'var(--bg-surface-elevated)',
-                  color: layer.active ? '#ffffff' : 'var(--text-secondary)',
-                  border: layer.active ? '1px solid var(--accent-primary)' : '1px solid var(--border-subtle)',
+                  background: showScanner ? 'rgba(6, 182, 212, 0.18)' : 'rgba(11, 15, 23, 0.7)',
+                  color: showScanner ? '#22d3ee' : '#64748b',
+                  border: showScanner ? '1px solid #06b6d4' : '1px solid rgba(100, 116, 139, 0.25)',
                   borderRadius: 'var(--radius-sm)',
-                  padding: '0.3rem 0.65rem',
+                  padding: '0.35rem 0.75rem',
                   fontSize: '0.75rem',
-                  fontWeight: 600,
+                  fontWeight: 700,
                   cursor: 'pointer',
                   minHeight: 'var(--min-target-size)',
                 }}
               >
-                {layer.label}
+                📡 LiDAR Scanner Beam
               </button>
-            ))}
+
+              <button
+                type="button"
+                onClick={() => setShowSceneryTraffic((t) => !t)}
+                aria-pressed={showSceneryTraffic}
+                style={{
+                  background: showSceneryTraffic ? 'rgba(16, 185, 129, 0.18)' : 'rgba(11, 15, 23, 0.7)',
+                  color: showSceneryTraffic ? '#34d399' : '#64748b',
+                  border: showSceneryTraffic ? '1px solid #10b981' : '1px solid rgba(100, 116, 139, 0.25)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '0.35rem 0.75rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  minHeight: 'var(--min-target-size)',
+                }}
+              >
+                🌆 Roadside Scenery & Traffic
+              </button>
+            </div>
           </div>
 
-          {/* Canvas Render Area */}
-          <ReplayCanvas
-            runLog={runLog}
-            currentFrameIndex={currentFrameIndex}
-            selectedAgentId={selectedAgentId}
-            onSelectAgent={setSelectedAgentId}
-            layers={layers}
-            onToggleLayer={(key) => setLayers((prev) => ({ ...prev, [key]: !prev[key] }))}
-            highContrast={isHighContrast}
-          />
+          {/* 100% Immersive 3D Simulation Canvas */}
+          <div
+            style={{
+              height: '560px',
+              width: '100%',
+              position: 'relative',
+              borderRadius: 'var(--radius-md)',
+              overflow: 'hidden',
+              border: '1px solid rgba(56, 189, 248, 0.25)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
+              background: '#0c1017',
+            }}
+          >
+            {sceneModel ? (
+              <Scene3DCanvas
+                sceneModel={sceneModel}
+                cameraMode={cameraMode}
+                onSelectAgent={setSelectedAgentId}
+                selectedAgentId={selectedAgentId}
+                plannerId={runLog.planner.id}
+                showScanner={showScanner}
+                showSceneryTraffic={showSceneryTraffic}
+              />
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>
+                Loading 3D simulation telemetry...
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -942,9 +1038,9 @@ export const ReplayView: React.FC = () => {
           aria-label={`Kinematics detail for agent ${selectedAgent.id}`}
           className="glass-panel"
           style={{
-            padding: '1rem 1.25rem',
-            border: '1px solid var(--border-strong)',
-            background: 'var(--bg-surface-elevated)',
+            padding: '1rem 1.4rem',
+            border: '1px solid rgba(56, 189, 248, 0.28)',
+            background: 'linear-gradient(135deg, rgba(16, 22, 35, 0.92) 0%, rgba(11, 15, 23, 0.98) 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -953,36 +1049,36 @@ export const ReplayView: React.FC = () => {
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
               <span
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-                  fontSize: '0.8rem',
-                  background: 'var(--accent-primary)',
-                  color: '#ffffff',
-                  padding: '2px 6px',
+                  fontWeight: 800,
+                  fontSize: '0.78rem',
+                  background: 'linear-gradient(135deg, #0ea5e9, #38bdf8)',
+                  color: '#07080a',
+                  padding: '2px 8px',
                   borderRadius: '4px',
                 }}
               >
                 Tracked Agent #{selectedAgent.id}
               </span>
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'capitalize' }}>
+              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f8fafc', textTransform: 'capitalize' }}>
                 {selectedAgent.class_name}
               </span>
             </div>
-            <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              <span>Position: <strong>({selectedAgent.x.toFixed(1)}m, {selectedAgent.y.toFixed(1)}m)</strong></span>
-              <span>Speed: <strong>{(Math.hypot(selectedAgent.v_x, selectedAgent.v_y) * 3.6).toFixed(1)} km/h</strong></span>
-              <span>Yaw: <strong>{((selectedAgent.yaw * 180) / Math.PI).toFixed(0)}°</strong></span>
-              <span>Conformal Radius: <strong>{selectedAgent.conformal_envelope?.[0]?.radius_m.toFixed(2) ?? '0.45'}m</strong></span>
+            <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.8rem', color: '#94a3b8' }}>
+              <span>Position: <strong style={{ color: '#f8fafc' }}>({selectedAgent.x.toFixed(1)}m, {selectedAgent.y.toFixed(1)}m)</strong></span>
+              <span>Speed: <strong style={{ color: '#38bdf8' }}>{(Math.hypot(selectedAgent.v_x, selectedAgent.v_y) * 3.6).toFixed(1)} km/h</strong></span>
+              <span>Yaw: <strong style={{ color: '#f8fafc' }}>{((selectedAgent.yaw * 180) / Math.PI).toFixed(0)}°</strong></span>
+              <span>Conformal Radius: <strong style={{ color: '#34d399' }}>{selectedAgent.conformal_envelope?.[0]?.radius_m.toFixed(2) ?? '0.45'}m</strong></span>
             </div>
           </div>
 
           <button
             onClick={() => setSelectedAgentId(null)}
             className="btn-secondary"
-            style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem', minHeight: 'var(--min-target-size)' }}
+            style={{ fontSize: '0.78rem', padding: '0.4rem 0.85rem', minHeight: 'var(--min-target-size)' }}
           >
             Clear Selection (Esc)
           </button>

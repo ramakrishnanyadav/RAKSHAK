@@ -78,8 +78,9 @@ export function AccessibleTable<T extends Record<string, any>>({
         width: '100%',
         overflowX: 'auto',
         borderRadius: 'var(--radius-md)',
-        border: '1px solid var(--border-default)',
-        background: 'var(--bg-surface)',
+        border: '1px solid rgba(56, 189, 248, 0.2)',
+        background: 'linear-gradient(180deg, rgba(16, 22, 35, 0.9) 0%, rgba(11, 15, 23, 0.95) 100%)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.35)',
       }}
     >
       <table
@@ -93,12 +94,12 @@ export function AccessibleTable<T extends Record<string, any>>({
         <caption
           style={{
             textAlign: 'left',
-            padding: '0.75rem 1rem',
-            fontWeight: 700,
+            padding: '0.85rem 1.25rem',
+            fontWeight: 800,
             fontSize: '1rem',
-            color: 'var(--text-primary)',
-            borderBottom: '1px solid var(--border-subtle)',
-            background: 'var(--bg-surface-elevated)',
+            color: '#f8fafc',
+            borderBottom: '1px solid rgba(56, 189, 248, 0.15)',
+            background: 'linear-gradient(90deg, rgba(56, 189, 248, 0.08) 0%, rgba(16, 22, 35, 0.6) 100%)',
           }}
         >
           {caption}
@@ -108,8 +109,8 @@ export function AccessibleTable<T extends Record<string, any>>({
                 display: 'block',
                 fontWeight: 400,
                 fontSize: '0.8rem',
-                color: 'var(--text-secondary)',
-                marginTop: '2px',
+                color: '#94a3b8',
+                marginTop: '3px',
               }}
             >
               {summary}
@@ -118,7 +119,7 @@ export function AccessibleTable<T extends Record<string, any>>({
         </caption>
 
         <thead>
-          <tr style={{ background: 'var(--bg-surface-elevated)', borderBottom: '2px solid var(--border-default)' }}>
+          <tr style={{ background: 'linear-gradient(135deg, rgba(16, 22, 35, 0.95), rgba(11, 15, 23, 0.98))', borderBottom: '2px solid rgba(56, 189, 248, 0.25)' }}>
             {columns.map((col, idx) => {
               const isSorted = sortKey === col.key;
               const ariaSort = isSorted ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none';
@@ -129,9 +130,12 @@ export function AccessibleTable<T extends Record<string, any>>({
                   scope="col"
                   aria-sort={col.sortable ? ariaSort : undefined}
                   style={{
-                    padding: '0.75rem 1rem',
-                    fontWeight: 600,
-                    color: 'var(--text-primary)',
+                    padding: '0.8rem 1rem',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
+                    color: isSorted ? '#38bdf8' : '#94a3b8',
                     textAlign: col.align || 'left',
                     whiteSpace: 'nowrap',
                   }}
@@ -141,16 +145,18 @@ export function AccessibleTable<T extends Record<string, any>>({
                       type="button"
                       onClick={() => handleSort(col.key)}
                       style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'inherit',
+                        background: isSorted ? 'rgba(56, 189, 248, 0.12)' : 'none',
+                        border: isSorted ? '1px solid rgba(56, 189, 248, 0.25)' : 'none',
+                        color: isSorted ? '#38bdf8' : 'inherit',
                         font: 'inherit',
                         fontWeight: 'inherit',
+                        letterSpacing: 'inherit',
+                        textTransform: 'inherit',
                         cursor: 'pointer',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '0.35rem',
-                        padding: '0.2rem 0.4rem',
+                        padding: '0.25rem 0.5rem',
                         borderRadius: 'var(--radius-sm)',
                         minHeight: 'var(--min-target-size)',
                       }}
@@ -159,12 +165,12 @@ export function AccessibleTable<T extends Record<string, any>>({
                       <span>{col.header}</span>
                       {isSorted ? (
                         sortDirection === 'asc' ? (
-                          <ArrowUp size={14} aria-hidden="true" />
+                          <ArrowUp size={14} color="#38bdf8" aria-hidden="true" />
                         ) : (
-                          <ArrowDown size={14} aria-hidden="true" />
+                          <ArrowDown size={14} color="#38bdf8" aria-hidden="true" />
                         )
                       ) : (
-                        <ArrowUpDown size={14} style={{ opacity: 0.5 }} aria-hidden="true" />
+                        <ArrowUpDown size={14} style={{ opacity: 0.4 }} aria-hidden="true" />
                       )}
                     </button>
                   ) : (
@@ -195,16 +201,17 @@ export function AccessibleTable<T extends Record<string, any>>({
               <tr
                 key={getKey(row, rIdx)}
                 style={{
-                  borderBottom: '1px solid var(--border-subtle)',
-                  background: rIdx % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.02)',
+                  borderBottom: '1px solid rgba(56, 189, 248, 0.08)',
+                  background: rIdx % 2 === 0 ? 'transparent' : 'rgba(56, 189, 248, 0.02)',
+                  transition: 'background 0.15s ease',
                 }}
               >
                 {columns.map((col, cIdx) => (
                   <td
                     key={col.key || cIdx}
                     style={{
-                      padding: '0.65rem 1rem',
-                      color: 'var(--text-primary)',
+                      padding: '0.7rem 1rem',
+                      color: '#f8fafc',
                       textAlign: col.align || 'left',
                     }}
                   >

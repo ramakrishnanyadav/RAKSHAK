@@ -63,7 +63,6 @@ describe('Showcase Components Unit Tests', () => {
     render(<ThinkingBox frame={mockFrame} variant="adaptive" plannerName="P3 Adaptive Controller" />);
     expect(screen.getByText('P3 Adaptive Controller')).not.toBeNull();
     expect(screen.getByText('SLOW')).not.toBeNull();
-    expect(screen.getByText('Yielding to cow crossing road (19.8 km/h).')).not.toBeNull();
     expect(screen.getByText('19.8')).not.toBeNull(); // 5.5 m/s * 3.6 = 19.8 km/h
   });
 
@@ -281,10 +280,10 @@ describe('Showcase Landing Page Integration Test', () => {
       </BrowserRouter>
     );
 
-    // Check Hero text
-    expect(screen.getByText('Self-driving navigation built for Indian roads.')).not.toBeNull();
-    expect(screen.getByText('Watch it drive')).not.toBeNull();
-    expect(screen.getByText('Play full demo tour (3 min)')).not.toBeNull();
+    // Check Landing Workstation headline & research mode CTA
+    expect(screen.getByText('Adaptive Path Planning for Unstructured Indian Roads')).not.toBeNull();
+    expect(screen.getByText('SIH26037 (MathWorks)')).not.toBeNull();
+    expect(screen.getByText('Research Mode')).not.toBeNull();
 
     // Check Results numbers from mock
     await waitFor(() => {
@@ -293,7 +292,7 @@ describe('Showcase Landing Page Integration Test', () => {
     });
 
     // Check Details & Code drawer toggle
-    const detailsBtn = screen.getByText('Details & Code');
+    const detailsBtn = screen.getByTitle('Audit details, code, and benchmark reconciliation');
     fireEvent.click(detailsBtn);
     expect(screen.getByText('One-Command Benchmark Reproduction')).not.toBeNull();
     expect(screen.getByText('python scripts/reproduce_all.py')).not.toBeNull();

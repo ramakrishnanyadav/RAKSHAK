@@ -61,7 +61,14 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
             source: {metadata.source_file}
           </span>
         </div>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#FFFFFF', margin: 0 }}>
+        <h2 style={{
+          fontSize: '1.85rem',
+          fontWeight: 900,
+          background: 'linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          margin: 0,
+        }}>
           Measured performance over 25 validation episodes
         </h2>
         <p style={{ color: '#94A3B8', fontSize: '0.95rem', maxWidth: '680px', lineHeight: 1.5, margin: 0 }}>
@@ -81,26 +88,29 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
         {/* Metric 1: Completion */}
         <div
           style={{
-            background: '#111318',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(16, 22, 35, 0.85)',
+            border: '1px solid rgba(56, 189, 248, 0.18)',
             borderRadius: '8px',
             padding: '1.25rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #38bdf8, #818cf8)' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>{headline_metrics.completion_rate.label}</span>
-            <TrendingUp size={16} color="#2DD4BF" />
+            <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontWeight: 600 }}>{headline_metrics.completion_rate.label}</span>
+            <TrendingUp size={16} color="#38bdf8" />
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-            <span style={{ fontSize: '2rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'monospace' }}>
+            <span style={{ fontSize: '2rem', fontWeight: 800, color: '#38bdf8', fontFamily: 'monospace' }}>
               {headline_metrics.completion_rate.adaptive}%
             </span>
             <span style={{ fontSize: '0.85rem', color: '#64748B' }}>vs {headline_metrics.completion_rate.standard}% standard</span>
           </div>
-          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2DD4BF' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#34d399' }}>
             {headline_metrics.completion_rate.delta_label}
           </div>
           <span style={{ fontSize: '0.675rem', color: '#64748B', fontFamily: 'monospace', marginTop: 'auto' }}>
@@ -111,26 +121,29 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
         {/* Metric 2: Crash Rate */}
         <div
           style={{
-            background: '#111318',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(16, 22, 35, 0.85)',
+            border: '1px solid rgba(56, 189, 248, 0.18)',
             borderRadius: '8px',
             padding: '1.25rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #10b981, #34d399)' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>{headline_metrics.collision_rate.label}</span>
-            <ShieldCheck size={16} color="#2DD4BF" />
+            <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontWeight: 600 }}>{headline_metrics.collision_rate.label}</span>
+            <ShieldCheck size={16} color="#34d399" />
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-            <span style={{ fontSize: '2rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'monospace' }}>
+            <span style={{ fontSize: '2rem', fontWeight: 800, color: '#34d399', fontFamily: 'monospace' }}>
               {headline_metrics.collision_rate.adaptive}%
             </span>
             <span style={{ fontSize: '0.85rem', color: '#64748B' }}>vs {headline_metrics.collision_rate.standard}% standard</span>
           </div>
-          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2DD4BF' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#34d399' }}>
             {headline_metrics.collision_rate.delta_label}
           </div>
           <span style={{ fontSize: '0.675rem', color: '#64748B', fontFamily: 'monospace', marginTop: 'auto' }}>
@@ -141,26 +154,29 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
         {/* Metric 3: Smoothness (Jerk) */}
         <div
           style={{
-            background: '#111318',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(16, 22, 35, 0.85)',
+            border: '1px solid rgba(56, 189, 248, 0.18)',
             borderRadius: '8px',
             padding: '1.25rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #818cf8, #c084fc)' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>{headline_metrics.smoothness_jerk.label}</span>
-            <Sparkles size={16} color="#2DD4BF" />
+            <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontWeight: 600 }}>{headline_metrics.smoothness_jerk.label}</span>
+            <Sparkles size={16} color="#c084fc" />
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-            <span style={{ fontSize: '2rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'monospace' }}>
+            <span style={{ fontSize: '2rem', fontWeight: 800, color: '#c084fc', fontFamily: 'monospace' }}>
               {headline_metrics.smoothness_jerk.adaptive}
             </span>
             <span style={{ fontSize: '0.85rem', color: '#64748B' }}>vs {headline_metrics.smoothness_jerk.standard} m/s³</span>
           </div>
-          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2DD4BF' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#38bdf8' }}>
             {headline_metrics.smoothness_jerk.delta_label}
           </div>
           <span style={{ fontSize: '0.675rem', color: '#64748B', fontFamily: 'monospace', marginTop: 'auto' }}>
@@ -171,26 +187,29 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
         {/* Metric 4: Think Time */}
         <div
           style={{
-            background: '#111318',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'rgba(16, 22, 35, 0.85)',
+            border: '1px solid rgba(56, 189, 248, 0.18)',
             borderRadius: '8px',
             padding: '1.25rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #f59e0b, #fbbf24)' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>{headline_metrics.think_time_ms.label}</span>
-            <Clock size={16} color="#2DD4BF" />
+            <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontWeight: 600 }}>{headline_metrics.think_time_ms.label}</span>
+            <Clock size={16} color="#fbbf24" />
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-            <span style={{ fontSize: '2rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'monospace' }}>
+            <span style={{ fontSize: '2rem', fontWeight: 800, color: '#fbbf24', fontFamily: 'monospace' }}>
               {headline_metrics.think_time_ms.adaptive}
             </span>
             <span style={{ fontSize: '0.85rem', color: '#64748B' }}>vs {headline_metrics.think_time_ms.standard} ms</span>
           </div>
-          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2DD4BF' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#38bdf8' }}>
             {headline_metrics.think_time_ms.delta_label}
           </div>
           <span style={{ fontSize: '0.675rem', color: '#64748B', fontFamily: 'monospace', marginTop: 'auto' }}>
@@ -383,6 +402,59 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ summary }) => {
           </p>
           <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '0.25rem' }}>
             <strong>Future work:</strong> {weak_spot_analysis.future_work}
+          </div>
+        </div>
+      </div>
+
+      {/* Honest Collision Audit: P3 Contact Collisions */}
+      <div
+        style={{
+          background: 'rgba(239, 68, 68, 0.05)',
+          border: '1px solid rgba(239, 68, 68, 0.25)',
+          borderRadius: '8px',
+          padding: '1.25rem 1.5rem',
+          display: 'flex',
+          gap: '1rem',
+          alignItems: 'flex-start',
+        }}
+      >
+        <div style={{ color: '#F87171', paddingTop: '0.15rem' }}>
+          <AlertTriangle size={20} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#F87171' }}>
+              Physical Contact Collisions: P3 Adaptive Planner (3 of 25 episodes)
+            </h4>
+            <span style={{ fontSize: '0.7rem', color: '#F87171', fontFamily: 'monospace' }}>
+              source: runs/val_b_manifest.json & sidecar
+            </span>
+          </div>
+          <p style={{ margin: 0, fontSize: '0.85rem', color: '#CBD5E1', lineHeight: 1.5 }}>
+            While P3 avoided collisions in Cattle Crossing (5/5 safe) and Highway Merge (5/5 safe), it incurred 3 physical contact collisions and 2 corridor boundary exits under challenging validation conditions:
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.75rem', marginTop: '0.25rem' }}>
+            <div style={{ background: '#111318', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', padding: '0.65rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#F87171' }}>Village Road (Seed 2009)</div>
+              <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '2px' }}>
+                Contact with <code>oncoming_truck</code> at step 73 (t=7.3s) during single-lane bypass.
+              </div>
+            </div>
+            <div style={{ background: '#111318', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', padding: '0.65rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#F87171' }}>Dense Market (Seed 2006)</div>
+              <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '2px' }}>
+                Contact with <code>parked_auto</code> rickshaw at step 72 (t=7.2s) in tight vendor congestion.
+              </div>
+            </div>
+            <div style={{ background: '#111318', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', padding: '0.65rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#F87171' }}>Dense Market (Seed 2009)</div>
+              <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '2px' }}>
+                Contact with <code>parked_auto</code> rickshaw at step 66 (t=6.6s) while squeezing past handcarts.
+              </div>
+            </div>
+          </div>
+          <div style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
+            <strong>Comparative Summary:</strong> P3 recorded 3 contacts + 2 corridor exits (20% collision rate, 5/25), compared to B1 Standard's 15 collisions (10 contacts + 4 exits + 1 both = 60% collision rate).
           </div>
         </div>
       </div>

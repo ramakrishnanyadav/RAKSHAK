@@ -53,29 +53,31 @@
 }
 
 /* -------------------------------------------------------------------
-   1. DARK THEME (Default)
+   1. DARK THEME (Default) — Ultra-Premium Aerospace Obsidian
    ------------------------------------------------------------------- */
 body, body.dark-theme {
-  --bg-app: #0b0f19;
-  --bg-surface: #111827;
-  --bg-surface-elevated: #1f2937;
-  --bg-surface-hover: #374151;
-  --bg-overlay: rgba(11, 15, 25, 0.85);
+  --bg-app: #07080a;
+  --bg-surface: #0b0f17;
+  --bg-surface-elevated: #101623;
+  --bg-surface-hover: rgba(56, 189, 248, 0.08);
+  --bg-overlay: rgba(7, 8, 10, 0.88);
 
-  --border-subtle: #1f2937;
-  --border-default: #374151;
-  --border-strong: #4b5563;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(56, 189, 248, 0.18);
+  --border-strong: rgba(56, 189, 248, 0.38);
 
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
-  --text-inverse: #111827;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #07080a;
 
   /* Brand Accents */
-  --accent-primary: #3b82f6;
-  --accent-primary-hover: #2563eb;
+  --accent-primary: #38bdf8;
+  --accent-primary-hover: #0284c7;
   --accent-primary-text: #ffffff;
   --accent-teal: #14b8a6;
+  --accent-cyan: #06b6d4;
+  --accent-indigo: #6366f1;
 
   /* Severity / Risk Field Colors (Must pair with text label and pattern) */
   --risk-low: #10b981;
@@ -88,8 +90,8 @@ body, body.dark-theme {
   --risk-critical-bg: rgba(239, 68, 68, 0.18);
 
   /* High-Visibility Focus Outline */
-  --focus-ring: #60a5fa;
-  --focus-outline: 3px solid var(--focus-ring);
+  --focus-ring: #38bdf8;
+  --focus-outline: 2px solid var(--focus-ring);
   --focus-offset: 2px;
 }
 
