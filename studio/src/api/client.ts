@@ -58,6 +58,11 @@ class ApiClient {
     }
   }
 
+  private getBaseUrl(): string {
+    const envUrl = (import.meta as any).env?.VITE_API_URL;
+    return envUrl ? String(envUrl).replace(/\/+$/, '') : '';
+  }
+
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const headers = new Headers(options.headers || {});
     headers.set('Accept', 'application/json');
@@ -76,7 +81,9 @@ class ApiClient {
     }
 
     try {
-      const response = await fetch(endpoint, { ...options, headers });
+      const baseUrl = this.getBaseUrl();
+      const targetUrl = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`;
+      const response = await fetch(targetUrl, { ...options, headers });
 
       if (!response.ok) {
         let errJson: ApiErrorFormat;

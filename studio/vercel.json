@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/((?!assets/|sample_runs/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
