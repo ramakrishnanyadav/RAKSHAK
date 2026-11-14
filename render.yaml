@@ -21,3 +21,4 @@ services:
         generateValue: true
       - key: APATH_CORS_ORIGINS
         value: '["*"]'
+
