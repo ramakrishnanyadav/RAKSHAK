@@ -57,6 +57,18 @@ app.add_middleware(
 )
 
 # 4. Include Routers
+@app.get("/", tags=["root"])
+def root_endpoint():
+    return {
+        "name": "RAKSHAK: ADAPTIVE-PATH 2.0 Backend API",
+        "status": "online",
+        "version": settings.app_version,
+        "docs_url": "/docs",
+        "health_check": "/health",
+        "message": "Backend service is live and ready for simulation workloads."
+    }
+
+
 app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(runs.router)
