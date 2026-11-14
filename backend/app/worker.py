@@ -430,15 +430,16 @@ if __name__ == "__main__":
                     if not running:
                         break
                     logger.info("Daemon picking up queued simulation run: %s", q.id)
-                    enqueue_run(
-                        run_id=q.id,
-                        scenario_id=q.scenario_id,
-                        planner_id=q.planner_id,
-                        engine_adapter=q.engine_adapter,
-                        split=q.split,
-                        seed=q.seed,
-                        scenario_params=q.scenario_params,
-                        user_id=q.user_id,
+                    executor.submit(
+                        execute_simulation_task,
+                        q.id,
+                        q.scenario_id,
+                        q.planner_id,
+                        q.split,
+                        q.seed,
+                        q.engine_adapter,
+                        q.scenario_params or {},
+                        settings.worker_max_retries,
                     )
             except Exception as e:
                 logger.error("Error in worker polling loop: %s", e)

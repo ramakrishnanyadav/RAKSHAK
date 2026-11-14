@@ -26,13 +26,22 @@ jobs:
           pip install pytest scipy torch jsonschema
 
       - name: Execute Nightly Benchmark Regression Against Golden Bounds
+        env:
+          MOCK_MATLAB: '1'
+          PYTHONPATH: '.'
         run: |
           python engine/experiments/nightly_benchmark.py
 
       - name: Verify Broken Planner Changes Are Reliably Caught
+        env:
+          MOCK_MATLAB: '1'
+          PYTHONPATH: '.'
         run: |
           python scripts/test_broken_planner_regression.py
 
       - name: Run Pytest Nightly Suite
+        env:
+          MOCK_MATLAB: '1'
+          PYTHONPATH: '.'
         run: |
           python -m pytest tests/test_nightly_regression.py

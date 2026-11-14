@@ -66,10 +66,16 @@ jobs:
           pip install pytest pytest-cov pytest-asyncio hypothesis torch torchvision scipy jsonschema
 
       - name: Run Pytest Suites (Unit, API Matrix, Contract, Migrations)
+        env:
+          MOCK_MATLAB: '1'
+          PYTHONPATH: '.'
         run: |
           python -m pytest --cov=backend/app --cov=engine --cov-report=term --cov-report=xml:coverage.xml tests/ backend/tests/
 
       - name: Enforce Coverage Gate (85% Services, 70% Overall)
+        env:
+          MOCK_MATLAB: '1'
+          PYTHONPATH: '.'
         run: |
           python scripts/check_coverage_gate.py
 
@@ -120,6 +126,9 @@ jobs:
           pip install -r backend/requirements.txt uvicorn
 
       - name: Start Background FastAPI Backend
+        env:
+          MOCK_MATLAB: '1'
+          PYTHONPATH: '.'
         run: |
           uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 &
           sleep 3
