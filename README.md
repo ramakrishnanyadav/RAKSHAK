@@ -74,34 +74,38 @@ The platform strictly adheres to **ADR-004E Option C**, enforcing architectural 
 ```mermaid
 flowchart TD
     subgraph UI ["Domain C: Next-Gen WebGL Studio (React 18 + Three.js)"]
-        Nav["5-Destination Navigation Rail<br/>(Home, Scenarios, Live, Results, MATLAB)"]
-        Workstation["3D Vehicle Workstation<br/>(Real-time Canvas, LOD, Camera Director)"]
-        Replay["60 FPS Monotonic Replay Engine<br/>(Bidirectional Scrubbing, Dynamic Tracks)"]
+        Nav["5-Destination Navigation Rail<br/>Home, Scenarios, Live, Results, MATLAB"]
+        Workstation["3D Vehicle Workstation<br/>Real-time Canvas, LOD, Camera Director"]
+        Replay["60 FPS Monotonic Replay Engine<br/>Bidirectional Scrubbing, Dynamic Tracks"]
     end
 
     subgraph API ["Domain A: High-Concurrency Backend (FastAPI + Uvicorn)"]
-        Auth["Open Access + Per-Session Isolation<br/>(Role.GUEST + X-Session-ID)"]
-        RunRouter["Run Controller & Streaming SSE"]
-        LogEngine["apath-log/v1 Serializer & Auditor"]
+        Auth["Open Access and Per-Session Isolation<br/>Role GUEST and Session ID"]
+        RunRouter["Run Controller and Streaming SSE"]
+        LogEngine["apath-log v1 Serializer and Auditor"]
     end
 
     subgraph Autonomy ["Domain A: Python Autonomy Stack (Production Authority)"]
         Engine["Reference Simulation Engine"]
-        Planners["6-Planner Ablation Ladder (B0 - P3)"]
+        Planners["6-Planner Ablation Ladder B0 to P3"]
         RiskField["Dynamic Conformal Potential Field"]
         MRM["Minimal-Risk Manoeuvre Fallback"]
     end
 
     subgraph Plant ["Domain B: MATLAB / Simulink Isolated Plant"]
-        MatlabAdapter["FastAPI Co-Sim Adapter (CosimEngine)"]
-        Simulink["MathWorks Vehicle Dynamics Blockset<br/>(Longitudinal / Lateral Plant)"]
+        MatlabAdapter["FastAPI Co-Sim Adapter CosimEngine"]
+        Simulink["MathWorks Vehicle Dynamics Blockset<br/>Longitudinal and Lateral Plant"]
         RoadRunner["RoadRunner Scenario SIL Co-Simulation"]
     end
 
-    UI <-->|HTTP / REST + SSE Streams| API
-    API <-->|In-Memory Execution| Autonomy
-    API <-->|TCP Socket / IPC (Port 8000)| MatlabAdapter
-    MatlabAdapter <-->|PyMatlab / Engine API| Simulink
+    UI -->|"HTTP / REST + SSE Streams"| API
+    API -->|"HTTP / REST + SSE Streams"| UI
+    API -->|"In-Memory Execution"| Autonomy
+    Autonomy -->|"Telemetry State"| API
+    API -->|"TCP Socket / IPC Port 8000"| MatlabAdapter
+    MatlabAdapter -->|"Actuator and Sensor Loop"| API
+    MatlabAdapter -->|"PyMatlab / Engine API"| Simulink
+    Simulink -->|"Vehicle Odometry"| MatlabAdapter
 ```
 
 ---
