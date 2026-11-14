@@ -1,29 +1,22 @@
 /**
- * Studio Header Bar Component.
- * Contains accessibility controls, theme selector, language switcher,
- * text scaling, keyboard shortcut trigger, and user account status.
- * Responsive down to 320px viewport.
+ * Stage 4G.9: Premium Unified Header Bar.
+ * Clean, compact, dark aesthetic with:
+ * - Left: ADAPTIVE-PATH logo, SIH 2026 identifier, system status indicator
+ * - Right: Simple Mode / Research Mode toggle, Fullscreen action, Help shortcut
+ * 
+ * Removed: Sign In, Language switcher, Theme switcher, Text scale stepper, and dead controls.
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
-  Sun,
-  Moon,
-  Contrast,
-  Type,
   HelpCircle,
-  LogOut,
-  User,
-  Shield,
-  Layers,
-  Volume2,
-  VolumeX,
   Sparkles,
   FlaskConical,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useSettings, AppTheme, TextScale, PresentationMode } from '../context/SettingsContext';
-import { useI18n, Language } from '../context/I18nContext';
+import { useSettings, PresentationMode } from '../context/SettingsContext';
 import { useAnnouncer } from './LiveAnnouncer';
 
 interface HeaderBarProps {
@@ -35,43 +28,34 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   onOpenKeyboardHelp,
   isBackendConnected,
 }) => {
-  const { user, isAuthenticated, isGuest, logout } = useAuth();
-  const {
-    theme,
-    setTheme,
-    textScale,
-    setTextScale,
-    audioAnnouncer,
-    setAudioAnnouncer,
-    presentationMode,
-    setPresentationMode,
-  } = useSettings();
-  const { language, setLanguage, t } = useI18n();
+  const { presentationMode, setPresentationMode } = useSettings();
   const { announce } = useAnnouncer();
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
 
   const handleSetMode = (mode: PresentationMode) => {
     setPresentationMode(mode);
     announce(
       mode === 'simple'
-        ? 'Switched to Simple Mode: Streamlined plain-English view'
-        : 'Switched to Research Mode: Full technical telemetry enabled',
+        ? 'Switched to Simple Mode: Streamlined autonomous driving view'
+        : 'Switched to Research Mode: Full technical telemetry and model analysis enabled',
       'polite'
     );
-  };
-
-  // Cycle themes: dark -> light -> high-contrast -> dark
-  const handleCycleTheme = () => {
-    if (theme === 'dark') setTheme('light');
-    else if (theme === 'light') setTheme('high-contrast');
-    else setTheme('dark');
-  };
-
-  // Cycle text scale: 100 -> 125 -> 150 -> 175 -> 200 -> 100
-  const handleCycleTextScale = () => {
-    const scales: TextScale[] = [100, 125, 150, 175, 200];
-    const currentIndex = scales.indexOf(textScale);
-    const nextIndex = (currentIndex + 1) % scales.length;
-    setTextScale(scales[nextIndex]);
   };
 
   return (
@@ -82,18 +66,16 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 1.25rem',
-        height: '56px',
-        background: 'linear-gradient(90deg, #0b0f17 0%, #07080a 50%, #0b0f17 100%)',
-        borderBottom: '1px solid rgba(56, 189, 248, 0.14)',
-        flexWrap: 'wrap',
-        gap: '0.75rem',
+        height: '54px',
+        background: '#070a10',
+        borderBottom: '1px solid rgba(56, 189, 248, 0.12)',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        boxShadow: '0 2px 20px rgba(0, 0, 0, 0.5)',
+        boxShadow: '0 2px 16px rgba(0, 0, 0, 0.6)',
       }}
     >
-      {/* Brand & Status */}
+      {/* Brand & System Status */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
         <a
           href="#main-content"
@@ -113,20 +95,31 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           Skip to main content
         </a>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+        <Link
+          to="/app"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.65rem',
+            textDecoration: 'none',
+            color: 'inherit',
+            cursor: 'pointer',
+          }}
+          title="Return to Studio Dashboard"
+        >
           <div
             style={{
-              width: '34px',
-              height: '34px',
-              borderRadius: '9px',
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
               background: 'linear-gradient(135deg, #0ea5e9 0%, #38bdf8 50%, #818cf8 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#07080a',
               fontWeight: 900,
-              fontSize: '1rem',
-              boxShadow: '0 0 12px rgba(56, 189, 248, 0.4)',
+              fontSize: '0.95rem',
+              boxShadow: '0 0 10px rgba(56, 189, 248, 0.35)',
               flexShrink: 0,
             }}
             aria-hidden="true"
@@ -138,9 +131,9 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               <span
                 style={{
                   fontWeight: 900,
-                  fontSize: '1rem',
+                  fontSize: '0.98rem',
                   letterSpacing: '-0.02em',
-                  background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 60%, #34d399 100%)',
+                  background: 'linear-gradient(135deg, #f8fafc 0%, #38bdf8 60%, #818cf8 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -151,24 +144,24 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                 style={{
                   fontSize: '0.62rem',
                   fontWeight: 700,
-                  background: 'rgba(56, 189, 248, 0.15)',
+                  background: 'rgba(56, 189, 248, 0.12)',
                   color: '#38bdf8',
                   padding: '1px 6px',
                   borderRadius: '4px',
-                  border: '1px solid rgba(56, 189, 248, 0.3)',
+                  border: '1px solid rgba(56, 189, 248, 0.25)',
                   letterSpacing: '0.04em',
                 }}
               >
-                SIH2026
+                SIH 2026
               </span>
             </div>
             <div
               style={{
-                fontSize: '0.7rem',
-                color: 'var(--text-muted)',
+                fontSize: '0.68rem',
+                color: '#64748b',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.4rem',
+                gap: '0.35rem',
                 marginTop: '1px',
               }}
             >
@@ -184,31 +177,30 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                 }}
                 aria-hidden="true"
               />
-              <span>{isBackendConnected ? 'Engine Online' : '14 Bundled Runs (Offline)'}</span>
+              <span>{isBackendConnected ? 'Autonomy Engine Ready' : 'Offline Mode (Sample Runs)'}</span>
             </div>
           </div>
-        </div>
+        </Link>
       </div>
 
-      {/* Accessibility & Preferences Toolbar */}
+      {/* Right Toolbar: Presentation Mode, Fullscreen, Functional Help */}
       <div
         role="toolbar"
-        aria-label="Accessibility and display settings"
+        aria-label="Application controls"
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '0.5rem',
-          flexWrap: 'wrap',
+          gap: '0.65rem',
         }}
       >
-        {/* Mode Switcher Segmented Control */}
+        {/* Simple Mode / Research Mode Segmented Control */}
         <div
           role="radiogroup"
           aria-label="Presentation level"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            background: 'rgba(16, 22, 35, 0.6)',
+            background: 'rgba(15, 23, 42, 0.8)',
             border: '1px solid rgba(56, 189, 248, 0.2)',
             borderRadius: '8px',
             padding: '2px',
@@ -220,210 +212,102 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             role="radio"
             aria-checked={presentationMode === 'simple'}
             onClick={() => handleSetMode('simple')}
-            title="Simple Mode: Plain-English vehicle decisions and essentials for visitors and judges"
-            aria-label="Simple Mode: Streamlined view for visitors and evaluators"
+            title="Simple Mode: Audience-friendly autonomous driving simulation and key vehicle results"
+            aria-label="Simple Mode: Streamlined view"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.35rem',
-              padding: '0.25rem 0.65rem',
+              padding: '0.25rem 0.7rem',
               borderRadius: '6px',
               border: 'none',
               background: presentationMode === 'simple'
                 ? 'linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%)'
                 : 'transparent',
-              color: presentationMode === 'simple' ? '#07080a' : '#64748b',
-              fontSize: '0.75rem',
+              color: presentationMode === 'simple' ? '#07080a' : '#94a3b8',
+              fontSize: '0.74rem',
               fontWeight: presentationMode === 'simple' ? 800 : 500,
               cursor: 'pointer',
-              minHeight: 'var(--min-target-size)',
-              transition: 'all 0.2s ease',
+              minHeight: '28px',
+              transition: 'all 0.18s ease',
             }}
           >
-            <Sparkles size={12} aria-hidden="true" />
-            <span>{t('mode_simple')}</span>
+            <Sparkles size={13} aria-hidden="true" />
+            <span>Simple</span>
           </button>
           <button
             type="button"
             role="radio"
             aria-checked={presentationMode === 'research'}
             onClick={() => handleSetMode('research')}
-            title="Research Mode: Full telemetry, 6 planners, conformal prediction cones, and validation provenance"
-            aria-label="Research Mode: Advanced technical telemetry and evaluation"
+            title="Research Mode: Technical telemetry, multi-planner benchmarks, signal analysis, and MATLAB validation"
+            aria-label="Research Mode: Advanced technical engineering"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.35rem',
-              padding: '0.25rem 0.65rem',
+              padding: '0.25rem 0.7rem',
               borderRadius: '6px',
               border: 'none',
               background: presentationMode === 'research'
                 ? 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)'
                 : 'transparent',
-              color: presentationMode === 'research' ? '#ffffff' : '#64748b',
-              fontSize: '0.75rem',
+              color: presentationMode === 'research' ? '#ffffff' : '#94a3b8',
+              fontSize: '0.74rem',
               fontWeight: presentationMode === 'research' ? 800 : 500,
               cursor: 'pointer',
-              minHeight: 'var(--min-target-size)',
-              transition: 'all 0.2s ease',
+              minHeight: '28px',
+              transition: 'all 0.18s ease',
             }}
           >
-            <FlaskConical size={12} aria-hidden="true" />
-            <span>{t('mode_research')}</span>
+            <FlaskConical size={13} aria-hidden="true" />
+            <span>Research</span>
           </button>
         </div>
 
-        <div style={{ width: '1px', height: '20px', background: 'rgba(56, 189, 248, 0.15)' }} />
-
-        {/* Language Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-          {(['en', 'hi', 'te'] as Language[]).map((lang) => (
-            <button
-              key={lang}
-              onClick={() => setLanguage(lang)}
-              aria-pressed={language === lang}
-              aria-label={`Switch language to ${lang === 'en' ? 'English' : lang === 'hi' ? 'Hindi' : 'Telugu'}`}
-              style={{
-                background: language === lang ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
-                color: language === lang ? '#38bdf8' : '#64748b',
-                border: language === lang ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid transparent',
-                borderRadius: '6px',
-                padding: '0.25rem 0.5rem',
-                fontSize: '0.72rem',
-                fontWeight: language === lang ? 700 : 500,
-                cursor: 'pointer',
-                minHeight: 'var(--min-target-size)',
-                transition: 'all 0.15s ease',
-              }}
-            >
-              {lang === 'en' ? 'EN' : lang === 'hi' ? 'हिन्दी' : 'తె'}
-            </button>
-          ))}
-        </div>
-
-        <div style={{ width: '1px', height: '20px', background: 'rgba(56, 189, 248, 0.15)' }} />
-
-        {/* Text Scale Stepper */}
+        {/* Fullscreen Toggle */}
         <button
-          onClick={handleCycleTextScale}
-          aria-label={`Cycle text size, current ${textScale}%`}
-          title={`Text Scale: ${textScale}%`}
-          className="btn-secondary"
+          onClick={toggleFullscreen}
+          aria-label={isFullscreen ? 'Exit fullscreen mode' : 'Enter fullscreen mode'}
+          title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '0.3rem',
-            padding: '0.25rem 0.55rem',
-            fontSize: '0.72rem',
-            fontWeight: 700,
-            minHeight: 'var(--min-target-size)',
+            justifyContent: 'center',
+            width: '32px',
+            height: '32px',
+            borderRadius: '6px',
+            background: 'rgba(15, 23, 42, 0.6)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            color: '#94a3b8',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
           }}
         >
-          <Type size={13} aria-hidden="true" />
-          <span>{textScale}%</span>
+          {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
         </button>
 
-        {/* Theme Cycler */}
-        <button
-          onClick={handleCycleTheme}
-          aria-label={`Cycle theme. Current theme is ${theme}`}
-          title={`Theme: ${theme}`}
-          className="btn-secondary"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.3rem',
-            padding: '0.25rem 0.55rem',
-            fontSize: '0.72rem',
-            minHeight: 'var(--min-target-size)',
-          }}
-        >
-          {theme === 'dark' && <Moon size={13} aria-hidden="true" />}
-          {theme === 'light' && <Sun size={13} aria-hidden="true" />}
-          {theme === 'high-contrast' && <Contrast size={13} aria-hidden="true" />}
-          <span style={{ textTransform: 'capitalize' }}>{theme}</span>
-        </button>
-
-        {/* Audio Speech Narration Toggle */}
-        <button
-          onClick={() => setAudioAnnouncer(!audioAnnouncer)}
-          aria-pressed={audioAnnouncer}
-          aria-label={`Toggle voice speech narration for replans. Currently ${audioAnnouncer ? 'enabled' : 'disabled'}`}
-          title={`Voice Speech: ${audioAnnouncer ? 'On' : 'Off'} (M)`}
-          className="btn-secondary"
-          style={{
-            padding: '0.25rem 0.45rem',
-            minHeight: 'var(--min-target-size)',
-            minWidth: 'var(--min-target-size)',
-            color: audioAnnouncer ? '#14b8a6' : '#64748b',
-          }}
-        >
-          {audioAnnouncer ? <Volume2 size={15} /> : <VolumeX size={15} />}
-        </button>
-
-        {/* Keyboard Shortcut Modal */}
+        {/* Keyboard Shortcuts / Functional Documentation Help */}
         <button
           onClick={onOpenKeyboardHelp}
-          aria-label="Open keyboard shortcuts help dialog (?)"
-          title="Keyboard Shortcuts (?)"
-          className="btn-secondary"
+          aria-label="Open keyboard shortcuts and quick guide (?)"
+          title="Keyboard Shortcuts & Documentation (?)"
           style={{
-            padding: '0.25rem 0.45rem',
-            minHeight: 'var(--min-target-size)',
-            minWidth: 'var(--min-target-size)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '32px',
+            height: '32px',
+            borderRadius: '6px',
+            background: 'rgba(15, 23, 42, 0.6)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            color: '#94a3b8',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
           }}
         >
           <HelpCircle size={15} />
         </button>
-
-        <div style={{ width: '1px', height: '20px', background: 'rgba(56, 189, 248, 0.15)' }} />
-
-        {/* User Account / Guest State */}
-        {isAuthenticated ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                color: '#94a3b8',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.3rem',
-              }}
-            >
-              {user?.role === 'admin' ? (
-                <Shield size={13} color="#38bdf8" />
-              ) : (
-                <User size={13} />
-              )}
-              <span>{isGuest ? 'Guest' : user?.email.split('@')[0]}</span>
-            </span>
-            <button
-              onClick={logout}
-              aria-label="Sign out"
-              title="Sign Out"
-              className="btn-secondary"
-              style={{
-                padding: '0.25rem 0.45rem',
-                minHeight: 'var(--min-target-size)',
-              }}
-            >
-              <LogOut size={13} />
-            </button>
-          </div>
-        ) : (
-          <a
-            href="/login"
-            className="btn-primary"
-            style={{
-              padding: '0.3rem 0.75rem',
-              fontSize: '0.8rem',
-              textDecoration: 'none',
-              minHeight: 'var(--min-target-size)',
-            }}
-          >
-            {t('login')}
-          </a>
-        )}
       </div>
     </header>
   );

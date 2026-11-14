@@ -154,6 +154,7 @@ export interface RunMetrics {
   mean_jerk_m_s3: number;
   replan_count: number;
   p95_latency_ms: number;
+  path_length_m?: number;
   failure_tag: "PERCEPTION" | "PREDICTION" | "RISK" | "PLANNING" | "DYNAMICS" | null;
 }
 

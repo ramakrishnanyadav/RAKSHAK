@@ -78,6 +78,506 @@ class VillageRoadScenario(ScenarioBuilder):
         return world, ego
 
 
+class PedestrianCrossingScenario(ScenarioBuilder):
+    """Scenario 02: Child / Pedestrian Crossing on Indian urban residential street with parked vehicles."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        road_half_w = 3.8
+        bounds = WorldBounds(x_min=-10.0, x_max=100.0, y_min=-7.0, y_max=7.0)
+
+        left_pts = [[x, road_half_w] for x in range(-10, 110, 10)]
+        right_pts = [[x, -road_half_w] for x in range(-10, 110, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        # Parked vehicles along curb acting as physical and visual occluders
+        stall_x = 24.0 + rng.uniform(-1.5, 1.5)
+        static_obs = [
+            StaticObstacle(id="parked_car_1", kind="parked_vehicle", x=16.0, y=2.8, length=4.2, width=1.8),
+            StaticObstacle(id="parked_auto_2", kind="parked_vehicle", x=stall_x, y=2.6, length=2.8, width=1.3),
+        ]
+
+        p_cfg = PerceptionConfig(range_m=50.0, fov_deg=140.0, occlusion_enabled=True)
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs, perception_config=p_cfg, seed=seed)
+
+        # Child / pedestrian steps out from behind parked auto
+        ped_x = stall_x + 1.2
+        ped_y = 3.1  # Starts behind parked vehicle
+        ped = TrafficAgent(
+            id="crossing_pedestrian",
+            class_name="pedestrian",
+            x=ped_x,
+            y=ped_y,
+            yaw=-math.pi / 2.0,  # Stepping laterally into road
+            speed=1.35 + rng.uniform(-0.15, 0.25),
+            intent="sudden_cross",
+            behavior_seed=seed + 102,
+        )
+        world.add_agent(ped)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=self.config.ego_start_v if hasattr(self.config, "ego_start_v") else 6.5,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class DenseMixedTrafficScenario(ScenarioBuilder):
+    """Scenario 03: Dense Mixed Indian Traffic on narrow urban road with cars, rickshaws, and two-wheelers."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=110.0, y_min=-8.0, y_max=8.0)
+        left_pts = [[x, 4.2] for x in range(-10, 120, 10)]
+        right_pts = [[x, -4.2] for x in range(-10, 120, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Preceding Auto-rickshaw
+        rickshaw = TrafficAgent(
+            id="lead_rickshaw",
+            class_name="auto_rickshaw",
+            x=22.0 + rng.uniform(-2, 2),
+            y=0.2,
+            yaw=0.0,
+            speed=4.8 + rng.uniform(-0.3, 0.3),
+            intent="straight",
+            behavior_seed=seed + 201,
+        )
+        world.add_agent(rickshaw)
+
+        # Swarming Two-wheeler weaving in right gap
+        tw = TrafficAgent(
+            id="weaving_scooter",
+            class_name="two_wheeler",
+            x=16.0 + rng.uniform(-2, 2),
+            y=-1.6,
+            yaw=0.1,
+            speed=6.2 + rng.uniform(-0.4, 0.4),
+            intent="swerve",
+            behavior_seed=seed + 202,
+        )
+        world.add_agent(tw)
+
+        # Oncoming delivery truck / car
+        oncoming = TrafficAgent(
+            id="oncoming_traffic",
+            class_name="car",
+            x=60.0 + rng.uniform(-4, 4),
+            y=2.0,
+            yaw=math.pi,
+            speed=5.2,
+            intent="straight",
+            behavior_seed=seed + 203,
+        )
+        world.add_agent(oncoming)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class MotorcycleCutInScenario(ScenarioBuilder):
+    """Scenario 04: Two-Wheeler / Motorcycle Cut-In from adjacent lane."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=120.0, y_min=-9.0, y_max=9.0)
+        left_pts = [[x, 5.0] for x in range(-10, 130, 10)]
+        right_pts = [[x, -5.0] for x in range(-10, 130, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Fast motorcycle in adjacent corridor cutting sharply in front of ego
+        bike_x = 14.0 + rng.uniform(-1.5, 1.5)
+        bike_y = 2.4
+        bike = TrafficAgent(
+            id="cut_in_motorcycle",
+            class_name="two_wheeler",
+            x=bike_x,
+            y=bike_y,
+            yaw=0.0,
+            speed=7.5 + rng.uniform(-0.3, 0.5),
+            intent="cut_in",
+            behavior_seed=seed + 301,
+        )
+        world.add_agent(bike)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=7.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class HighwaySuddenBrakingScenario(ScenarioBuilder):
+    """Scenario 06: Highway Sudden Braking of leading vehicle at high speed."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=150.0, y_min=-9.0, y_max=9.0)
+        left_pts = [[x, 5.5] for x in range(-10, 160, 10)]
+        right_pts = [[x, -5.5] for x in range(-10, 160, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Lead car cruising ahead, then brakes suddenly
+        lead_x = 28.0 + rng.uniform(-2, 2)
+        lead_car = TrafficAgent(
+            id="lead_braking_car",
+            class_name="car",
+            x=lead_x,
+            y=0.0,
+            yaw=0.0,
+            speed=12.5 + rng.uniform(-0.5, 0.5),
+            intent="sudden_brake",
+            behavior_seed=seed + 401,
+        )
+        world.add_agent(lead_car)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=12.0,  # Fast cruising speed
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+# ============================================================================
+# 8-SCENARIO CANONICAL INDIAN ROAD SUITE (STAGE 4G.6)
+# ============================================================================
+
+class PedestrianCrossingScenario(ScenarioBuilder):
+    """Scenario 02: Child / Pedestrian Crossing on Indian urban residential street with parked vehicles."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        road_half_w = 3.8
+        bounds = WorldBounds(x_min=-10.0, x_max=100.0, y_min=-7.0, y_max=7.0)
+
+        left_pts = [[x, road_half_w] for x in range(-10, 110, 10)]
+        right_pts = [[x, -road_half_w] for x in range(-10, 110, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        # Parked vehicles along curb acting as physical and visual occluders
+        stall_x = 24.0 + rng.uniform(-1.5, 1.5)
+        static_obs = [
+            StaticObstacle(id="parked_car_1", kind="parked_vehicle", x=16.0, y=2.8, length=4.2, width=1.8),
+            StaticObstacle(id="parked_auto_2", kind="parked_vehicle", x=stall_x, y=2.6, length=2.8, width=1.3),
+        ]
+
+        p_cfg = PerceptionConfig(range_m=50.0, fov_deg=140.0, occlusion_enabled=True)
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs, perception_config=p_cfg, seed=seed)
+
+        # Child / pedestrian steps out from behind parked auto
+        ped_x = stall_x + 1.2
+        ped_y = 3.1  # Starts behind parked vehicle
+        ped = TrafficAgent(
+            id="crossing_pedestrian",
+            class_name="pedestrian",
+            x=ped_x,
+            y=ped_y,
+            yaw=-math.pi / 2.0,  # Stepping laterally into road
+            speed=1.35 + rng.uniform(-0.15, 0.25),
+            intent="sudden_cross",
+            behavior_seed=seed + 102,
+        )
+        world.add_agent(ped)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=self.config.ego_start_v if hasattr(self.config, "ego_start_v") else 6.5,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class DenseMixedTrafficScenario(ScenarioBuilder):
+    """Scenario 03: Dense Mixed Indian Traffic on narrow urban road with cars, rickshaws, and two-wheelers."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=110.0, y_min=-8.0, y_max=8.0)
+        left_pts = [[x, 4.2] for x in range(-10, 120, 10)]
+        right_pts = [[x, -4.2] for x in range(-10, 120, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Preceding Auto-rickshaw
+        rickshaw = TrafficAgent(
+            id="lead_rickshaw",
+            class_name="auto_rickshaw",
+            x=22.0 + rng.uniform(-2, 2),
+            y=0.2,
+            yaw=0.0,
+            speed=4.8 + rng.uniform(-0.3, 0.3),
+            intent="straight",
+            behavior_seed=seed + 201,
+        )
+        world.add_agent(rickshaw)
+
+        # Swarming Two-wheeler weaving in right gap
+        tw = TrafficAgent(
+            id="weaving_scooter",
+            class_name="two_wheeler",
+            x=16.0 + rng.uniform(-2, 2),
+            y=-1.6,
+            yaw=0.1,
+            speed=6.2 + rng.uniform(-0.4, 0.4),
+            intent="swerve",
+            behavior_seed=seed + 202,
+        )
+        world.add_agent(tw)
+
+        # Oncoming delivery truck / car
+        oncoming = TrafficAgent(
+            id="oncoming_traffic",
+            class_name="car",
+            x=60.0 + rng.uniform(-4, 4),
+            y=2.0,
+            yaw=math.pi,
+            speed=5.2,
+            intent="straight",
+            behavior_seed=seed + 203,
+        )
+        world.add_agent(oncoming)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class MotorcycleCutInScenario(ScenarioBuilder):
+    """Scenario 04: Two-Wheeler / Motorcycle Cut-In from adjacent lane."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=120.0, y_min=-9.0, y_max=9.0)
+        left_pts = [[x, 5.0] for x in range(-10, 130, 10)]
+        right_pts = [[x, -5.0] for x in range(-10, 130, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Fast motorcycle in adjacent corridor cutting sharply in front of ego
+        bike_x = 14.0 + rng.uniform(-1.5, 1.5)
+        bike_y = 2.4
+        bike = TrafficAgent(
+            id="cut_in_motorcycle",
+            class_name="two_wheeler",
+            x=bike_x,
+            y=bike_y,
+            yaw=0.0,
+            speed=7.5 + rng.uniform(-0.3, 0.5),
+            intent="cut_in",
+            behavior_seed=seed + 301,
+        )
+        world.add_agent(bike)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=7.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class HighwaySuddenBrakingScenario(ScenarioBuilder):
+    """Scenario 06: Highway Sudden Braking of leading vehicle at high speed."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=150.0, y_min=-9.0, y_max=9.0)
+        left_pts = [[x, 5.5] for x in range(-10, 160, 10)]
+        right_pts = [[x, -5.5] for x in range(-10, 160, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Lead car cruising ahead, then brakes suddenly
+        lead_x = 28.0 + rng.uniform(-2, 2)
+        lead_car = TrafficAgent(
+            id="lead_braking_car",
+            class_name="car",
+            x=lead_x,
+            y=0.0,
+            yaw=0.0,
+            speed=12.5 + rng.uniform(-0.5, 0.5),
+            intent="sudden_brake",
+            behavior_seed=seed + 401,
+        )
+        world.add_agent(lead_car)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=12.0,  # Fast cruising speed
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class RoadworksObstructionScenario(ScenarioBuilder):
+    """Scenario 07: Roadworks and Lane Obstruction with barricades and constricted passing space."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=120.0, y_min=-8.0, y_max=8.0)
+        left_pts = [[x, 4.5] for x in range(-10, 130, 10)]
+        right_pts = [[x, -4.5] for x in range(-10, 130, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        # Barricades blocking left and center lanes
+        static_obs = [
+            StaticObstacle(id="construction_barricade_1", kind="barrier", x=28.0, y=1.4, length=3.5, width=1.5),
+            StaticObstacle(id="road_excavation", kind="pothole", x=35.0, y=1.2, length=4.0, width=2.2),
+            StaticObstacle(id="construction_barricade_2", kind="barrier", x=42.0, y=1.0, length=3.5, width=1.5),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs, seed=seed)
+
+        # Oncoming two-wheeler in remaining narrow opening
+        tw = TrafficAgent(
+            id="oncoming_bike",
+            class_name="two_wheeler",
+            x=68.0 + rng.uniform(-3, 3),
+            y=-1.8,
+            yaw=math.pi,
+            speed=4.0,
+            intent="straight",
+            behavior_seed=seed + 501,
+        )
+        world.add_agent(tw)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class RoadworksObstructionScenario(ScenarioBuilder):
+    """Scenario 07: Roadworks and Lane Obstruction with barricades and constricted passing space."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=120.0, y_min=-8.0, y_max=8.0)
+        left_pts = [[x, 4.5] for x in range(-10, 130, 10)]
+        right_pts = [[x, -4.5] for x in range(-10, 130, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        # Barricades blocking left and center lanes
+        static_obs = [
+            StaticObstacle(id="construction_barricade_1", kind="barrier", x=28.0, y=1.4, length=3.5, width=1.5),
+            StaticObstacle(id="road_excavation", kind="pothole", x=35.0, y=1.2, length=4.0, width=2.0),
+            StaticObstacle(id="construction_barricade_2", kind="barrier", x=42.0, y=1.0, length=3.5, width=1.5),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs, seed=seed)
+
+        # Oncoming two-wheeler in remaining narrow opening
+        tw = TrafficAgent(
+            id="oncoming_bike",
+            class_name="two_wheeler",
+            x=68.0 + rng.uniform(-3, 3),
+            y=-1.8,
+            yaw=math.pi,
+            speed=4.0,
+            intent="straight",
+            behavior_seed=seed + 501,
+        )
+        world.add_agent(tw)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
 class UrbanIntersectionScenario(ScenarioBuilder):
     """Scenario 2: Busy Unsignalized Urban Intersection with cross-cutting traffic."""
 
@@ -131,6 +631,259 @@ class UrbanIntersectionScenario(ScenarioBuilder):
             y=0.0,
             yaw=0.0,
             v=self.config.ego_start_v,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+# Aliases for 8-Scenario Canonical Taxonomy
+PotholeDamagedRoadScenario = VillageRoadScenario
+UncontrolledIntersectionScenario = UrbanIntersectionScenario
+
+
+class PedestrianCrossingScenario(ScenarioBuilder):
+    """Scenario 02: Child / Pedestrian Crossing on Indian urban residential street with parked vehicles."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        road_half_w = 3.8
+        bounds = WorldBounds(x_min=-10.0, x_max=100.0, y_min=-7.0, y_max=7.0)
+
+        left_pts = [[x, road_half_w] for x in range(-10, 110, 10)]
+        right_pts = [[x, -road_half_w] for x in range(-10, 110, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        # Parked vehicles along curb acting as physical and visual occluders
+        stall_x = 24.0 + rng.uniform(-1.5, 1.5)
+        static_obs = [
+            StaticObstacle(id="parked_car_1", kind="parked_vehicle", x=16.0, y=2.8, length=4.2, width=1.8),
+            StaticObstacle(id="parked_auto_2", kind="parked_vehicle", x=stall_x, y=2.6, length=2.8, width=1.3),
+        ]
+
+        p_cfg = PerceptionConfig(range_m=50.0, fov_deg=140.0, occlusion_enabled=True)
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs, perception_config=p_cfg, seed=seed)
+
+        # Child / pedestrian steps out from behind parked auto
+        ped_x = stall_x + 1.2
+        ped_y = 3.1  # Starts behind parked vehicle
+        ped = TrafficAgent(
+            id="crossing_pedestrian",
+            class_name="pedestrian",
+            x=ped_x,
+            y=ped_y,
+            yaw=-math.pi / 2.0,  # Stepping laterally into road
+            speed=1.35 + rng.uniform(-0.15, 0.25),
+            intent="sudden_cross",
+            behavior_seed=seed + 102,
+        )
+        world.add_agent(ped)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=self.config.ego_start_v if hasattr(self.config, "ego_start_v") else 6.5,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class DenseMixedTrafficScenario(ScenarioBuilder):
+    """Scenario 03: Dense Mixed Indian Traffic on narrow urban road with cars, rickshaws, and two-wheelers."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=110.0, y_min=-8.0, y_max=8.0)
+        left_pts = [[x, 4.2] for x in range(-10, 120, 10)]
+        right_pts = [[x, -4.2] for x in range(-10, 120, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Preceding Auto-rickshaw
+        rickshaw = TrafficAgent(
+            id="lead_rickshaw",
+            class_name="auto_rickshaw",
+            x=22.0 + rng.uniform(-2, 2),
+            y=0.2,
+            yaw=0.0,
+            speed=4.8 + rng.uniform(-0.3, 0.3),
+            intent="straight",
+            behavior_seed=seed + 201,
+        )
+        world.add_agent(rickshaw)
+
+        # Swarming Two-wheeler weaving in right gap
+        tw = TrafficAgent(
+            id="weaving_scooter",
+            class_name="two_wheeler",
+            x=16.0 + rng.uniform(-2, 2),
+            y=-1.6,
+            yaw=0.1,
+            speed=6.2 + rng.uniform(-0.4, 0.4),
+            intent="swerve",
+            behavior_seed=seed + 202,
+        )
+        world.add_agent(tw)
+
+        # Oncoming delivery truck / car
+        oncoming = TrafficAgent(
+            id="oncoming_traffic",
+            class_name="car",
+            x=60.0 + rng.uniform(-4, 4),
+            y=2.0,
+            yaw=math.pi,
+            speed=5.2,
+            intent="straight",
+            behavior_seed=seed + 203,
+        )
+        world.add_agent(oncoming)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class MotorcycleCutInScenario(ScenarioBuilder):
+    """Scenario 04: Two-Wheeler / Motorcycle Cut-In from adjacent lane."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=120.0, y_min=-9.0, y_max=9.0)
+        left_pts = [[x, 5.0] for x in range(-10, 130, 10)]
+        right_pts = [[x, -5.0] for x in range(-10, 130, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Fast motorcycle in adjacent corridor cutting sharply in front of ego
+        bike_x = 14.0 + rng.uniform(-1.5, 1.5)
+        bike_y = 2.4
+        bike = TrafficAgent(
+            id="cut_in_motorcycle",
+            class_name="two_wheeler",
+            x=bike_x,
+            y=bike_y,
+            yaw=0.0,
+            speed=7.5 + rng.uniform(-0.3, 0.5),
+            intent="cut_in",
+            behavior_seed=seed + 301,
+        )
+        world.add_agent(bike)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=7.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class HighwaySuddenBrakingScenario(ScenarioBuilder):
+    """Scenario 06: Highway Sudden Braking of leading vehicle at high speed."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=150.0, y_min=-9.0, y_max=9.0)
+        left_pts = [[x, 5.5] for x in range(-10, 160, 10)]
+        right_pts = [[x, -5.5] for x in range(-10, 160, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Lead car cruising ahead, then brakes suddenly
+        lead_x = 28.0 + rng.uniform(-2, 2)
+        lead_car = TrafficAgent(
+            id="lead_braking_car",
+            class_name="car",
+            x=lead_x,
+            y=0.0,
+            yaw=0.0,
+            speed=12.5 + rng.uniform(-0.5, 0.5),
+            intent="sudden_brake",
+            behavior_seed=seed + 401,
+        )
+        world.add_agent(lead_car)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=12.0,  # Fast cruising speed
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class RoadworksObstructionScenario(ScenarioBuilder):
+    """Scenario 07: Roadworks and Lane Obstruction with barricades and constricted passing space."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=120.0, y_min=-8.0, y_max=8.0)
+        left_pts = [[x, 4.5] for x in range(-10, 130, 10)]
+        right_pts = [[x, -4.5] for x in range(-10, 130, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        # Barricades blocking left and center lanes
+        static_obs = [
+            StaticObstacle(id="construction_barricade_1", kind="barrier", x=28.0, y=1.4, length=3.5, width=1.5),
+            StaticObstacle(id="road_excavation", kind="pothole", x=35.0, y=1.2, length=4.0, width=2.0),
+            StaticObstacle(id="construction_barricade_2", kind="barrier", x=42.0, y=1.0, length=3.5, width=1.5),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs, seed=seed)
+
+        # Oncoming two-wheeler in remaining narrow opening
+        tw = TrafficAgent(
+            id="oncoming_bike",
+            class_name="two_wheeler",
+            x=68.0 + rng.uniform(-3, 3),
+            y=-1.8,
+            yaw=math.pi,
+            speed=4.0,
+            intent="straight",
+            behavior_seed=seed + 501,
+        )
+        world.add_agent(tw)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
             steering=0.0,
             acceleration=0.0,
             active_state="FOLLOW",
@@ -289,6 +1042,259 @@ class CattleCrossingScenario(ScenarioBuilder):
             y=0.0,
             yaw=0.0,
             v=self.config.ego_start_v,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+# Aliases for 8-Scenario Canonical Taxonomy
+PotholeDamagedRoadScenario = VillageRoadScenario
+UncontrolledIntersectionScenario = UrbanIntersectionScenario
+
+
+class PedestrianCrossingScenario(ScenarioBuilder):
+    """Scenario 02: Child / Pedestrian Crossing on Indian urban residential street with parked vehicles."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        road_half_w = 3.8
+        bounds = WorldBounds(x_min=-10.0, x_max=100.0, y_min=-7.0, y_max=7.0)
+
+        left_pts = [[x, road_half_w] for x in range(-10, 110, 10)]
+        right_pts = [[x, -road_half_w] for x in range(-10, 110, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        # Parked vehicles along curb acting as physical and visual occluders
+        stall_x = 24.0 + rng.uniform(-1.5, 1.5)
+        static_obs = [
+            StaticObstacle(id="parked_car_1", kind="parked_vehicle", x=16.0, y=2.8, length=4.2, width=1.8),
+            StaticObstacle(id="parked_auto_2", kind="parked_vehicle", x=stall_x, y=2.6, length=2.8, width=1.3),
+        ]
+
+        p_cfg = PerceptionConfig(range_m=50.0, fov_deg=140.0, occlusion_enabled=True)
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs, perception_config=p_cfg, seed=seed)
+
+        # Child / pedestrian steps out from behind parked auto
+        ped_x = stall_x + 1.2
+        ped_y = 3.1  # Starts behind parked vehicle
+        ped = TrafficAgent(
+            id="crossing_pedestrian",
+            class_name="pedestrian",
+            x=ped_x,
+            y=ped_y,
+            yaw=-math.pi / 2.0,  # Stepping laterally into road
+            speed=1.35 + rng.uniform(-0.15, 0.25),
+            intent="sudden_cross",
+            behavior_seed=seed + 102,
+        )
+        world.add_agent(ped)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=self.config.ego_start_v if hasattr(self.config, "ego_start_v") else 6.5,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class DenseMixedTrafficScenario(ScenarioBuilder):
+    """Scenario 03: Dense Mixed Indian Traffic on narrow urban road with cars, rickshaws, and two-wheelers."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=110.0, y_min=-8.0, y_max=8.0)
+        left_pts = [[x, 4.2] for x in range(-10, 120, 10)]
+        right_pts = [[x, -4.2] for x in range(-10, 120, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Preceding Auto-rickshaw
+        rickshaw = TrafficAgent(
+            id="lead_rickshaw",
+            class_name="auto_rickshaw",
+            x=22.0 + rng.uniform(-2, 2),
+            y=0.2,
+            yaw=0.0,
+            speed=4.8 + rng.uniform(-0.3, 0.3),
+            intent="straight",
+            behavior_seed=seed + 201,
+        )
+        world.add_agent(rickshaw)
+
+        # Swarming Two-wheeler weaving in right gap
+        tw = TrafficAgent(
+            id="weaving_scooter",
+            class_name="two_wheeler",
+            x=16.0 + rng.uniform(-2, 2),
+            y=-1.6,
+            yaw=0.1,
+            speed=6.2 + rng.uniform(-0.4, 0.4),
+            intent="swerve",
+            behavior_seed=seed + 202,
+        )
+        world.add_agent(tw)
+
+        # Oncoming delivery truck / car
+        oncoming = TrafficAgent(
+            id="oncoming_traffic",
+            class_name="car",
+            x=60.0 + rng.uniform(-4, 4),
+            y=2.0,
+            yaw=math.pi,
+            speed=5.2,
+            intent="straight",
+            behavior_seed=seed + 203,
+        )
+        world.add_agent(oncoming)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class MotorcycleCutInScenario(ScenarioBuilder):
+    """Scenario 04: Two-Wheeler / Motorcycle Cut-In from adjacent lane."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=120.0, y_min=-9.0, y_max=9.0)
+        left_pts = [[x, 5.0] for x in range(-10, 130, 10)]
+        right_pts = [[x, -5.0] for x in range(-10, 130, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Fast motorcycle in adjacent corridor cutting sharply in front of ego
+        bike_x = 14.0 + rng.uniform(-1.5, 1.5)
+        bike_y = 2.4
+        bike = TrafficAgent(
+            id="cut_in_motorcycle",
+            class_name="two_wheeler",
+            x=bike_x,
+            y=bike_y,
+            yaw=0.0,
+            speed=7.5 + rng.uniform(-0.3, 0.5),
+            intent="cut_in",
+            behavior_seed=seed + 301,
+        )
+        world.add_agent(bike)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=7.0,
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class HighwaySuddenBrakingScenario(ScenarioBuilder):
+    """Scenario 06: Highway Sudden Braking of leading vehicle at high speed."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=150.0, y_min=-9.0, y_max=9.0)
+        left_pts = [[x, 5.5] for x in range(-10, 160, 10)]
+        right_pts = [[x, -5.5] for x in range(-10, 160, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=[], seed=seed)
+
+        # Lead car cruising ahead, then brakes suddenly
+        lead_x = 28.0 + rng.uniform(-2, 2)
+        lead_car = TrafficAgent(
+            id="lead_braking_car",
+            class_name="car",
+            x=lead_x,
+            y=0.0,
+            yaw=0.0,
+            speed=12.5 + rng.uniform(-0.5, 0.5),
+            intent="sudden_brake",
+            behavior_seed=seed + 401,
+        )
+        world.add_agent(lead_car)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=12.0,  # Fast cruising speed
+            steering=0.0,
+            acceleration=0.0,
+            active_state="FOLLOW",
+        )
+        return world, ego
+
+
+class RoadworksObstructionScenario(ScenarioBuilder):
+    """Scenario 07: Roadworks and Lane Obstruction with barricades and constricted passing space."""
+
+    def build(self, seed: int, split: str = "tune") -> Tuple[SimulationWorld, EgoState]:
+        rng = random.Random(seed)
+        bounds = WorldBounds(x_min=-10.0, x_max=120.0, y_min=-8.0, y_max=8.0)
+        left_pts = [[x, 4.5] for x in range(-10, 130, 10)]
+        right_pts = [[x, -4.5] for x in range(-10, 130, 10)]
+        road_boundaries = [
+            RoadBoundary(side="left", points=left_pts),
+            RoadBoundary(side="right", points=right_pts),
+        ]
+
+        # Barricades blocking left and center lanes
+        static_obs = [
+            StaticObstacle(id="construction_barricade_1", kind="barrier", x=28.0, y=1.4, length=3.5, width=1.5),
+            StaticObstacle(id="road_excavation", kind="pothole", x=35.0, y=1.2, length=4.0, width=2.0),
+            StaticObstacle(id="construction_barricade_2", kind="barrier", x=42.0, y=1.0, length=3.5, width=1.5),
+        ]
+
+        world = SimulationWorld(bounds=bounds, road_boundaries=road_boundaries, static_obstacles=static_obs, seed=seed)
+
+        # Oncoming two-wheeler in remaining narrow opening
+        tw = TrafficAgent(
+            id="oncoming_bike",
+            class_name="two_wheeler",
+            x=68.0 + rng.uniform(-3, 3),
+            y=-1.8,
+            yaw=math.pi,
+            speed=4.0,
+            intent="straight",
+            behavior_seed=seed + 501,
+        )
+        world.add_agent(tw)
+
+        ego = EgoState(
+            x=0.0,
+            y=0.0,
+            yaw=0.0,
+            v=6.0,
             steering=0.0,
             acceleration=0.0,
             active_state="FOLLOW",

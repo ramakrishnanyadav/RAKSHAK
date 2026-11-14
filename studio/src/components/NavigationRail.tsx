@@ -1,337 +1,327 @@
 /**
- * Unified Four-Workspace Navigation Architecture for ADAPTIVE-PATH Studio.
+ * Stage 4G.9: Streamlined Five-Section Primary Navigation Architecture.
  * 
- * Consolidates navigation into 4 primary workspaces:
- * 1. HOME: Overview, Recent Activity, Quick-start simulation, System Status (/app)
- * 2. SIMULATE: Road Scenarios library (/app/scenarios), Guided 3-step preparation (/app/runs/new)
- * 3. RESULTS: Replay Viewer (/app/runs, /app/runs/:id), Compare Runs (/app/compare), Validation Reports (/app/reports)
- * 4. RESEARCH: Benchmark Validation (/app/benchmark), Failure Explorer (/app/failures)
+ * 5 Primary Destinations:
+ * 1. HOME (/app) - Overview & Activity
+ * 2. SCENARIOS (/app/scenarios) - Indian Road Library
+ * 3. SIMULATE (/app/workstation) - Live Simulation & 3D Workstation
+ * 4. RESULTS (/app/runs) - Replay & Test History
+ * 5. MATLAB STUDIO (/app/matlab) - Simulink SIL Plant
  * 
- * Secondary / Utility:
- * - Settings (/app/settings/profile)
- * - Admin Console (/admin/users, admin-only)
+ * Collapsible Advanced Research Mode:
+ * - Planner Comparison / Compare Runs (/app/compare)
+ * - What Went Wrong (/app/failures)
+ * - Ablation Benchmark (/app/benchmark)
+ * - Validation Reports (/app/reports)
  * 
- * Meets WCAG 2.2 AA target size >= 24px and keyboard accessibility requirements.
+ * WCAG 2.2 AA compliant with >= 24px target sizes, visible focus rings, and high-contrast active states.
  */
 
-import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import {
   Compass,
   Map,
   PlayCircle,
-  PlusCircle,
-  Columns,
-  BarChart3,
-  AlertTriangle,
-  FileText,
-  Settings,
-  ShieldAlert,
-  FlaskConical,
-  Activity,
-  Layers,
-  ChevronRight,
   Box,
+  Cpu,
+  Columns,
+  AlertTriangle,
+  BarChart3,
+  FileText,
+  FlaskConical,
+  Settings,
+  ChevronDown,
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useI18n } from '../context/I18nContext';
+import { useSettings } from '../context/SettingsContext';
 
-export interface WorkspaceGroup {
-  id: 'home' | 'simulate' | 'results' | 'research';
+export interface PrimaryDestination {
+  id: string;
   title: string;
   subtext: string;
+  ariaLabel: string;
   icon: React.ReactNode;
-  primaryPath: string;
+  to: string;
   isActive: (pathname: string) => boolean;
-  subItems: {
-    to: string;
-    label: string;
-    icon: React.ReactNode;
-    end?: boolean;
-  }[];
 }
 
 export const NavigationRail: React.FC = () => {
-  const { user } = useAuth();
-  const { t } = useI18n();
+  const { presentationMode } = useSettings();
   const location = useLocation();
 
-  // Definition of the 4 Primary Workspaces
-  const workspaces: WorkspaceGroup[] = [
-    // 1. HOME WORKSPACE
+  const isResearchPath =
+    location.pathname.startsWith('/app/compare') ||
+    location.pathname.startsWith('/app/failures') ||
+    location.pathname.startsWith('/app/what-went-wrong') ||
+    location.pathname.startsWith('/app/benchmark') ||
+    location.pathname.startsWith('/app/reports');
+
+  const [researchOpen, setResearchOpen] = useState<boolean>(true);
+
+  // 5 Primary Navigation Destinations
+  const primaryDestinations: PrimaryDestination[] = [
     {
       id: 'home',
-      title: t('workspace_home'),
+      title: 'Home',
       subtext: 'Overview & Activity',
+      ariaLabel: 'Home: Overview & Activity',
       icon: <Compass size={18} aria-hidden="true" />,
-      primaryPath: '/app',
-      isActive: (pathname) => pathname === '/app',
-      subItems: [
-        {
-          to: '/app',
-          label: t('nav_overview'),
-          icon: <Activity size={14} aria-hidden="true" />,
-          end: true,
-        },
-      ],
+      to: '/app',
+      isActive: (pathname) => pathname === '/app' || pathname === '/app/',
     },
-
-    // 2. SIMULATE WORKSPACE
+    {
+      id: 'scenarios',
+      title: 'Scenarios',
+      subtext: 'Indian Road Library',
+      ariaLabel: 'Scenarios: Indian Road Library',
+      icon: <Map size={18} aria-hidden="true" />,
+      to: '/app/scenarios',
+      isActive: (pathname) => pathname.startsWith('/app/scenarios'),
+    },
     {
       id: 'simulate',
-      title: t('workspace_simulate'),
-      subtext: 'Scenarios & Preparation',
-      icon: <PlayCircle size={18} aria-hidden="true" />,
-      primaryPath: '/app/scenarios',
+      title: 'Live Simulation',
+      subtext: '3D Workstation',
+      ariaLabel: 'Live Simulation: 3D Workstation',
+      icon: <Box size={18} aria-hidden="true" />,
+      to: '/app/workstation',
       isActive: (pathname) =>
-        pathname.startsWith('/app/scenarios') || pathname.startsWith('/app/runs/new'),
-      subItems: [
-        {
-          to: '/app/scenarios',
-          label: t('nav_scenarios'),
-          icon: <Map size={14} aria-hidden="true" />,
-        },
-        {
-          to: '/app/runs/new',
-          label: t('nav_new_run'),
-          icon: <PlusCircle size={14} aria-hidden="true" />,
-        },
-      ],
+        pathname.startsWith('/app/workstation') ||
+        pathname.startsWith('/app/runs/new') ||
+        pathname.startsWith('/app/live'),
     },
-
-    // 3. RESULTS WORKSPACE (Compare housed inside Results)
     {
       id: 'results',
-      title: t('workspace_results'),
-      subtext: 'Replay & Comparison',
-      icon: <Activity size={18} aria-hidden="true" />,
-      primaryPath: '/app/workstation',
+      title: 'Results',
+      subtext: 'Replay & Test History',
+      ariaLabel: 'Results: Replay & Test History',
+      icon: <PlayCircle size={18} aria-hidden="true" />,
+      to: '/app/runs',
       isActive: (pathname) =>
-        pathname === '/app/workstation' ||
-        pathname === '/app/runs' ||
-        (pathname.startsWith('/app/runs/') && !pathname.startsWith('/app/runs/new')) ||
-        pathname.startsWith('/app/compare') ||
-        pathname.startsWith('/app/reports'),
-      subItems: [
-        {
-          to: '/app/workstation',
-          label: '3D Workstation',
-          icon: <Box size={14} aria-hidden="true" />,
-        },
-        {
-          to: '/app/runs',
-          label: t('nav_runs'),
-          icon: <PlayCircle size={14} aria-hidden="true" />,
-        },
-        {
-          to: '/app/compare',
-          label: t('nav_compare'),
-          icon: <Columns size={14} aria-hidden="true" />,
-        },
-        {
-          to: '/app/reports',
-          label: t('nav_reports'),
-          icon: <FileText size={14} aria-hidden="true" />,
-        },
-      ],
+        (pathname.startsWith('/app/runs') && !pathname.startsWith('/app/runs/new')) ||
+        pathname.startsWith('/app/results'),
     },
-
-    // 4. RESEARCH WORKSPACE
     {
-      id: 'research',
-      title: t('workspace_research'),
-      subtext: 'Benchmarks & Safety',
-      icon: <FlaskConical size={18} aria-hidden="true" />,
-      primaryPath: '/app/benchmark',
+      id: 'matlab',
+      title: 'MATLAB Studio',
+      subtext: 'Simulink SIL Plant',
+      ariaLabel: 'MATLAB Studio: Simulink SIL Plant',
+      icon: <Cpu size={18} aria-hidden="true" />,
+      to: '/app/matlab',
       isActive: (pathname) =>
-        pathname.startsWith('/app/benchmark') || pathname.startsWith('/app/failures'),
-      subItems: [
-        {
-          to: '/app/benchmark',
-          label: t('nav_benchmark'),
-          icon: <BarChart3 size={14} aria-hidden="true" />,
-        },
-        {
-          to: '/app/failures',
-          label: t('nav_failures'),
-          icon: <AlertTriangle size={14} aria-hidden="true" />,
-        },
-      ],
+        pathname.startsWith('/app/matlab') || pathname.startsWith('/app/sil'),
     },
   ];
+
+  // Advanced Research Items
+  const researchItems = [
+    {
+      to: '/app/compare',
+      label: 'Compare Runs',
+      desc: 'Multi-planner benchmarking',
+      icon: <Columns size={15} aria-hidden="true" />,
+    },
+    {
+      to: '/app/failures',
+      label: 'What Went Wrong',
+      desc: 'Failure classification & analysis',
+      icon: <AlertTriangle size={15} aria-hidden="true" />,
+    },
+    {
+      to: '/app/benchmark',
+      label: 'Ablation Benchmark',
+      desc: 'Statistical component sweeps',
+      icon: <BarChart3 size={15} aria-hidden="true" />,
+    },
+    {
+      to: '/app/reports',
+      label: 'Validation Reports',
+      desc: 'Safety dossiers & compliance',
+      icon: <FileText size={15} aria-hidden="true" />,
+    },
+  ];
+
+  const showResearch = researchOpen || presentationMode === 'research' || isResearchPath;
 
   return (
     <nav
       className="nav-rail"
       aria-label="Main Application Navigation"
       style={{
-        width: '240px',
-        minWidth: '240px',
+        width: '230px',
+        minWidth: '230px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '1rem 0.75rem',
+        padding: '0.85rem 0.65rem',
         overflowY: 'auto',
+        background: '#070a10',
+        borderRight: '1px solid rgba(56, 189, 248, 0.1)',
       }}
     >
-      {/* Brand Logo at top of nav */}
       <div>
-        <div style={{
-          padding: '0.5rem 0.5rem 1rem',
-          marginBottom: '0.5rem',
-          borderBottom: '1px solid rgba(56, 189, 248, 0.14)',
-        }}>
-          <div className="brand-title" style={{ fontSize: '1rem', fontWeight: 900 }}>
-            <Layers size={18} aria-hidden="true" />
-            ADAPTIVE-PATH
-          </div>
-          <div style={{
-            fontSize: '0.65rem',
-            color: '#38bdf8',
-            fontWeight: 600,
-            letterSpacing: '0.08em',
+        {/* Navigation Category Label */}
+        <div
+          style={{
+            fontSize: '0.66rem',
+            color: '#64748b',
             textTransform: 'uppercase',
-            marginTop: '0.25rem',
-            opacity: 0.8,
-          }}>
-            SIH26037 · MathWorks
-          </div>
+            letterSpacing: '0.08em',
+            fontWeight: 800,
+            padding: '0.4rem 0.65rem 0.6rem',
+          }}
+        >
+          Primary
         </div>
 
-        {/* Primary 4 Workspaces Navigation List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-          {workspaces.map((ws) => {
-            const isWsActive = ws.isActive(location.pathname);
+        {/* 5 Primary Navigation Destinations */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+          {primaryDestinations.map((dest) => {
+            const isActive = dest.isActive(location.pathname);
 
             return (
-              <div key={ws.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', marginBottom: '0.5rem' }}>
-                {/* Primary Workspace Header Button */}
-                <NavLink
-                  to={ws.primaryPath}
-                  aria-label={`${ws.title} Workspace: ${ws.subtext}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.55rem 0.75rem',
-                    borderRadius: '8px',
-                    textDecoration: 'none',
-                    background: isWsActive
-                      ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(99, 102, 241, 0.1) 100%)'
-                      : 'transparent',
-                    border: isWsActive ? '1px solid rgba(56, 189, 248, 0.28)' : '1px solid transparent',
-                    color: isWsActive ? '#f8fafc' : '#94a3b8',
-                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    minHeight: '44px',
-                    boxShadow: isWsActive ? '0 0 14px rgba(56, 189, 248, 0.08)' : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                    <span
+              <NavLink
+                key={dest.id}
+                to={dest.to}
+                aria-label={dest.ariaLabel}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0.6rem 0.75rem',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  background: isActive
+                    ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.18) 0%, rgba(99, 102, 241, 0.12) 100%)'
+                    : 'transparent',
+                  border: isActive ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid transparent',
+                  color: isActive ? '#f8fafc' : '#94a3b8',
+                  transition: 'all 0.15s ease',
+                  minHeight: '44px',
+                  boxShadow: isActive ? '0 0 14px rgba(56, 189, 248, 0.1)' : 'none',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
+                  <span
+                    style={{
+                      color: isActive ? '#38bdf8' : '#64748b',
+                      display: 'flex',
+                      alignItems: 'center',
+                      filter: isActive ? 'drop-shadow(0 0 6px rgba(56, 189, 248, 0.5))' : 'none',
+                    }}
+                  >
+                    {dest.icon}
+                  </span>
+                  <div>
+                    <div
                       style={{
-                        color: isWsActive ? '#38bdf8' : '#64748b',
-                        display: 'flex',
-                        alignItems: 'center',
-                        transition: 'color 0.2s ease',
+                        fontSize: '0.86rem',
+                        fontWeight: isActive ? 800 : 600,
+                        letterSpacing: '0.01em',
+                        lineHeight: 1.2,
+                        color: isActive ? '#f8fafc' : '#cbd5e1',
                       }}
                     >
-                      {ws.icon}
-                    </span>
-                    <div>
-                      <div
-                        style={{
-                          fontSize: '0.85rem',
-                          fontWeight: 700,
-                          letterSpacing: '0.01em',
-                          lineHeight: 1.2,
-                          color: isWsActive ? '#f8fafc' : '#cbd5e1',
-                        }}
-                      >
-                        {ws.title}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: '0.68rem',
-                          color: isWsActive ? 'rgba(56, 189, 248, 0.75)' : '#475569',
-                          fontWeight: 500,
-                          marginTop: '1px',
-                        }}
-                      >
-                        {ws.subtext}
-                      </div>
+                      {dest.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '0.66rem',
+                        color: isActive ? 'rgba(56, 189, 248, 0.9)' : '#64748b',
+                        fontWeight: 500,
+                        marginTop: '1px',
+                      }}
+                    >
+                      {dest.subtext}
                     </div>
                   </div>
-
-                  <ChevronRight
-                    size={13}
-                    style={{
-                      color: isWsActive ? '#38bdf8' : '#475569',
-                      opacity: isWsActive ? 1 : 0.5,
-                      transform: isWsActive ? 'rotate(90deg)' : 'none',
-                      transition: 'transform 0.2s ease, color 0.2s ease',
-                    }}
-                    aria-hidden="true"
-                  />
-                </NavLink>
-
-                {/* Sub-Destinations List */}
-                <ul
-                  role="menu"
-                  aria-label={`${ws.title} sub-pages`}
-                  style={{
-                    listStyle: 'none',
-                    padding: 0,
-                    margin: '0.1rem 0 0 1.5rem',
-                    borderLeft: `1px solid ${isWsActive ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.07)'}`,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.1rem',
-                    transition: 'border-color 0.2s ease',
-                  }}
-                >
-                  {ws.subItems.map((sub) => (
-                    <li key={sub.to} role="none">
-                      <NavLink
-                        to={sub.to}
-                        end={sub.end}
-                        role="menuitem"
-                        style={({ isActive }) => ({
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          padding: '0.38rem 0.6rem',
-                          borderRadius: '6px',
-                          textDecoration: 'none',
-                          fontSize: '0.78rem',
-                          fontWeight: isActive ? 700 : 400,
-                          color: isActive ? '#38bdf8' : '#64748b',
-                          background: isActive ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
-                          transition: 'all 0.15s ease',
-                          minHeight: '32px',
-                          marginLeft: '0.5rem',
-                          letterSpacing: isActive ? '0.01em' : 'normal',
-                        })}
-                      >
-                        <span style={{ display: 'flex', alignItems: 'center', opacity: 0.9 }}>{sub.icon}</span>
-                        <span>{sub.label}</span>
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                </div>
+              </NavLink>
             );
           })}
         </div>
+
+        {/* Collapsible Advanced Research Section */}
+        <div style={{ marginTop: '1.25rem', borderTop: '1px solid rgba(99, 102, 241, 0.18)', paddingTop: '0.75rem' }}>
+          <button
+            type="button"
+            onClick={() => setResearchOpen(!researchOpen)}
+            aria-expanded={showResearch}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0.4rem 0.65rem',
+              borderRadius: '6px',
+              border: 'none',
+              background: 'transparent',
+              color: isResearchPath ? '#a5b4fc' : '#818cf8',
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+              <FlaskConical size={13} color="#818cf8" aria-hidden="true" />
+              <span>Advanced Research</span>
+            </div>
+            <ChevronDown
+              size={14}
+              style={{
+                transform: showResearch ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.2s ease',
+              }}
+            />
+          </button>
+
+          {showResearch && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', marginTop: '0.35rem' }}>
+              {researchItems.map((item) => {
+                const isActive = location.pathname.startsWith(item.to);
+
+                return (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.65rem',
+                      padding: '0.45rem 0.65rem',
+                      borderRadius: '6px',
+                      textDecoration: 'none',
+                      fontSize: '0.78rem',
+                      fontWeight: isActive ? 700 : 500,
+                      color: isActive ? '#a5b4fc' : '#94a3b8',
+                      background: isActive ? 'rgba(99, 102, 241, 0.16)' : 'transparent',
+                      border: isActive ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid transparent',
+                      transition: 'all 0.15s ease',
+                      minHeight: '34px',
+                    }}
+                  >
+                    <span style={{ color: isActive ? '#818cf8' : '#64748b', display: 'flex', alignItems: 'center' }}>
+                      {item.icon}
+                    </span>
+                    <div>
+                      <div style={{ lineHeight: 1.2 }}>{item.label}</div>
+                      <div style={{ fontSize: '0.63rem', color: '#64748b', marginTop: '1px' }}>{item.desc}</div>
+                    </div>
+                  </NavLink>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Secondary Utility Navigation (Settings & Admin Pinned at Bottom) */}
+      {/* Pinned Bottom Settings Link */}
       <div
         style={{
-          borderTop: '1px solid rgba(56, 189, 248, 0.12)',
-          paddingTop: '0.85rem',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.25rem',
+          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+          paddingTop: '0.65rem',
         }}
       >
         <NavLink
@@ -340,60 +330,20 @@ export const NavigationRail: React.FC = () => {
           style={({ isActive }) => ({
             display: 'flex',
             alignItems: 'center',
-            gap: '0.65rem',
-            padding: '0.5rem 0.75rem',
-            borderRadius: '8px',
+            gap: '0.6rem',
+            padding: '0.45rem 0.65rem',
+            borderRadius: '6px',
             textDecoration: 'none',
-            fontSize: '0.8rem',
-            fontWeight: isActive ? 700 : 500,
+            fontSize: '0.78rem',
+            fontWeight: 600,
             color: isActive ? '#38bdf8' : '#64748b',
             background: isActive ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
-            border: `1px solid ${isActive ? 'rgba(56, 189, 248, 0.25)' : 'transparent'}`,
-            minHeight: '40px',
             transition: 'all 0.15s ease',
           })}
         >
-          <Settings size={15} aria-hidden="true" />
-          <span>{t('nav_settings')}</span>
+          <Settings size={15} />
+          <span>Settings</span>
         </NavLink>
-
-        {user?.role === 'admin' && (
-          <NavLink
-            to="/admin/users"
-            aria-label="Administration Console"
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.65rem',
-              padding: '0.5rem 0.75rem',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              fontSize: '0.8rem',
-              fontWeight: isActive ? 700 : 500,
-              color: isActive ? '#ef4444' : '#64748b',
-              background: isActive ? 'rgba(239, 68, 68, 0.1)' : 'transparent',
-              minHeight: '40px',
-              transition: 'all 0.15s ease',
-            })}
-          >
-            <ShieldAlert size={15} aria-hidden="true" />
-            <span>{t('nav_admin')}</span>
-          </NavLink>
-        )}
-
-        {/* Footer Meta */}
-        <div
-          style={{
-            paddingTop: '0.65rem',
-            fontSize: '0.65rem',
-            color: '#334155',
-            textAlign: 'center',
-            lineHeight: 1.5,
-          }}
-        >
-          <div style={{ color: '#475569' }}>MathWorks SIH26037</div>
-          <div style={{ color: '#10b981', fontWeight: 600, letterSpacing: '0.03em' }}>✓ WCAG 2.2 AA</div>
-        </div>
       </div>
     </nav>
   );

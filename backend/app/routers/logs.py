@@ -166,14 +166,16 @@ def get_run_manifest(
 def get_run_frames_chunk(
     run_id: str,
     start_time: float = Query(0.0, ge=0.0, description="Start time in seconds"),
-    end_time: float = Query(5.0, ge=0.0, description="End time in seconds"),
-    limit: int = Query(100, ge=1, le=500, description="Maximum frames to return"),
+    end_time: float = Query(60.0, ge=0.0, description="End time in seconds"),
+    limit: int = Query(1000, ge=1, le=5000, description="Maximum frames to return"),
     offset: int = Query(0, ge=0, description="Offset within temporal slice"),
     user: AuthenticatedUser = Depends(require_permission(Action.READ_RUN)),
     db: Session = Depends(get_db),
 ):
     """
     Stream a chunked temporal window of simulation frames with pagination.
+    Defaults to 1000 frames (up to 100 seconds at 10 Hz) so full simulations
+    are loaded without unexpected truncation midway.
     """
     record = db.query(RunRecord).filter(RunRecord.id == run_id).first()
     if not record:

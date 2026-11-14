@@ -40,6 +40,7 @@ from engine.behaviour import BehaviourStateMachine
 from engine.control import VehicleController
 from engine.config.cost_evaluator import compute_trajectory_cost
 from engine.metrics import compute_frame_metrics
+from engine.scenarios.hazard_model import HazardScenarioEngine
 
 
 class SimulationRunner:
@@ -93,6 +94,7 @@ class SimulationRunner:
         )
         behaviour_sm = BehaviourStateMachine(nominal_speed_m_s=sc_cfg.nominal_speed_m_s)
         vehicle_controller = VehicleController(mode="pure_pursuit_pid")
+        hazard_engine = HazardScenarioEngine(scenario_id=scenario_id, seed=seed)
 
         duration_limit = max_duration_s or sc_cfg.timeout_s
         total_steps = int(duration_limit / self.dt)
@@ -273,6 +275,21 @@ class SimulationRunner:
                     collision_detected = True
                 min_clearance_run = min(min_clearance_run, dist)
 
+            # Update event-driven scenario timeline
+            hazard_engine.process_step(
+                t=current_time,
+                ego_x=curr_x,
+                ego_y=curr_y,
+                ego_v=curr_v,
+                ego_accel=curr_accel,
+                active_state=behaviour_decision.active_state,
+                perceived_agents=[{"agent": ag} for ag in agent_tracks],
+                risk_level=risk_summary.risk_level,
+                max_risk=risk_summary.max_risk,
+                min_clearance=min_clearance_run,
+                collision=collision_detected,
+            )
+
             # Planned poses for output log
             planned_poses = [
                 {"x": round(pt[0], 2), "y": round(pt[1], 2), "v": round(pt[2], 2)}
@@ -344,4 +361,5 @@ class SimulationRunner:
             world=world.to_world_map_schema(),
             frames=frames,
             metrics=metrics,
+            events=hazard_engine.get_events_list(),
         )

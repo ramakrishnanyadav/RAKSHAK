@@ -80,6 +80,8 @@ HTMLCanvasElement.prototype.getContext = () => {
     fill: () => {},
     clip: () => {},
     strokeRect: () => {},
+    rect: () => {},
+    roundRect: () => {},
     setLineDash: () => {},
     createRadialGradient: () => ({
       addColorStop: () => {},

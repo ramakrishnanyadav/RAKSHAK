@@ -38,14 +38,14 @@ describe('NewRun Guided Three-Step Simulation Experience', () => {
 
     // Verify Step 1 header and progress
     expect(screen.getByText('Step 1: Choose a Road Environment')).not.toBeNull();
-    expect(screen.getByText('5 Canonical Indian Road Scenarios')).not.toBeNull();
+    expect(screen.getByText(/Canonical Indian Road Scenarios/)).not.toBeNull();
 
-    // Verify all 5 canonical scenarios from engine/scenarios/registry.py are present
-    expect(screen.getByText(/1\. Unmarked Village Road/)).not.toBeNull();
-    expect(screen.getByText(/2\. Busy Unsignalized Urban Intersection/)).not.toBeNull();
-    expect(screen.getByText(/3\. Highway Merge with Slow Vehicles/)).not.toBeNull();
-    expect(screen.getByText(/4\. Dense Market with Occluded Emergence/)).not.toBeNull();
-    expect(screen.getByText(/5\. Sudden Cattle Crossing/)).not.toBeNull();
+    // Verify benchmark scenarios from engine/scenarios/registry.py are present
+    expect(screen.getByText(/Pothole & Damaged Road/i)).not.toBeNull();
+    expect(screen.getByText(/Child \/ Pedestrian Crossing/i)).not.toBeNull();
+    expect(screen.getByText(/Dense Mixed Indian Traffic/i)).not.toBeNull();
+    expect(screen.getByText(/Motorcycle Cut-In/i)).not.toBeNull();
+    expect(screen.getAllByText(/Sudden Cattle Crossing/i).length).toBeGreaterThan(0);
 
     // Click Continue to Driving Strategy
     const continueBtn = screen.getByRole('button', { name: /Continue to Driving Strategy/i });

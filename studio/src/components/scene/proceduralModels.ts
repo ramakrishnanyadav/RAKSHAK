@@ -223,10 +223,11 @@ export function createEgoVehicleMesh(ego: EgoState, isP3: boolean): THREE.Group 
     [-l * 0.29, -w * 0.46, wheelRadius],
   ];
 
-  wheelPositions.forEach(([wx, wy, wz]) => {
+  const wheels: { fl?: THREE.Group; fr?: THREE.Group; rl?: THREE.Group; rr?: THREE.Group } = {};
+  wheelPositions.forEach(([wx, wy, wz], i) => {
     const wheelGroup = new THREE.Group();
     wheelGroup.position.set(wx, wy, wz);
-    // Notice: NO rotation around X! Axis is along Y (axle lateral across car)
+    wheelGroup.name = i === 0 ? 'wheel_fl' : i === 1 ? 'wheel_fr' : i === 2 ? 'wheel_rl' : 'wheel_rr';
 
     const tire = new THREE.Mesh(tireGeo, tireMat);
     tire.castShadow = true;
@@ -235,8 +236,14 @@ export function createEgoVehicleMesh(ego: EgoState, isP3: boolean): THREE.Group 
     const rim = new THREE.Mesh(rimGeo, rimMat);
     wheelGroup.add(rim);
 
+    if (i === 0) wheels.fl = wheelGroup;
+    else if (i === 1) wheels.fr = wheelGroup;
+    else if (i === 2) wheels.rl = wheelGroup;
+    else wheels.rr = wheelGroup;
+
     group.add(wheelGroup);
   });
+  group.userData.wheels = wheels;
 
   // 8. Dual LED Projector Headlights
   const lightGeo = new THREE.BoxGeometry(0.12, 0.28, 0.1);
@@ -332,185 +339,261 @@ export function createEgoVehicleMesh(ego: EgoState, isP3: boolean): THREE.Group 
   return group;
 }
 
-// 2. High-Realism Indian Zebu Cattle (Bos indicus)
+// 2. High-Realism Indian Zebu Cattle (Bos indicus) with Articulated Limbs
 export function createCattleMesh(ag: AgentTrack): THREE.Group {
   const group = new THREE.Group();
+  group.name = 'indian_cattle_mesh';
   const l = ag.length || 2.4;
   const w = ag.width || 1.1;
   const h = 1.48;
 
-  // Warm bovine caramel-tan hide material
+  // Warm Indian bovine caramel-tan hide material
   const cowMat = new THREE.MeshStandardMaterial({
-    color: 0x854d0e,
-    roughness: 0.78,
-    metalness: 0.05,
+    color: 0x8a531e,
+    roughness: 0.76,
+    metalness: 0.04,
+  });
+
+  // Soft cream/fawn belly and throat undertone
+  const bellyMat = new THREE.MeshStandardMaterial({
+    color: 0xb5804c,
+    roughness: 0.8,
+    metalness: 0.02,
   });
 
   const darkMuzzleMat = new THREE.MeshStandardMaterial({
-    color: 0x27272a,
-    roughness: 0.8,
+    color: 0x242426,
+    roughness: 0.85,
+    metalness: 0.05,
   });
 
   const hornMat = new THREE.MeshStandardMaterial({
-    color: 0xf1f5f9,
-    roughness: 0.35,
+    color: 0xfef9c3,
+    roughness: 0.32,
+    metalness: 0.08,
+  });
+
+  const hornTipMat = new THREE.MeshStandardMaterial({
+    color: 0x292524,
+    roughness: 0.4,
     metalness: 0.1,
   });
 
   const hoofMat = new THREE.MeshStandardMaterial({
     color: 0x18181b,
-    roughness: 0.9,
+    roughness: 0.88,
+    metalness: 0.15,
   });
 
-  // 1. Soft contact shadow under the animal
-  group.add(createContactShadowMesh(l * 1.1, w * 1.2));
+  // 1. Soft ambient ground contact shadow on asphalt
+  group.add(createContactShadowMesh(l * 1.15, w * 1.25));
 
-  // Check if authentic imported 3D cow geometry is available (cow.obj)
-  const cachedGeo = getCachedCowGeometry();
-  if (cachedGeo) {
-    const cowMesh = new THREE.Mesh(cachedGeo, cowMat);
-    cowMesh.rotation.x = Math.PI / 2;
-    cowMesh.rotation.z = -Math.PI / 2;
-    cowMesh.scale.set(l / 1.72, w / 0.94, h / 1.69);
-    cowMesh.position.set(0, 0, h * 0.48);
-    cowMesh.castShadow = true;
-    group.add(cowMesh);
-
-    // Prominent Zebu Hump
-    const humpGeo = new THREE.SphereGeometry(w * 0.32, 14, 14);
-    const hump = new THREE.Mesh(humpGeo, cowMat);
-    hump.position.set(l * 0.12, 0, h * 0.96);
-    hump.scale.set(0.85, 0.75, 1.2);
-    hump.castShadow = true;
-    group.add(hump);
-
-    return group;
-  }
-
-  // 2. Contoured Barrel Torso (cylinder along X)
-  const torsoGeo = new THREE.CylinderGeometry(w * 0.42, w * 0.44, l * 0.62, 16);
+  // 2. Contoured Barrel Torso (Anatomical ribcage & flanks)
+  const torsoGeo = new THREE.CylinderGeometry(w * 0.44, w * 0.42, l * 0.65, 18);
   const torso = new THREE.Mesh(torsoGeo, cowMat);
   torso.rotation.z = Math.PI / 2; // Length along X
-  torso.position.set(-l * 0.06, 0, h * 0.62);
+  torso.position.set(-l * 0.05, 0, h * 0.64);
+  torso.scale.set(1.0, 0.94, 1.08); // Flattened laterally, arched vertically
   torso.castShadow = true;
   group.add(torso);
 
-  // 3. Shoulders and Chest Bulk
-  const chestGeo = new THREE.SphereGeometry(w * 0.44, 12, 12);
-  const chest = new THREE.Mesh(chestGeo, cowMat);
-  chest.position.set(l * 0.16, 0, h * 0.64);
-  chest.scale.set(1.1, 0.92, 1.05);
-  chest.castShadow = true;
-  group.add(chest);
+  // Soft underbelly contour
+  const bellyGeo = new THREE.BoxGeometry(l * 0.58, w * 0.72, h * 0.22);
+  const belly = new THREE.Mesh(bellyGeo, bellyMat);
+  belly.position.set(-l * 0.05, 0, h * 0.52);
+  group.add(belly);
 
-  // 4. Prominent Zebu Cervicothoracic Hump (anatomical Indian cattle feature)
-  const humpGeo = new THREE.SphereGeometry(w * 0.36, 14, 14);
+  // 3. Muscular Shoulder & Forequarter Girdle
+  const shoulderGeo = new THREE.SphereGeometry(w * 0.46, 14, 14);
+  const shoulders = new THREE.Mesh(shoulderGeo, cowMat);
+  shoulders.position.set(l * 0.18, 0, h * 0.66);
+  shoulders.scale.set(1.15, 0.94, 1.1);
+  shoulders.castShadow = true;
+  group.add(shoulders);
+
+  // 4. Rounded Hindquarters & Rump
+  const rumpGeo = new THREE.SphereGeometry(w * 0.44, 14, 14);
+  const rump = new THREE.Mesh(rumpGeo, cowMat);
+  rump.position.set(-l * 0.28, 0, h * 0.64);
+  rump.scale.set(1.08, 0.92, 1.05);
+  rump.castShadow = true;
+  group.add(rump);
+
+  // 5. Prominent Indian Zebu Cervicothoracic Hump (Bos indicus breed characteristic)
+  const humpGroup = new THREE.Group();
+  humpGroup.position.set(l * 0.15, 0, h * 0.98);
+  const humpGeo = new THREE.SphereGeometry(w * 0.36, 16, 16);
   const hump = new THREE.Mesh(humpGeo, cowMat);
-  hump.position.set(l * 0.14, 0, h * 0.98);
-  hump.scale.set(0.85, 0.75, 1.25);
+  hump.scale.set(0.92, 0.72, 1.35); // Arched apex
   hump.castShadow = true;
-  group.add(hump);
+  humpGroup.add(hump);
+  group.add(humpGroup);
 
-  // 5. Dewlap (loose pendulous skin fold under the throat/chest)
-  const dewlapGeo = new THREE.BoxGeometry(l * 0.22, 0.08, h * 0.28);
-  const dewlap = new THREE.Mesh(dewlapGeo, cowMat);
-  dewlap.position.set(l * 0.28, 0, h * 0.52);
+  // 6. Pendulous Throat Dewlap (Loose folded brisket skin)
+  const dewlapGeo = new THREE.BoxGeometry(l * 0.24, 0.06, h * 0.32);
+  const dewlap = new THREE.Mesh(dewlapGeo, bellyMat);
+  dewlap.position.set(l * 0.3, 0, h * 0.52);
   group.add(dewlap);
 
-  // 6. Sculpted Bovine Head with Tapered Muzzle
+  // 7. Muscular Neck & Sculpted Bovine Head Assembly
   const headGroup = new THREE.Group();
+  headGroup.name = 'cattle_head_assembly';
   headGroup.position.set(l * 0.42, 0, h * 0.82);
 
-  // Cranium
-  const craniumGeo = new THREE.BoxGeometry(l * 0.26, w * 0.48, h * 0.32);
+  // Muscular arched neck connecting chest to head
+  const neckGeo = new THREE.CylinderGeometry(w * 0.3, w * 0.38, l * 0.28, 12);
+  const neck = new THREE.Mesh(neckGeo, cowMat);
+  neck.rotation.z = Math.PI / 2.8;
+  neck.position.set(-l * 0.08, 0, -h * 0.06);
+  headGroup.add(neck);
+
+  // Cranium / Forehead with bony crest
+  const craniumGeo = new THREE.BoxGeometry(l * 0.26, w * 0.46, h * 0.32);
   const cranium = new THREE.Mesh(craniumGeo, cowMat);
-  cranium.rotation.y = -0.15;
+  cranium.rotation.y = -0.16;
   cranium.castShadow = true;
   headGroup.add(cranium);
 
   // Tapered Muzzle & Nostrils
-  const muzzleGeo = new THREE.BoxGeometry(l * 0.16, w * 0.34, h * 0.2);
+  const muzzleGeo = new THREE.BoxGeometry(l * 0.18, w * 0.34, h * 0.2);
   const muzzle = new THREE.Mesh(muzzleGeo, darkMuzzleMat);
-  muzzle.position.set(l * 0.14, 0, -h * 0.06);
+  muzzle.position.set(l * 0.14, 0, -h * 0.08);
   headGroup.add(muzzle);
 
-  // Dark bovine eyes with specularity
-  const eyeMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.1, metalness: 0.9 });
-  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), eyeMat);
-  eyeL.position.set(l * 0.04, w * 0.25, h * 0.06);
+  // Nostrils
+  const nostrilMat = new THREE.MeshBasicMaterial({ color: 0x09090b });
+  const nostrilL = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.04, 6), nostrilMat);
+  nostrilL.position.set(l * 0.22, w * 0.09, -h * 0.07);
+  headGroup.add(nostrilL);
+  const nostrilR = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.04, 6), nostrilMat);
+  nostrilR.position.set(l * 0.22, -w * 0.09, -h * 0.07);
+  headGroup.add(nostrilR);
+
+  // Dark bovine eyes with glossy specular highlights
+  const eyeMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.08, metalness: 0.95 });
+  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 10), eyeMat);
+  eyeL.position.set(l * 0.05, w * 0.24, h * 0.05);
   headGroup.add(eyeL);
 
-  const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), eyeMat);
-  eyeR.position.set(l * 0.04, -w * 0.25, h * 0.06);
+  const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 10), eyeMat);
+  eyeR.position.set(l * 0.05, -w * 0.24, h * 0.05);
   headGroup.add(eyeR);
 
-  // 7. Lyre-Shaped Curved Horns
-  const hornL = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.38, 12), hornMat);
-  hornL.position.set(-l * 0.02, w * 0.26, h * 0.24);
-  hornL.rotation.set(-0.35, 0.1, -0.4);
-  headGroup.add(hornL);
+  // 8. Elegant Lyre-Shaped Curved Horns with Dark Tips
+  [-1, 1].forEach((side) => {
+    const hornGroup = new THREE.Group();
+    hornGroup.position.set(-l * 0.02, side * w * 0.24, h * 0.22);
+    hornGroup.rotation.set(-side * 0.32, 0.12, side * 0.42);
 
-  const hornR = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.38, 12), hornMat);
-  hornR.position.set(-l * 0.02, -w * 0.26, h * 0.24);
-  hornR.rotation.set(0.35, 0.1, 0.4);
-  headGroup.add(hornR);
+    const baseHorn = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.32, 12), hornMat);
+    baseHorn.position.y = 0.14;
+    hornGroup.add(baseHorn);
 
-  // Drooping bovine ears
-  const earGeo = new THREE.BoxGeometry(0.08, 0.22, 0.06);
-  const earL = new THREE.Mesh(earGeo, cowMat);
-  earL.position.set(-l * 0.05, w * 0.3, h * 0.08);
-  earL.rotation.z = -0.5;
-  headGroup.add(earL);
+    const tipHorn = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.14, 10), hornTipMat);
+    tipHorn.position.y = 0.34;
+    hornGroup.add(tipHorn);
 
-  const earR = new THREE.Mesh(earGeo, cowMat);
-  earR.position.set(-l * 0.05, -w * 0.3, h * 0.08);
-  earR.rotation.z = 0.5;
-  headGroup.add(earR);
+    headGroup.add(hornGroup);
+  });
+
+  // Drooping pendulous ears (outward & downward relaxed stance)
+  [-1, 1].forEach((side) => {
+    const ear = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.24, 0.05), cowMat);
+    ear.position.set(-l * 0.06, side * w * 0.28, h * 0.06);
+    ear.rotation.set(side * 0.2, 0, side * 0.65);
+    headGroup.add(ear);
+  });
 
   group.add(headGroup);
 
-  // 8. 4 Articulated Legs Standing Vertically on the Asphalt
-  // Cylinder height along Z requires rotation.x = Math.PI / 2!
-  const legRadius = 0.085;
+  // 9. Four Articulated Legs (Upper shoulder/hip pivot, hock/knee, lower shank, cloven hoof)
   const legHeight = h * 0.54;
-  const legGeo = new THREE.CylinderGeometry(legRadius * 0.9, legRadius * 0.75, legHeight, 10);
-  const hoofGeo = new THREE.CylinderGeometry(legRadius * 0.8, legRadius * 0.85, 0.08, 10);
+  const legRadius = 0.085;
+  const upperGeo = new THREE.CylinderGeometry(legRadius * 1.05, legRadius * 0.85, legHeight * 0.52, 10);
+  const lowerGeo = new THREE.CylinderGeometry(legRadius * 0.8, legRadius * 0.7, legHeight * 0.48, 10);
+  const hoofGeo = new THREE.CylinderGeometry(legRadius * 0.72, legRadius * 0.88, 0.08, 10);
 
-  const legPositions = [
-    [l * 0.18, w * 0.3, legHeight / 2],
-    [l * 0.18, -w * 0.3, legHeight / 2],
-    [-l * 0.26, w * 0.28, legHeight / 2],
-    [-l * 0.26, -w * 0.28, legHeight / 2],
-  ];
+  function createArticulatedLeg(): THREE.Group {
+    const legRoot = new THREE.Group();
 
-  legPositions.forEach(([lx, ly, lz]) => {
-    const legGroup = new THREE.Group();
-    legGroup.position.set(lx, ly, lz);
+    // Upper thigh / shoulder segment (pivots at top)
+    const upperLeg = new THREE.Mesh(upperGeo, cowMat);
+    upperLeg.rotation.x = Math.PI / 2; // Upright along Z
+    upperLeg.position.z = -legHeight * 0.24;
+    upperLeg.castShadow = true;
+    legRoot.add(upperLeg);
 
-    const leg = new THREE.Mesh(legGeo, cowMat);
-    leg.rotation.x = Math.PI / 2; // Rotate upright along Z!
-    leg.castShadow = true;
-    legGroup.add(leg);
+    // Knee / Hock joint bulge
+    const joint = new THREE.Mesh(new THREE.SphereGeometry(legRadius * 0.88, 8, 8), cowMat);
+    joint.position.z = -legHeight * 0.5;
+    legRoot.add(joint);
 
+    // Lower shin / shank
+    const lowerLeg = new THREE.Mesh(lowerGeo, cowMat);
+    lowerLeg.rotation.x = Math.PI / 2;
+    lowerLeg.position.z = -legHeight * 0.74;
+    lowerLeg.castShadow = true;
+    legRoot.add(lowerLeg);
+
+    // Cloven dark hoof firmly contacting asphalt
     const hoof = new THREE.Mesh(hoofGeo, hoofMat);
-    hoof.rotation.x = Math.PI / 2; // Rotate upright along Z!
-    hoof.position.z = -legHeight / 2 + 0.04;
-    legGroup.add(hoof);
+    hoof.rotation.x = Math.PI / 2;
+    hoof.position.z = -legHeight + 0.04;
+    legRoot.add(hoof);
 
-    group.add(legGroup);
-  });
+    return legRoot;
+  }
 
-  // 9. Natural Tail with Hair Switch
-  const tailGeo = new THREE.CylinderGeometry(0.025, 0.02, h * 0.5, 8);
-  const tail = new THREE.Mesh(tailGeo, cowMat);
-  tail.rotation.x = Math.PI / 2;
-  tail.position.set(-l * 0.38, 0, h * 0.35);
+  // Hip / Shoulder pivot positions (Z positioned at top of leg where it joins torso)
+  const pivotZ = legHeight;
+  const legFL = createArticulatedLeg();
+  legFL.name = 'leg_FL';
+  legFL.position.set(l * 0.18, w * 0.3, pivotZ);
+  group.add(legFL);
+
+  const legFR = createArticulatedLeg();
+  legFR.name = 'leg_FR';
+  legFR.position.set(l * 0.18, -w * 0.3, pivotZ);
+  group.add(legFR);
+
+  const legRL = createArticulatedLeg();
+  legRL.name = 'leg_RL';
+  legRL.position.set(-l * 0.26, w * 0.28, pivotZ);
+  group.add(legRL);
+
+  const legRR = createArticulatedLeg();
+  legRR.name = 'leg_RR';
+  legRR.position.set(-l * 0.26, -w * 0.28, pivotZ);
+  group.add(legRR);
+
+  // 10. Natural Tail with Dark Hair Switch
+  const tail = new THREE.Group();
+  tail.name = 'cattle_tail';
+  tail.position.set(-l * 0.38, 0, h * 0.62);
+
+  const tailStem = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.018, h * 0.48, 8), cowMat);
+  tailStem.rotation.x = Math.PI / 2;
+  tailStem.position.z = -h * 0.22;
+  tail.add(tailStem);
+
+  const tailSwitch = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.16, 8), darkMuzzleMat);
+  tailSwitch.rotation.x = -Math.PI / 2;
+  tailSwitch.position.z = -h * 0.46;
+  tail.add(tailSwitch);
+
   group.add(tail);
 
-  const switchGeo = new THREE.SphereGeometry(0.06, 8, 8);
-  const tailSwitch = new THREE.Mesh(switchGeo, darkMuzzleMat);
-  tailSwitch.position.set(-l * 0.38, 0, h * 0.12);
-  group.add(tailSwitch);
+  // Attach named animation references for synchronized locomotion in Scene3DCanvas
+  group.userData = {
+    isCattle: true,
+    legFL,
+    legFR,
+    legRL,
+    legRR,
+    headGroup,
+    tail,
+    dewlap,
+  };
 
   return group;
 }

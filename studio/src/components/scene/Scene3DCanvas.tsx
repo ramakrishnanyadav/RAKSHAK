@@ -18,17 +18,23 @@ import {
 } from './proceduralModels';
 import { preloadCowModel } from './assetLoader';
 
-export type CameraMode = 'chase' | 'bird' | 'topdown' | 'cockpit' | 'orbit';
+export type CameraMode = 'chase' | 'bird' | 'topdown' | 'cockpit' | 'orbit' | 'side' | 'cinematic';
+export type GraphicsQuality = 'performance' | 'balanced' | 'high_fidelity';
 
 export interface Scene3DCanvasProps {
   sceneModel: SceneModel;
   compareSceneModel?: SceneModel | null; // For single-canvas dual-viewport compare mode
   cameraMode: CameraMode;
+  graphicsQuality?: GraphicsQuality;
+  resetCameraTrigger?: number; // Increments to trigger camera position reset
   onSelectAgent?: (agentId: string | null) => void;
   selectedAgentId?: string | null;
   plannerId?: string;
+  scenarioId?: string;
   showScanner?: boolean;
   showSceneryTraffic?: boolean;
+  showBoundingBoxes?: boolean;
+  showDistanceTags?: boolean;
 }
 
 // Forward Headlight Ground Illumination Beam (Soft Light Fan projected on Asphalt)
@@ -237,119 +243,175 @@ interface AmbientVehicleTracker {
   maxX: number;
 }
 
-// Roadside Scenery outside corridor (trees, ambient traffic, street lamps, guardrails, labeled SCENERY — NOT SIMULATED)
+// Roadside Scenery tailored to Indian Driving Digital Twin Scenarios
 function setupRoadsideScenery(
   targetScene: THREE.Scene,
-  ambientTrackerList?: AmbientVehicleTracker[]
+  ambientTrackerList?: AmbientVehicleTracker[],
+  scenarioId?: string
 ) {
   const sceneryGroup = new THREE.Group();
   sceneryGroup.name = 'decorative_scenery';
+
+  const sId = (scenarioId || '').toUpperCase();
+  const isRural = sId.includes('CATTLE') || sId.includes('VILLAGE');
+  const isHighway = sId.includes('HIGHWAY') || sId.includes('MERGE') || sId.includes('BRAKING');
+  const isMarket = sId.includes('MARKET') || sId.includes('DENSE');
+  const isDamaged = sId.includes('POTHOLE') || sId.includes('DAMAGED') || sId.includes('ROADWORKS');
+  const isUrban = sId.includes('PEDESTRIAN') || sId.includes('INTERSECTION') || sId.includes('MOTORCYCLE') || (!isRural && !isHighway && !isMarket && !isDamaged);
 
   const lampPoleMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6, metalness: 0.7 });
   const lampFixtureMat = new THREE.MeshStandardMaterial({ color: 0xfffbeb, emissive: 0xfef08a, emissiveIntensity: 1.5 });
   const guardrailMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.4, metalness: 0.8 });
 
-  // 1. Streetlamps along left (y = 6.8) and right (y = -6.8) outside drivable corridor every 25m
-  for (let x = -10; x <= 95; x += 25) {
-    [-6.8, 6.8].forEach((y) => {
-      const poleGroup = new THREE.Group();
-      poleGroup.position.set(x, y, 0);
+  // 1. Streetlamps (Urban and Market Corridors only)
+  if (isUrban || isMarket) {
+    for (let x = -10; x <= 95; x += 30) {
+      [-6.8, 6.8].forEach((y) => {
+        const poleGroup = new THREE.Group();
+        poleGroup.position.set(x, y, 0);
 
-      // Vertical pole
-      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 4.6), lampPoleMat);
-      pole.rotation.x = Math.PI / 2;
-      pole.position.set(0, 0, 2.3);
-      poleGroup.add(pole);
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 4.6), lampPoleMat);
+        pole.rotation.x = Math.PI / 2;
+        pole.position.set(0, 0, 2.3);
+        poleGroup.add(pole);
 
-      // Overhang Arm pointing toward road
-      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.4), lampPoleMat);
-      arm.position.set(0, y > 0 ? -0.7 : 0.7, 4.5);
-      poleGroup.add(arm);
+        const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.4), lampPoleMat);
+        arm.position.set(0, y > 0 ? -0.7 : 0.7, 4.5);
+        poleGroup.add(arm);
 
-      // Light Fixture
-      const fixture = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.45, 0.1), lampFixtureMat);
-      fixture.position.set(0, y > 0 ? -1.3 : 1.3, 4.45);
-      poleGroup.add(fixture);
+        const fixture = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.45, 0.1), lampFixtureMat);
+        fixture.position.set(0, y > 0 ? -1.3 : 1.3, 4.45);
+        poleGroup.add(fixture);
 
-      // Downward Streetlight cone
-      const spot = new THREE.SpotLight(0xfffbeb, 0.7, 18, 0.55, 0.5, 1);
-      spot.position.set(x, y > 0 ? y - 1.3 : y + 1.3, 4.4);
-      spot.target.position.set(x, y > 0 ? y - 2.5 : y + 2.5, 0);
-      sceneryGroup.add(spot.target);
-      sceneryGroup.add(spot);
-
-      sceneryGroup.add(poleGroup);
-    });
+        sceneryGroup.add(poleGroup);
+      });
+    }
   }
 
-  // 2. Guardrails along left (y = 5.8) and right (y = -5.8) outside road shoulder
-  [-5.8, 5.8].forEach((y) => {
-    const railGeo = new THREE.BoxGeometry(115, 0.06, 0.28);
-    const rail = new THREE.Mesh(railGeo, guardrailMat);
-    rail.position.set(40, y, 0.65);
-    sceneryGroup.add(rail);
+  // 2. Highway Crash Barriers / Guardrails (Highway Scenarios only)
+  if (isHighway) {
+    [-6.2, 6.2].forEach((y) => {
+      const railGeo = new THREE.BoxGeometry(115, 0.06, 0.28);
+      const rail = new THREE.Mesh(railGeo, guardrailMat);
+      rail.position.set(40, y, 0.65);
+      sceneryGroup.add(rail);
 
-    // Support posts every 4m
-    for (let x = -15; x <= 95; x += 4) {
-      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.75), guardrailMat);
-      post.rotation.x = Math.PI / 2;
-      post.position.set(x, y, 0.375);
-      sceneryGroup.add(post);
-    }
-  });
+      for (let x = -15; x <= 95; x += 4) {
+        const post = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.75), guardrailMat);
+        post.rotation.x = Math.PI / 2;
+        post.position.set(x, y, 0.375);
+        sceneryGroup.add(post);
+      }
+    });
 
-  // 3. Roadside Trees outside the drivable corridor (y = ±8.5m to ±14.0m)
-  const leftTreePositions = [
-    { x: -15, y: 9.2, type: 'deciduous' as const, s: 1.1 },
-    { x: 0, y: 11.5, type: 'pine' as const, s: 1.25 },
-    { x: 15, y: 8.8, type: 'deciduous' as const, s: 0.95 },
-    { x: 30, y: 12.0, type: 'pine' as const, s: 1.3 },
-    { x: 45, y: 9.0, type: 'deciduous' as const, s: 1.15 },
-    { x: 60, y: 11.2, type: 'deciduous' as const, s: 1.0 },
-    { x: 75, y: 8.6, type: 'pine' as const, s: 1.2 },
-    { x: 90, y: 10.5, type: 'deciduous' as const, s: 1.05 },
-    { x: 105, y: 9.0, type: 'pine' as const, s: 1.15 },
-  ];
-  leftTreePositions.forEach((tp) => {
-    const tree = createTreeMesh(tp.type, tp.s);
-    tree.position.set(tp.x, tp.y, 0);
-    tree.rotation.z = Math.random() * Math.PI * 2;
-    sceneryGroup.add(tree);
-  });
+    const gantry = createHighwayGantryMesh(18.0, 6.8);
+    gantry.position.set(20.0, 0, 0);
+    sceneryGroup.add(gantry);
 
-  const rightTreePositions = [
-    { x: -12, y: -9.5, type: 'pine' as const, s: 1.2 },
-    { x: 5, y: -11.0, type: 'deciduous' as const, s: 1.05 },
-    { x: 20, y: -8.8, type: 'deciduous' as const, s: 1.1 },
-    { x: 35, y: -12.2, type: 'pine' as const, s: 1.35 },
-    { x: 50, y: -9.0, type: 'deciduous' as const, s: 0.95 },
-    { x: 65, y: -11.5, type: 'pine' as const, s: 1.25 },
-    { x: 80, y: -8.9, type: 'deciduous' as const, s: 1.1 },
-    { x: 95, y: -10.8, type: 'deciduous' as const, s: 1.0 },
-  ];
-  rightTreePositions.forEach((tp) => {
-    const tree = createTreeMesh(tp.type, tp.s);
-    tree.position.set(tp.x, tp.y, 0);
-    tree.rotation.z = Math.random() * Math.PI * 2;
-    sceneryGroup.add(tree);
-  });
+    const speedSign80 = createHighwaySpeedSignMesh(80);
+    speedSign80.position.set(8.0, 6.4, 0);
+    sceneryGroup.add(speedSign80);
 
-  // 4. Ambient Parallel Traffic Lanes (Cruising in distant parallel lanes at y = +13.5m and -13.5m)
-  const ambientDefs = [
-    { x: 10, y: 13.5, type: 'sedan' as const, color: 0x3b82f6, speed: 7.5, dir: 1 },
-    { x: 55, y: 13.5, type: 'suv' as const, color: 0x64748b, speed: 6.8, dir: 1 },
-    { x: 95, y: 13.5, type: 'truck' as const, color: 0xd97706, speed: 5.5, dir: 1 },
-    { x: 25, y: -13.5, type: 'sedan' as const, color: 0x10b981, speed: 8.0, dir: -1 },
-    { x: 70, y: -13.5, type: 'suv' as const, color: 0x8b5cf6, speed: 7.2, dir: -1 },
-  ];
+    const billboard = createHighwayBillboardMesh(7.0, 3.8, 6.5);
+    billboard.position.set(45.0, 18.0, 0);
+    sceneryGroup.add(billboard);
+  }
 
-  ambientDefs.forEach((ad) => {
-    const veh = createSceneryTrafficVehicle(ad.type, ad.color);
-    veh.position.set(ad.x, ad.y, 0);
-    veh.rotation.z = ad.dir > 0 ? 0 : Math.PI; // Heading forward or backward
-    sceneryGroup.add(veh);
+  // 3. Indian Roadside Trees & Natural Foliage (Rural, Damaged, and Urban fringes)
+  if (isRural || isDamaged || isUrban) {
+    const treePositions = [
+      { x: -15, y: 9.5, type: 'deciduous' as const, s: 1.15 },
+      { x: 5, y: 11.2, type: 'deciduous' as const, s: 1.2 },
+      { x: 22, y: 9.0, type: 'deciduous' as const, s: 1.05 },
+      { x: 42, y: 11.8, type: 'deciduous' as const, s: 1.3 },
+      { x: 62, y: 9.4, type: 'deciduous' as const, s: 1.1 },
+      { x: 82, y: 11.0, type: 'deciduous' as const, s: 1.25 },
+      { x: -10, y: -9.8, type: 'deciduous' as const, s: 1.2 },
+      { x: 12, y: -11.4, type: 'deciduous' as const, s: 1.1 },
+      { x: 32, y: -9.2, type: 'deciduous' as const, s: 1.35 },
+      { x: 52, y: -11.0, type: 'deciduous' as const, s: 1.0 },
+      { x: 74, y: -9.5, type: 'deciduous' as const, s: 1.25 },
+    ];
+    treePositions.forEach((tp) => {
+      const tree = createTreeMesh(tp.type, tp.s);
+      tree.position.set(tp.x, tp.y, 0);
+      tree.rotation.z = Math.random() * Math.PI * 2;
+      sceneryGroup.add(tree);
+    });
 
-    if (ambientTrackerList) {
+    const milestone = createIndianMilestoneMesh(42);
+    milestone.position.set(12.0, -5.6, 0);
+    milestone.rotation.z = Math.PI / 2;
+    sceneryGroup.add(milestone);
+  }
+
+  // 4. Urban Buildings & Storefronts (Urban and Market only)
+  if (isUrban) {
+    const urbanBuildings = [
+      { type: 'office' as const, x: 18, y: 22, w: 9, l: 14, h: 12 },
+      { type: 'shop' as const, x: 55, y: 18, w: 4.5, l: 8, h: 3.5 },
+      { type: 'office' as const, x: -5, y: -22, w: 9, l: 12, h: 10 },
+      { type: 'shop' as const, x: 65, y: -18, w: 4.5, l: 7, h: 3.5 },
+    ];
+    urbanBuildings.forEach((b) => {
+      const bMesh = createRoadsideBuildingMesh(b.type, b.w, b.l, b.h);
+      bMesh.position.set(b.x, b.y, 0);
+      sceneryGroup.add(bMesh);
+    });
+
+    const speedSign40 = createHighwaySpeedSignMesh(40);
+    speedSign40.position.set(6.0, 5.8, 0);
+    sceneryGroup.add(speedSign40);
+  }
+
+  // 5. Market Stalls & Roadside Clutter (Market only)
+  if (isMarket) {
+    const marketStalls = [
+      { type: 'shop' as const, x: 10, y: 14, w: 4.0, l: 6.0, h: 3.0 },
+      { type: 'shop' as const, x: 26, y: 14, w: 4.2, l: 6.5, h: 3.2 },
+      { type: 'shop' as const, x: 44, y: 14, w: 4.0, l: 5.8, h: 3.0 },
+      { type: 'shop' as const, x: 14, y: -14, w: 4.0, l: 6.0, h: 3.0 },
+      { type: 'shop' as const, x: 32, y: -14, w: 4.2, l: 6.2, h: 3.2 },
+      { type: 'shop' as const, x: 50, y: -14, w: 4.0, l: 5.8, h: 3.0 },
+    ];
+    marketStalls.forEach((s) => {
+      const sMesh = createRoadsideBuildingMesh(s.type, s.w, s.l, s.h);
+      sMesh.position.set(s.x, s.y, 0);
+      sceneryGroup.add(sMesh);
+    });
+
+    const drums = createRoadsideDrumsMesh(3);
+    drums.position.set(22.0, -6.8, 0);
+    sceneryGroup.add(drums);
+  }
+
+  // 6. Roadworks / Damage Warning Cones & Drums (Damaged Road only)
+  if (isDamaged) {
+    const cones = createTrafficConesGroup(5, 2.2);
+    cones.position.set(24.0, 4.8, 0);
+    sceneryGroup.add(cones);
+
+    const drums = createRoadsideDrumsMesh(3);
+    drums.position.set(38.0, -5.2, 0);
+    sceneryGroup.add(drums);
+
+    const speedSign25 = createHighwaySpeedSignMesh(25);
+    speedSign25.position.set(6.0, 5.4, 0);
+    sceneryGroup.add(speedSign25);
+  }
+
+  // 7. Ambient Parallel Cruising Vehicles (Highway only)
+  if (isHighway && ambientTrackerList) {
+    const ambientDefs = [
+      { x: 10, y: 14.0, type: 'sedan' as const, color: 0x3b82f6, speed: 7.5, dir: 1 },
+      { x: 55, y: 14.0, type: 'suv' as const, color: 0x64748b, speed: 6.8, dir: 1 },
+      { x: 30, y: -14.0, type: 'sedan' as const, color: 0x10b981, speed: 8.0, dir: -1 },
+    ];
+    ambientDefs.forEach((ad) => {
+      const veh = createSceneryTrafficVehicle(ad.type, ad.color);
+      veh.position.set(ad.x, ad.y, 0);
+      veh.rotation.z = ad.dir > 0 ? 0 : Math.PI;
+      sceneryGroup.add(veh);
       ambientTrackerList.push({
         mesh: veh,
         speed: ad.speed,
@@ -357,100 +419,77 @@ function setupRoadsideScenery(
         minX: -25,
         maxX: 115,
       });
-    }
-  });
-
-  // 5. Roadside Architecture & Buildings (Distant background outside corridor, y = ±20m to ±28m)
-  const buildings = [
-    { type: 'office' as const, x: 16, y: 25, w: 10, l: 15, h: 14 },
-    { type: 'warehouse' as const, x: 52, y: 26, w: 12, l: 20, h: 8 },
-    { type: 'shop' as const, x: 80, y: 18.5, w: 4.5, l: 7, h: 3.2 },
-    { type: 'office' as const, x: -6, y: -24, w: 9, l: 13, h: 11 },
-    { type: 'warehouse' as const, x: 42, y: -27, w: 11, l: 18, h: 7.5 },
-    { type: 'shop' as const, x: 72, y: -19.5, w: 4.5, l: 6.5, h: 3.2 },
-  ];
-  buildings.forEach((b) => {
-    const bMesh = createRoadsideBuildingMesh(b.type, b.w, b.l, b.h);
-    bMesh.position.set(b.x, b.y, 0);
-    sceneryGroup.add(bMesh);
-  });
-
-  // 6. Overhead Highway Gantry Signs (Spanning across corridor at x = 2m and x = 65m, clearance = 6.8m)
-  const gantry1 = createHighwayGantryMesh(18.0, 6.8);
-  gantry1.position.set(2.0, 0, 0);
-  sceneryGroup.add(gantry1);
-
-  const gantry2 = createHighwayGantryMesh(18.0, 6.8);
-  gantry2.position.set(65.0, 0, 0);
-  sceneryGroup.add(gantry2);
-
-  // 7. Iconic Indian Highway Milestones (Placed along roadside verge at x = 12m and x = 55m)
-  const milestone1 = createIndianMilestoneMesh(42);
-  milestone1.position.set(12.0, -5.4, 0);
-  milestone1.rotation.z = Math.PI / 2;
-  sceneryGroup.add(milestone1);
-
-  const milestone2 = createIndianMilestoneMesh(43);
-  milestone2.position.set(55.0, -5.4, 0);
-  milestone2.rotation.z = Math.PI / 2;
-  sceneryGroup.add(milestone2);
-
-  // 8. Highway Billboard Display (x = 34m, y = 22m)
-  const billboard = createHighwayBillboardMesh(7.0, 3.8, 6.5);
-  billboard.position.set(34.0, 22.0, 0);
-  billboard.rotation.z = -0.15;
-  sceneryGroup.add(billboard);
-
-  // 9. Alternating Yellow and Black Road Boundary Kerb Stones
-  const kerbLength = 110;
-  const kerbSegments = 55;
-  const kerbWidth = 0.25;
-  const kerbHeight = 0.18;
-  const kerbYellowMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.7 });
-  const kerbBlackMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
-
-  [-5.15, 5.15].forEach((yPos) => {
-    for (let i = 0; i < kerbSegments; i++) {
-      const segL = kerbLength / kerbSegments;
-      const xPos = -15 + i * segL + segL / 2;
-      const kMat = i % 2 === 0 ? kerbYellowMat : kerbBlackMat;
-      const kMesh = new THREE.Mesh(new THREE.BoxGeometry(segL * 0.96, kerbWidth, kerbHeight), kMat);
-      kMesh.position.set(xPos, yPos, kerbHeight / 2);
-      sceneryGroup.add(kMesh);
-    }
-  });
-
-  // 10. Indian Highway Regulatory Speed Limit Sign (40 km/h) at roadside verge
-  const speedSign = createHighwaySpeedSignMesh(40);
-  speedSign.position.set(8.0, 5.8, 0);
-  sceneryGroup.add(speedSign);
-
-  // 11. Reflective Traffic Safety Cones Cluster (Road Work / Hazard Buffer)
-  const cones = createTrafficConesGroup(5, 2.0);
-  cones.position.set(36.0, 5.5, 0);
-  sceneryGroup.add(cones);
-
-  // 12. Crash Attenuator Barrels / Safety Drums near highway gantry pillars
-  const drums1 = createRoadsideDrumsMesh(3);
-  drums1.position.set(0.5, -7.5, 0);
-  sceneryGroup.add(drums1);
-
-  const drums2 = createRoadsideDrumsMesh(3);
-  drums2.position.set(63.5, -7.5, 0);
-  sceneryGroup.add(drums2);
+    });
+  }
 
   targetScene.add(sceneryGroup);
+}
+
+// Deep disposal of Three.js hierarchy to prevent GPU VRAM memory leaks
+function disposeHierarchy(obj: THREE.Object3D) {
+  obj.traverse((child) => {
+    if ((child as THREE.Mesh).geometry) {
+      (child as THREE.Mesh).geometry.dispose();
+    }
+    if ((child as THREE.Mesh).material) {
+      const mat = (child as THREE.Mesh).material;
+      if (Array.isArray(mat)) {
+        mat.forEach((m) => {
+          if ((m as any).map) (m as any).map.dispose();
+          m.dispose();
+        });
+      } else {
+        if ((mat as any).map) (mat as any).map.dispose();
+        mat.dispose();
+      }
+    }
+  });
+}
+
+interface CachedAgentVisuals {
+  container: THREE.Group;
+  compoundMesh: THREE.Group;
+  bboxMesh: THREE.LineSegments;
+  tagSprite: THREE.Sprite;
+  tagCanvas: HTMLCanvasElement;
+  tagCtx: CanvasRenderingContext2D | null;
+  tagTex: THREE.CanvasTexture;
+  lastDistText: string;
+  lastCritical: boolean;
+  reticle: THREE.Group;
+  conformalDisc: THREE.Mesh;
+  conformalRing: THREE.Mesh;
+  hypLines: THREE.Line[];
+  lastX?: number;
+  lastY?: number;
+  cumDist?: number;
+}
+
+interface DynamicSceneCache {
+  egoMesh: THREE.Group | null;
+  headlightBeam: THREE.Mesh | null;
+  scannerSweep: THREE.Group | null;
+  trajectoryLine: THREE.Line | null;
+  trajectoryDots: THREE.Mesh[];
+  clearanceLine: THREE.Line | null;
+  agentsMap: Map<string, CachedAgentVisuals>;
+  lastPlannerId: string;
 }
 
 export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
   sceneModel,
   compareSceneModel,
   cameraMode,
+  graphicsQuality = 'balanced',
+  resetCameraTrigger = 0,
   onSelectAgent,
   selectedAgentId,
   plannerId = 'P3',
+  scenarioId,
   showScanner = true,
   showSceneryTraffic = true,
+  showBoundingBoxes = false,
+  showDistanceTags = true,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -467,6 +506,32 @@ export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
   const compareCameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const compareDynamicGroupRef = useRef<THREE.Group | null>(null);
   const compareRoadGroupRef = useRef<THREE.Group | null>(null);
+
+  // Caching refs to prevent recreating 500+ WebGL objects per frame tick
+  const roadScenarioKeyRef = useRef<string | null>(null);
+  const compareRoadScenarioKeyRef = useRef<string | null>(null);
+
+  const primaryDynamicCacheRef = useRef<DynamicSceneCache>({
+    egoMesh: null,
+    headlightBeam: null,
+    scannerSweep: null,
+    trajectoryLine: null,
+    trajectoryDots: [],
+    clearanceLine: null,
+    agentsMap: new Map(),
+    lastPlannerId: '',
+  });
+
+  const compareDynamicCacheRef = useRef<DynamicSceneCache>({
+    egoMesh: null,
+    headlightBeam: null,
+    scannerSweep: null,
+    trajectoryLine: null,
+    trajectoryDots: [],
+    clearanceLine: null,
+    agentsMap: new Map(),
+    lastPlannerId: '',
+  });
 
   // Scenery Ambient Traffic Trackers
   const ambientTrackersRef = useRef<AmbientVehicleTracker[]>([]);
@@ -568,7 +633,7 @@ export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
       targetScene.add(grid);
 
       // Roadside streetlamps, guardrails, trees & ambient traffic (SCENERY — NOT SIMULATED)
-      setupRoadsideScenery(targetScene, trackers);
+      setupRoadsideScenery(targetScene, trackers, scenarioId);
     };
 
     preloadCowModel();
@@ -679,14 +744,28 @@ export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
       if (rendererRef.current && rendererRef.current.domElement) {
         mountRef.current?.removeChild(rendererRef.current.domElement);
       }
+      if (sceneRef.current) disposeHierarchy(sceneRef.current);
+      if (compareSceneRef.current) disposeHierarchy(compareSceneRef.current);
+      primaryDynamicCacheRef.current.agentsMap.clear();
+      compareDynamicCacheRef.current.agentsMap.clear();
       rendererRef.current?.dispose();
     };
   }, [showSceneryTraffic]);
 
-  // Populate Road & Infrastructure Helper
-  const buildRoadInfrastructure = (targetGroup: THREE.Group, model: SceneModel) => {
+  // Populate Road & Infrastructure Helper (Cached per Scenario — built once, zero per-frame cost)
+  const buildRoadInfrastructure = (targetGroup: THREE.Group, model: SceneModel, isSecondary = false) => {
+    const bounds = model.bounds;
+    const key = `${bounds?.x_min}_${bounds?.x_max}_${model.roadBoundaries?.length}_${(model.staticObstacles || []).length}`;
+    const keyRef = isSecondary ? compareRoadScenarioKeyRef : roadScenarioKeyRef;
+    if (key === keyRef.current && targetGroup.children.length > 0) {
+      return; // Scenario road already built, skip!
+    }
+    keyRef.current = key;
+
     while (targetGroup.children.length > 0) {
-      targetGroup.remove(targetGroup.children[0]);
+      const child = targetGroup.children[0];
+      targetGroup.remove(child);
+      disposeHierarchy(child);
     }
 
     const { roadBoundaries, staticObstacles } = model;
@@ -851,224 +930,335 @@ export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
   // Build Road for Main Scene
   useEffect(() => {
     if (roadGroupRef.current) {
-      buildRoadInfrastructure(roadGroupRef.current, sceneModel);
+      buildRoadInfrastructure(roadGroupRef.current, sceneModel, false);
     }
   }, [sceneModel.bounds, sceneModel.roadBoundaries, sceneModel.staticObstacles]);
 
   // Build Road for Compare Scene
   useEffect(() => {
     if (compareRoadGroupRef.current && compareSceneModel) {
-      buildRoadInfrastructure(compareRoadGroupRef.current, compareSceneModel);
+      buildRoadInfrastructure(compareRoadGroupRef.current, compareSceneModel, true);
     }
   }, [compareSceneModel?.bounds, compareSceneModel?.roadBoundaries, compareSceneModel?.staticObstacles]);
 
-  // Populate Dynamic Entities Helper
+  // Populate Dynamic Entities Helper (High-Performance Pooled & Cached — Zero per-frame object allocation)
   const buildDynamicEntities = (
     targetGroup: THREE.Group,
     model: SceneModel,
     isSecondary: boolean
   ) => {
-    while (targetGroup.children.length > 0) {
-      targetGroup.remove(targetGroup.children[0]);
-    }
-
-    const { ego, agents, plannedTrajectory } = model;
+    const cache = isSecondary ? compareDynamicCacheRef.current : primaryDynamicCacheRef.current;
+    const { ego, agents, plannedTrajectory, staticObstacles } = model;
     const isP3 = !isSecondary && plannerId.toUpperCase().includes('P3');
 
-    // 1. Ego Vehicle with dynamic chassis pitch & roll suspension dynamics
-    const egoMesh = createEgoVehicleMesh(ego, isP3);
-    egoMesh.position.set(ego.x, ego.y, 0);
+    // 1. Persistent Ego Vehicle
+    if (!cache.egoMesh || cache.lastPlannerId !== (isP3 ? 'P3' : 'other')) {
+      if (cache.egoMesh) {
+        targetGroup.remove(cache.egoMesh);
+        disposeHierarchy(cache.egoMesh);
+      }
+      cache.egoMesh = createEgoVehicleMesh(ego, isP3);
+      cache.headlightBeam = createHeadlightBeamMesh(ego.length || 4.4);
+      cache.egoMesh.add(cache.headlightBeam);
+      cache.scannerSweep = createScannerSweepGroup(ego.length || 4.4);
+      cache.egoMesh.add(cache.scannerSweep);
+      targetGroup.add(cache.egoMesh);
+      cache.lastPlannerId = isP3 ? 'P3' : 'other';
+    }
+
+    cache.egoMesh.position.set(ego.x, ego.y, 0);
     const accel = ego.acceleration ?? 0;
     const steering = ego.steering ?? 0;
     const pitchAngle = Math.max(-0.06, Math.min(0.06, -accel * 0.012));
     const rollAngle = Math.max(-0.04, Math.min(0.04, -steering * 0.06));
-    egoMesh.rotation.order = 'ZYX';
-    egoMesh.rotation.set(rollAngle, pitchAngle, ego.yaw);
-    targetGroup.add(egoMesh);
+    cache.egoMesh.rotation.order = 'ZYX';
+    cache.egoMesh.rotation.set(rollAngle, pitchAngle, ego.yaw);
 
-    // 1b. Forward Headlight Illumination Beam on Road Surface
-    const headlightBeam = createHeadlightBeamMesh(ego.length || 4.4);
-    egoMesh.add(headlightBeam);
-
-    // 1c. Forward Multi-Sensor LiDAR / Radar Scanner Sweep Fan
-    if (showScanner) {
-      const scannerSweep = createScannerSweepGroup(ego.length || 4.4);
-      egoMesh.add(scannerSweep);
+    // Animate Wheels (Axle rotation around Y, steering on front wheels)
+    const wheels = cache.egoMesh.userData?.wheels;
+    if (wheels) {
+      const v = ego.v || 0;
+      const rotDelta = (v * 0.016) / 0.39;
+      if (wheels.fl) {
+        wheels.fl.rotation.y += rotDelta;
+        wheels.fl.rotation.z = -steering;
+      }
+      if (wheels.fr) {
+        wheels.fr.rotation.y += rotDelta;
+        wheels.fr.rotation.z = -steering;
+      }
+      if (wheels.rl) wheels.rl.rotation.y += rotDelta;
+      if (wheels.rr) wheels.rr.rotation.y += rotDelta;
     }
 
-    // 2. Planned Trajectory Ribbon
-    if (plannedTrajectory && plannedTrajectory.length > 1) {
-      const pts = plannedTrajectory.map((p) => new THREE.Vector3(p.x, p.y, 0.08));
-      const trajGeo = new THREE.BufferGeometry().setFromPoints(pts);
+    if (cache.scannerSweep) {
+      cache.scannerSweep.visible = Boolean(showScanner);
+    }
+
+    // 2. Planned Trajectory Ribbon & Waypoints
+    if (!cache.trajectoryLine) {
+      const trajGeo = new THREE.BufferGeometry();
       const trajMat = new THREE.LineBasicMaterial({
         color: isP3 ? 0x2dd4bf : 0x94a3b8,
         linewidth: 4,
       });
-      const trajLine = new THREE.Line(trajGeo, trajMat);
-      targetGroup.add(trajLine);
-
-      // Trajectory Waypoint Discs on Asphalt
-      pts.forEach((pt, idx) => {
-        if (idx % 2 === 0) {
-          const dotGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.03, 12);
-          const dotMat = new THREE.MeshBasicMaterial({ color: isP3 ? 0x2dd4bf : 0x94a3b8 });
-          const dot = new THREE.Mesh(dotGeo, dotMat);
-          dot.rotation.x = Math.PI / 2; // Upright along Z
-          dot.position.copy(pt);
-          targetGroup.add(dot);
-        }
-      });
+      cache.trajectoryLine = new THREE.Line(trajGeo, trajMat);
+      targetGroup.add(cache.trajectoryLine);
     }
 
-    // 3. Dynamic Agents
+    if (plannedTrajectory && plannedTrajectory.length > 1) {
+      const pts = plannedTrajectory.map((p) => new THREE.Vector3(p.x, p.y, 0.08));
+      cache.trajectoryLine.geometry.setFromPoints(pts);
+      cache.trajectoryLine.visible = true;
+
+      // Reusable Waypoint Dots Pool
+      const neededDots = Math.floor(pts.length / 2);
+      while (cache.trajectoryDots.length < Math.min(neededDots, 50)) {
+        const dotGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.03, 10);
+        const dotMat = new THREE.MeshBasicMaterial({ color: isP3 ? 0x2dd4bf : 0x94a3b8 });
+        const dot = new THREE.Mesh(dotGeo, dotMat);
+        dot.rotation.x = Math.PI / 2;
+        targetGroup.add(dot);
+        cache.trajectoryDots.push(dot);
+      }
+      let dotCount = 0;
+      for (let idx = 0; idx < pts.length; idx += 2) {
+        if (dotCount < cache.trajectoryDots.length) {
+          cache.trajectoryDots[dotCount].position.copy(pts[idx]);
+          cache.trajectoryDots[dotCount].visible = true;
+          dotCount++;
+        }
+      }
+      for (let i = dotCount; i < cache.trajectoryDots.length; i++) {
+        cache.trajectoryDots[i].visible = false;
+      }
+    } else {
+      cache.trajectoryLine.visible = false;
+      cache.trajectoryDots.forEach((d) => (d.visible = false));
+    }
+
+    // 3. Dynamic Traffic Actors (Cached handles + text re-render only on value delta)
+    const currentAgentIds = new Set(agents.map((ag) => ag.id));
     let closestDist = Infinity;
     let closestAgent: typeof agents[0] | null = null;
 
     agents.forEach((ag) => {
       const isSelected = !isSecondary && ag.id === selectedAgentId;
       const isOccluded = ag.is_occluded;
-
-      // Distance from Ego
       const dist = Math.hypot(ag.x - ego.x, ag.y - ego.y);
       if (dist < closestDist) {
         closestDist = dist;
         closestAgent = ag;
       }
 
-      // Realistic Procedural 3D Mesh
-      const agentCompound = createAgentMesh(ag);
-      agentCompound.position.set(ag.x, ag.y, 0);
-      agentCompound.rotation.z = ag.yaw;
+      let visual = cache.agentsMap.get(ag.id);
+      const l = ag.length || 2.4;
+      const w = ag.width || 1.1;
+      const h = ag.class_name === 'truck' ? 2.8 : ag.class_name === 'cattle' ? 1.48 : 1.5;
+
+      if (!visual) {
+        const container = new THREE.Group();
+        container.name = `agent_${ag.id}`;
+
+        const compoundMesh = createAgentMesh(ag);
+        container.add(compoundMesh);
+
+        const bboxGeo = new THREE.BoxGeometry(l, w, h);
+        const bboxEdges = new THREE.EdgesGeometry(bboxGeo);
+        const bboxMat = new THREE.LineBasicMaterial({ color: 0x2dd4bf, linewidth: 1.5 });
+        const bboxMesh = new THREE.LineSegments(bboxEdges, bboxMat);
+        bboxMesh.position.set(0, 0, h / 2);
+        container.add(bboxMesh);
+
+        const tagCanvas = document.createElement('canvas');
+        tagCanvas.width = 200;
+        tagCanvas.height = 56;
+        const tagCtx = tagCanvas.getContext('2d');
+        const tagTex = new THREE.CanvasTexture(tagCanvas);
+        const tagSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tagTex, depthTest: true }));
+        tagSprite.scale.set(1.6, 0.45, 1.0);
+        tagSprite.position.set(0, 0, h + 0.65);
+        container.add(tagSprite);
+
+        const reticle = createObstacleScanReticle(dist, Math.max(l, w) / 2, false, ag.class_name || ag.id);
+        container.add(reticle);
+
+        const discGeo = new THREE.CircleGeometry(1.0, 24);
+        const discMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.14, depthWrite: false, side: THREE.DoubleSide });
+        const conformalDisc = new THREE.Mesh(discGeo, discMat);
+        conformalDisc.position.z = 0.03;
+        conformalDisc.visible = false;
+        container.add(conformalDisc);
+
+        const ringGeo = new THREE.RingGeometry(0.94, 1.0, 24);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.75, side: THREE.DoubleSide });
+        const conformalRing = new THREE.Mesh(ringGeo, ringMat);
+        conformalRing.position.z = 0.035;
+        conformalRing.visible = false;
+        container.add(conformalRing);
+
+        visual = {
+          container,
+          compoundMesh,
+          bboxMesh,
+          tagSprite,
+          tagCanvas,
+          tagCtx,
+          tagTex,
+          lastDistText: '',
+          lastCritical: false,
+          reticle,
+          conformalDisc,
+          conformalRing,
+          hypLines: [],
+        };
+        targetGroup.add(container);
+        cache.agentsMap.set(ag.id, visual);
+      }
+
+      // Fast in-place updates (Zero object allocation)
+      visual.container.position.set(ag.x, ag.y, 0);
+      visual.compoundMesh.rotation.z = ag.yaw;
+      visual.bboxMesh.rotation.z = ag.yaw;
+
+      // Visibility of technical overlays (default hidden per user instruction)
+      visual.bboxMesh.visible = Boolean(showBoundingBoxes);
+      visual.reticle.visible = Boolean(showBoundingBoxes);
+      visual.tagSprite.visible = showDistanceTags !== false;
+
+      // Articulated locomotion for Indian Cattle
+      const isCattle = (ag.class_name || '').toLowerCase().includes('cattle') || (ag.class_name || '').toLowerCase().includes('cow') || ag.id.toLowerCase().includes('cow');
+      if (isCattle && visual.compoundMesh.userData?.isCattle) {
+        const u = visual.compoundMesh.userData;
+        if (visual.lastX !== undefined && visual.lastY !== undefined) {
+          const stepDist = Math.hypot(ag.x - visual.lastX, ag.y - visual.lastY);
+          visual.cumDist = (visual.cumDist || 0) + stepDist;
+        } else {
+          visual.cumDist = 0;
+        }
+        visual.lastX = ag.x;
+        visual.lastY = ag.y;
+
+        const currentSpeed = Math.hypot(ag.v_x, ag.v_y);
+        if (currentSpeed > 0.05) {
+          // Quadruped walking gait cycle
+          const gaitPhase = (visual.cumDist || 0) * 4.2;
+          const swing = Math.sin(gaitPhase) * 0.42;
+
+          if (u.legFL) u.legFL.rotation.y = swing;
+          if (u.legRR) u.legRR.rotation.y = swing;
+          if (u.legFR) u.legFR.rotation.y = -swing;
+          if (u.legRL) u.legRL.rotation.y = -swing;
+
+          // Subtle body vertical bobbing
+          visual.compoundMesh.position.z = Math.abs(Math.sin(gaitPhase * 2)) * 0.035;
+          if (u.headGroup) u.headGroup.rotation.y = -0.16 + Math.sin(gaitPhase) * 0.06;
+          if (u.tail) u.tail.rotation.y = Math.sin(gaitPhase * 0.8) * 0.22;
+        } else {
+          // Relaxed stationary stance with hooves planted squarely
+          if (u.legFL) u.legFL.rotation.y *= 0.82;
+          if (u.legRR) u.legRR.rotation.y *= 0.82;
+          if (u.legFR) u.legFR.rotation.y *= 0.82;
+          if (u.legRL) u.legRL.rotation.y *= 0.82;
+          visual.compoundMesh.position.z = 0;
+          if (u.tail) u.tail.rotation.y = Math.sin(model.telemetry.timeSeconds * 1.5) * 0.12;
+        }
+      }
+
+      const isCritical = dist < 3.2 || model.telemetry.riskLevel === 'CRITICAL';
+      const riskColor = model.telemetry.riskLevel === 'CRITICAL' ? 0xef4444 : model.telemetry.riskLevel === 'HIGH' ? 0xf59e0b : 0x2dd4bf;
+      (visual.bboxMesh.material as THREE.LineBasicMaterial).color.setHex(isSelected ? 0xffffff : riskColor);
 
       if (isOccluded) {
-        agentCompound.traverse((c) => {
+        visual.compoundMesh.traverse((c) => {
           if ((c as THREE.Mesh).material) {
             const mat = (c as THREE.Mesh).material as THREE.Material;
             mat.transparent = true;
             mat.opacity = 0.35;
           }
         });
+      } else {
+        visual.compoundMesh.traverse((c) => {
+          if ((c as THREE.Mesh).material) {
+            const mat = (c as THREE.Mesh).material as THREE.Material;
+            mat.transparent = false;
+            mat.opacity = 1.0;
+          }
+        });
       }
-      targetGroup.add(agentCompound);
 
-      // Bounding Box colored by risk_level
-      const l = ag.length || 2.4;
-      const w = ag.width || 1.1;
-      const h = ag.class_name === 'truck' ? 2.8 : ag.class_name === 'cattle' ? 1.48 : 1.5;
-      const bboxGeo = new THREE.BoxGeometry(l, w, h);
-      const bboxEdges = new THREE.EdgesGeometry(bboxGeo);
-
-      const riskColor =
-        model.telemetry.riskLevel === 'CRITICAL'
-          ? 0xef4444
-          : model.telemetry.riskLevel === 'HIGH'
-          ? 0xf59e0b
-          : 0x2dd4bf;
-
-      const bboxMat = new THREE.LineBasicMaterial({
-        color: isSelected ? 0xffffff : riskColor,
-        linewidth: isSelected ? 3 : 1.5,
-      });
-      const bboxMesh = new THREE.LineSegments(bboxEdges, bboxMat);
-      bboxMesh.position.set(ag.x, ag.y, h / 2);
-      bboxMesh.rotation.z = ag.yaw;
-      targetGroup.add(bboxMesh);
-
-      // Apollo Dreamview Perception HUD Tag Floating Above Agent
-      const tagHeight = h + 0.65;
+      // Redraw text onto EXISTING canvas only when values change
       const speed = Math.hypot(ag.v_x, ag.v_y);
-      const isCritical = dist < 3.2;
-      const tagSprite = createAgentTagSprite(ag.class_name || ag.id, dist, speed, isCritical);
-      tagSprite.position.set(ag.x, ag.y, tagHeight);
-      targetGroup.add(tagSprite);
+      const distText = `${dist.toFixed(1)}m · ${(speed * 3.6).toFixed(0)} km/h`;
+      if (distText !== visual.lastDistText || isCritical !== visual.lastCritical) {
+        if (visual.tagCtx) {
+          const ctx = visual.tagCtx;
+          ctx.clearRect(0, 0, 200, 56);
+          ctx.fillStyle = isCritical ? 'rgba(220, 38, 38, 0.92)' : 'rgba(15, 23, 42, 0.88)';
+          ctx.strokeStyle = isCritical ? '#f87171' : '#38bdf8';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(3, 3, 194, 50, 8) : ctx.rect(3, 3, 194, 50);
+          ctx.fill();
+          ctx.stroke();
 
-      // ADAS Perception Target Reticle when within forward scanning zone
-      if (showScanner && dist < 36.0) {
-        const isCrit = dist < 2.5 || model.telemetry.riskLevel === 'CRITICAL';
-        const reticle = createObstacleScanReticle(
-          dist,
-          ag.length ? Math.max(ag.length, ag.width) / 2 : 1.2,
-          isCrit,
-          ag.class_name || ag.id
-        );
-        reticle.position.set(ag.x, ag.y, 0);
-        targetGroup.add(reticle);
+          ctx.fillStyle = isCritical ? '#fca5a5' : '#22d3ee';
+          ctx.beginPath();
+          ctx.arc(18, 28, 5, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 20px monospace';
+          ctx.fillText((ag.class_name || ag.id).toUpperCase(), 32, 26);
+
+          ctx.fillStyle = isCritical ? '#fee2e2' : '#94a3b8';
+          ctx.font = 'bold 16px monospace';
+          ctx.fillText(distText, 32, 44);
+
+          visual.tagTex.needsUpdate = true;
+          visual.lastDistText = distText;
+          visual.lastCritical = isCritical;
+        }
       }
 
-      // Multi-hypothesis prediction trajectories (dashed lines with weights)
-      if (ag.prediction_hypotheses) {
-        ag.prediction_hypotheses.forEach((hyp) => {
-          if (!hyp.trajectory || hyp.trajectory.length === 0) return;
-          const hypPts = [
-            new THREE.Vector3(ag.x, ag.y, 0.1),
-            ...hyp.trajectory.map((tp) => new THREE.Vector3(tp.x, tp.y, 0.1)),
-          ];
-          const hypGeo = new THREE.BufferGeometry().setFromPoints(hypPts);
-          const hypMat = new THREE.LineDashedMaterial({
-            color: 0xf59e0b,
-            dashSize: 0.6,
-            gapSize: 0.3,
-            transparent: true,
-            opacity: Math.max(0.3, hyp.weight),
-          });
-          const hypLine = new THREE.Line(hypGeo, hypMat);
-          hypLine.computeLineDistances();
-          targetGroup.add(hypLine);
-        });
-      }
+      // Reticle visibility
+      visual.reticle.visible = Boolean(showScanner && dist < 36.0);
 
-      // Conformal prediction uncertainty envelopes (Dual-layer: soft disc + glowing boundary ring)
+      // Conformal prediction envelope scale update
       if (ag.conformal_envelope && ag.conformal_envelope.length > 0) {
-        ag.conformal_envelope.forEach((cone) => {
-          const radius = cone.radius_m || 1.2;
-
-          // Inner soft luminous disc
-          const discGeo = new THREE.CircleGeometry(radius, 32);
-          const discMat = new THREE.MeshBasicMaterial({
-            color: 0x38bdf8,
-            transparent: true,
-            opacity: 0.14,
-            side: THREE.DoubleSide,
-            depthWrite: false,
-          });
-          const disc = new THREE.Mesh(discGeo, discMat);
-          disc.position.set(ag.x, ag.y, 0.03);
-          targetGroup.add(disc);
-
-          // Outer sharp glowing ring
-          const ringGeo = new THREE.RingGeometry(Math.max(0.1, radius - 0.06), radius, 32);
-          const ringMat = new THREE.MeshBasicMaterial({
-            color: 0x38bdf8,
-            transparent: true,
-            opacity: 0.75,
-            side: THREE.DoubleSide,
-          });
-          const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-          ringMesh.position.set(ag.x, ag.y, 0.035);
-          targetGroup.add(ringMesh);
-        });
+        const radius = ag.conformal_envelope[0].radius_m || 1.2;
+        visual.conformalDisc.visible = true;
+        visual.conformalDisc.scale.set(radius, radius, 1);
+        visual.conformalRing.visible = true;
+        visual.conformalRing.scale.set(radius, radius, 1);
+      } else {
+        visual.conformalDisc.visible = false;
+        visual.conformalRing.visible = false;
       }
     });
 
-    // 4. Static Obstacle Perception Highlights (Potholes, Road Barriers, Stalls)
-    if (showScanner && model.staticObstacles) {
-      model.staticObstacles.forEach((obs) => {
-        const obsDist = Math.hypot(obs.x - ego.x, obs.y - ego.y);
-        if (obsDist < 36.0) {
-          const isCrit = obsDist < 3.0;
-          const reticle = createObstacleScanReticle(
-            obsDist,
-            (obs.length || 2.0) / 2,
-            isCrit,
-            obs.kind
-          );
-          reticle.position.set(obs.x, obs.y, 0);
-          targetGroup.add(reticle);
-        }
-      });
+    // Cleanly dispose agents that left the scene
+    for (const [id, visual] of cache.agentsMap.entries()) {
+      if (!currentAgentIds.has(id)) {
+        targetGroup.remove(visual.container);
+        disposeHierarchy(visual.container);
+        visual.tagTex.dispose();
+        cache.agentsMap.delete(id);
+      }
     }
 
-    // 5. Dynamic Safety Clearance Vector to Closest Obstacle (if within 8m)
+    // 4. Safety Clearance Vector Line
+    if (!cache.clearanceLine) {
+      const clearGeo = new THREE.BufferGeometry();
+      const clearMat = new THREE.LineDashedMaterial({
+        color: 0xf59e0b,
+        dashSize: 0.4,
+        gapSize: 0.2,
+        linewidth: 3,
+      });
+      cache.clearanceLine = new THREE.Line(clearGeo, clearMat);
+      targetGroup.add(cache.clearanceLine);
+    }
     if (closestAgent && closestDist < 8.0) {
       const ca = closestAgent as typeof agents[0];
       const egoFrontX = ego.x + (ego.length / 2) * Math.cos(ego.yaw);
@@ -1077,16 +1267,12 @@ export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
         new THREE.Vector3(egoFrontX, egoFrontY, 0.3),
         new THREE.Vector3(ca.x, ca.y, 0.3),
       ];
-      const clearGeo = new THREE.BufferGeometry().setFromPoints(clearPts);
-      const clearMat = new THREE.LineDashedMaterial({
-        color: closestDist < 3.0 ? 0xef4444 : 0xf59e0b,
-        dashSize: 0.4,
-        gapSize: 0.2,
-        linewidth: 3,
-      });
-      const clearLine = new THREE.Line(clearGeo, clearMat);
-      clearLine.computeLineDistances();
-      targetGroup.add(clearLine);
+      cache.clearanceLine.geometry.setFromPoints(clearPts);
+      (cache.clearanceLine.material as THREE.LineDashedMaterial).color.setHex(closestDist < 3.0 ? 0xef4444 : 0xf59e0b);
+      cache.clearanceLine.computeLineDistances();
+      cache.clearanceLine.visible = true;
+    } else {
+      cache.clearanceLine.visible = false;
     }
   };
 
@@ -1115,6 +1301,19 @@ export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
         controlsRef.current.enabled = false;
         cameraRef.current.position.set(ego.x + 10.0, ego.y, 45.0);
         cameraRef.current.lookAt(ego.x + 10.0, ego.y, 0);
+      } else if (cameraMode === 'side') {
+        controlsRef.current.enabled = false;
+        const sideDist = 14.0;
+        const camX = ego.x - 4.0 * Math.cos(ego.yaw) - sideDist * Math.sin(ego.yaw);
+        const camY = ego.y - 4.0 * Math.sin(ego.yaw) + sideDist * Math.cos(ego.yaw);
+        cameraRef.current.position.set(camX, camY, 3.5);
+        cameraRef.current.lookAt(ego.x + 4.0 * Math.cos(ego.yaw), ego.y + 4.0 * Math.sin(ego.yaw), 1.2);
+      } else if (cameraMode === 'cinematic') {
+        controlsRef.current.enabled = false;
+        const camX = ego.x + 16.0 * Math.cos(ego.yaw + 0.35);
+        const camY = ego.y + 16.0 * Math.sin(ego.yaw + 0.35);
+        cameraRef.current.position.set(camX, camY, 1.8);
+        cameraRef.current.lookAt(ego.x, ego.y, 1.0);
       } else if (cameraMode === 'cockpit') {
         controlsRef.current.enabled = false;
         const cockpitX = ego.x + (ego.length * 0.15) * Math.cos(ego.yaw);
@@ -1127,6 +1326,36 @@ export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
       }
     }
   }, [sceneModel, selectedAgentId, cameraMode, plannerId, showScanner]);
+
+  // Reset Camera action handler
+  useEffect(() => {
+    if (resetCameraTrigger && resetCameraTrigger > 0 && cameraRef.current && controlsRef.current) {
+      const ego = sceneModel.ego;
+      controlsRef.current.target.set(ego.x, ego.y, 1.0);
+      cameraRef.current.position.set(ego.x - 12.0, ego.y, 5.0);
+      cameraRef.current.lookAt(ego.x + 8.0, ego.y, 1.0);
+      controlsRef.current.update();
+    }
+  }, [resetCameraTrigger]);
+
+  // Update Renderer Settings on graphicsQuality prop change
+  useEffect(() => {
+    const rnd = rendererRef.current;
+    if (!rnd) return;
+    if (graphicsQuality === 'performance') {
+      rnd.setPixelRatio(1.0);
+      rnd.shadowMap.enabled = false;
+    } else if (graphicsQuality === 'high_fidelity') {
+      rnd.setPixelRatio(Math.min(window.devicePixelRatio, 2.0));
+      rnd.shadowMap.enabled = true;
+      rnd.shadowMap.type = THREE.PCFSoftShadowMap;
+    } else {
+      rnd.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      rnd.shadowMap.enabled = true;
+      rnd.shadowMap.type = THREE.PCFShadowMap;
+    }
+    rnd.shadowMap.needsUpdate = true;
+  }, [graphicsQuality]);
 
   // Build Dynamic Entities for Compare Scene
   useEffect(() => {
@@ -1151,6 +1380,21 @@ export const Scene3DCanvas: React.FC<Scene3DCanvasProps> = ({
       } else if (cameraMode === 'topdown') {
         compareCameraRef.current.position.set(ego.x + 10.0, ego.y, 45.0);
         compareCameraRef.current.lookAt(ego.x + 10.0, ego.y, 0);
+      } else if (cameraMode === 'side') {
+        const sideDist = 14.0;
+        compareCameraRef.current.position.set(
+          ego.x - 4.0 * Math.cos(ego.yaw) - sideDist * Math.sin(ego.yaw),
+          ego.y - 4.0 * Math.sin(ego.yaw) + sideDist * Math.cos(ego.yaw),
+          3.5
+        );
+        compareCameraRef.current.lookAt(ego.x + 4.0 * Math.cos(ego.yaw), ego.y + 4.0 * Math.sin(ego.yaw), 1.2);
+      } else if (cameraMode === 'cinematic') {
+        compareCameraRef.current.position.set(
+          ego.x + 16.0 * Math.cos(ego.yaw + 0.35),
+          ego.y + 16.0 * Math.sin(ego.yaw + 0.35),
+          1.8
+        );
+        compareCameraRef.current.lookAt(ego.x, ego.y, 1.0);
       } else if (cameraMode === 'cockpit') {
         const cockpitX = ego.x + (ego.length * 0.15) * Math.cos(ego.yaw);
         const cockpitY = ego.y + (ego.length * 0.15) * Math.sin(ego.yaw);

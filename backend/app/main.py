@@ -25,6 +25,7 @@ from backend.app.routers import (
     settings as user_settings,
     admin,
     health,
+    matlab,
 )
 
 # Ensure tables exist
@@ -71,3 +72,4 @@ app.include_router(failures.router)
 app.include_router(reports.router)
 app.include_router(user_settings.router)
 app.include_router(admin.router)
+app.include_router(matlab.router)

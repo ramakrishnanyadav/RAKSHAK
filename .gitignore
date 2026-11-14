@@ -39,3 +39,16 @@ yarn-error.log*
 .env.local
 .env.*.local
 
+# Vite & Frontend
+.vite/
+studio/dist/
+
+# MATLAB / Simulink Cache
+slprj/
+*.slxc
+*.autosave
+
+# Scratch & Temp Scripts
+scratch/
+
+

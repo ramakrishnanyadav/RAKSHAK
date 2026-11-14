@@ -42,21 +42,145 @@ export const LEGACY_SCENARIO_COMPATIBILITY_MAP: Record<string, string> = {
 };
 
 /**
- * Exactly five canonical scenarios from engine/scenarios/registry.py:
- * 1. SCENARIO_1_VILLAGE_ROAD
- * 2. SCENARIO_2_URBAN_INTERSECTION
- * 3. SCENARIO_3_HIGHWAY_MERGE
- * 4. SCENARIO_4_DENSE_MARKET
- * 5. SCENARIO_5_CATTLE_CROSSING
+ * Canonical 8-Scenario Benchmark Suite for Stage 4G.6:
+ * 1. SCENARIO_01_POTHOLE_DAMAGED_ROAD
+ * 2. SCENARIO_02_PEDESTRIAN_CROSSING (Flagship Acceptance Test)
+ * 3. SCENARIO_03_DENSE_MIXED_TRAFFIC
+ * 4. SCENARIO_04_MOTORCYCLE_CUT_IN
+ * 5. SCENARIO_05_UNCONTROLLED_INTERSECTION
+ * 6. SCENARIO_06_HIGHWAY_SUDDEN_BRAKING
+ * 7. SCENARIO_07_ROADWORKS_OBSTRUCTION
+ * 8. SCENARIO_08_CATTLE_CROSSING
  */
 export const BENCHMARK_SCENARIOS: ScenarioDefinition[] = [
   {
+    id: 'SCENARIO_01_POTHOLE_DAMAGED_ROAD',
+    name: '01. Pothole & Damaged Road',
+    description: 'Narrow unmarked rural asphalt with potholes, degraded asphalt patches, and oncoming heavy commercial traffic.',
+    environment: 'Narrow rural roadway (6.4m – 7.6m width) with potholes, earthen shoulders, and oncoming heavy vehicles.',
+    trafficChallenge: 'Negotiating passage around road-surface hazards while avoiding oncoming heavy truck.',
+    evaluates: 'Road-surface hazard constraint avoidance, non-lane boundary compliance, dynamic speed regulation.',
+    speed: '25 km/h (7.0 m/s)',
+    distance: '80 meters',
+    split: 'train',
+    roadWidth: '6.4 – 7.6 m',
+    curvature: 'κ ≤ 0.08 m⁻¹',
+    agentMix: ['Potholes (Road Surface Constraint)', 'Oncoming Commercial Truck'],
+    defaultRunId: 'run_scenario_01_pothole_damaged_road_p3_tune_s1000',
+  },
+  {
+    id: 'SCENARIO_02_PEDESTRIAN_CROSSING',
+    name: '02. Child / Pedestrian Crossing',
+    description: 'Indian urban residential street with parked vehicles; sudden occluded pedestrian child stepping into path.',
+    environment: 'Dense residential street (7.6m width) with parked vehicles acting as physical and visual occluders.',
+    trafficChallenge: 'Child pedestrian suddenly emerges into vehicle path from behind parked vehicles.',
+    evaluates: 'Occluded target perception acquisition, time-to-collision (TTC) forecasting, emergency deceleration, safe stopping.',
+    speed: '23 km/h (6.5 m/s)',
+    distance: '70 meters',
+    split: 'train',
+    roadWidth: '7.6 m residential corridor',
+    curvature: 'κ ≤ 0.02 m⁻¹',
+    agentMix: ['Pedestrian Child (Sudden Cross)', 'Parked Auto-Rickshaw', 'Parked Car'],
+    defaultRunId: 'run_scenario_02_pedestrian_crossing_p3_tune_s1000',
+  },
+  {
+    id: 'SCENARIO_03_DENSE_MIXED_TRAFFIC',
+    name: '03. Dense Mixed Indian Traffic',
+    description: 'Narrow urban arterial with heterogeneous traffic: cars, auto-rickshaws, and swarming two-wheelers in tight gaps.',
+    environment: 'Narrow urban arterial corridor without marked lanes.',
+    trafficChallenge: 'Two-wheelers weaving opportunistically between vehicles with small headway margins.',
+    evaluates: 'Multi-agent tracking, safe following distance maintenance, speed stability under swarming conditions.',
+    speed: '22 km/h (6.0 m/s)',
+    distance: '75 meters',
+    split: 'train',
+    roadWidth: '8.4 m urban corridor',
+    curvature: 'κ ≤ 0.04 m⁻¹',
+    agentMix: ['Lead Auto-Rickshaw', 'Weaving Scooter', 'Oncoming Vehicle'],
+    defaultRunId: 'run_scenario_03_dense_mixed_traffic_p3_tune_s1000',
+  },
+  {
+    id: 'SCENARIO_04_MOTORCYCLE_CUT_IN',
+    name: '04. Motorcycle Cut-In',
+    description: 'Multi-lane urban corridor where adjacent two-wheeler cuts sharply into ego path, collapsing headway.',
+    environment: 'Multi-lane urban road (10.0m width) with fast adjacent flow.',
+    trafficChallenge: 'Motorcycle changes lanes directly into ego safety envelope with sudden lateral velocity.',
+    evaluates: 'Closing speed estimation, dynamic headway re-evaluation, immediate braking response.',
+    speed: '27 km/h (7.5 m/s)',
+    distance: '80 meters',
+    split: 'val',
+    roadWidth: '10.0 m multi-lane',
+    curvature: 'κ ≤ 0.02 m⁻¹',
+    agentMix: ['Cut-In Motorcycle', 'Adjacent Traffic'],
+    defaultRunId: 'run_scenario_04_motorcycle_cut_in_p3_tune_s1000',
+  },
+  {
+    id: 'SCENARIO_05_UNCONTROLLED_INTERSECTION',
+    name: '05. Uncontrolled Intersection',
+    description: 'Complex 4-arm junction without traffic signals, featuring cross-cutting auto-rickshaws and two-wheelers.',
+    environment: 'Multi-directional urban intersection without traffic lights or marked lane corridors.',
+    trafficChallenge: 'Cross-cutting auto-rickshaws and swarming two-wheelers merging unpredictably from multiple directions.',
+    evaluates: 'Multi-agent motion prediction, dynamic gap acceptance, and collision-free crossing without signal guidance.',
+    speed: '25 km/h (7.0 m/s)',
+    distance: '75 meters',
+    split: 'val',
+    roadWidth: '14.0 m intersection zone',
+    curvature: 'κ ≤ 0.05 m⁻¹',
+    agentMix: ['Cross-cutting Auto-Rickshaws', 'Swarming Two-Wheelers'],
+    defaultRunId: 'run_scenario_05_uncontrolled_intersection_p3_tune_s1000',
+  },
+  {
+    id: 'SCENARIO_06_HIGHWAY_SUDDEN_BRAKING',
+    name: '06. Highway Sudden Braking',
+    description: 'High-speed highway corridor where lead vehicle performs sudden emergency deceleration to a stop.',
+    environment: 'High-speed dual-carriageway corridor (11.0m width).',
+    trafficChallenge: 'Rapid closing speed and collapse of headway requiring maximum safe deceleration.',
+    evaluates: 'Emergency stopping distance, jerk and passenger comfort, rear-end collision prevention.',
+    speed: '43 km/h (12.0 m/s)',
+    distance: '100 meters',
+    split: 'val',
+    roadWidth: '11.0 m highway corridor',
+    curvature: 'κ ≤ 0.01 m⁻¹',
+    agentMix: ['Emergency Braking Lead Car', 'Highway Traffic'],
+    defaultRunId: 'run_scenario_06_highway_sudden_braking_p3_tune_s1000',
+  },
+  {
+    id: 'SCENARIO_07_ROADWORKS_OBSTRUCTION',
+    name: '07. Roadworks & Lane Obstruction',
+    description: 'Partially blocked roadway with construction barricades, excavation trenches, and constrained single-lane bypass.',
+    environment: 'Urban arterial undergoing road repairs with physical barricades and lane closures.',
+    trafficChallenge: 'Blocked lanes forcing vehicles into a narrow single-lane bidirectional squeeze.',
+    evaluates: 'Constrained space trajectory generation, boundary compliance, clearance maintenance.',
+    speed: '22 km/h (6.0 m/s)',
+    distance: '80 meters',
+    split: 'test',
+    roadWidth: '9.0 m (constricted to 3.2m)',
+    curvature: 'κ ≤ 0.03 m⁻¹',
+    agentMix: ['Construction Barricades', 'Excavation Trench', 'Oncoming Motorcycle'],
+    defaultRunId: 'run_scenario_07_roadworks_obstruction_p3_tune_s1000',
+  },
+  {
+    id: 'SCENARIO_08_CATTLE_CROSSING',
+    name: '08. Sudden Cattle Crossing',
+    description: 'Rural transit road where bovine animal steps into vehicle path and halts mid-lane, requiring detour or safe stop.',
+    environment: 'Rural transit roadway (8.0m width) with dirt shoulders and unstructured animal crossings.',
+    trafficChallenge: 'Cattle wandering onto the road and halting unpredictably across the vehicle travel corridor.',
+    evaluates: 'Uncertainty prediction envelopes, non-lane lateral bypass planning, safe stopping.',
+    speed: '27 km/h (7.5 m/s)',
+    distance: '80 meters',
+    split: 'test',
+    roadWidth: '8.0 m with dirt shoulder',
+    curvature: 'κ ≤ 0.01 m⁻¹',
+    agentMix: ['Cattle (Bovine)', 'Unpaved Shoulder'],
+    defaultRunId: 'run_scenario_08_cattle_crossing_p3_tune_s1000',
+  },
+  // Legacy aliases
+  {
     id: 'SCENARIO_1_VILLAGE_ROAD',
-    name: '1. Unmarked Village Road',
-    description: 'Narrow unmarked rural asphalt road with potholes, unpaved dirt shoulders, and an oncoming heavy commercial vehicle.',
-    environment: 'Narrow rural roadway without painted lane markings (6.4m – 7.6m width) with unpaved earthen shoulders.',
-    trafficChallenge: 'Negotiating safe passage past an oncoming heavy vehicle while avoiding road surface potholes.',
-    evaluates: 'Continuous non-lane-bound path planning, dynamic speed regulation, and safe shoulder clearance.',
+    name: 'Legacy: Unmarked Village Road',
+    description: 'Narrow unmarked rural asphalt road with potholes, unpaved dirt shoulders, and oncoming heavy vehicle.',
+    environment: 'Narrow rural roadway (6.4m – 7.6m width) with unpaved earthen shoulders.',
+    trafficChallenge: 'Negotiating passage past oncoming heavy vehicle while avoiding potholes.',
+    evaluates: 'Continuous non-lane-bound path planning and shoulder clearance.',
     speed: '25 km/h (7.0 m/s)',
     distance: '80 meters',
     split: 'train',
@@ -66,57 +190,12 @@ export const BENCHMARK_SCENARIOS: ScenarioDefinition[] = [
     defaultRunId: 'run_scenario_1_village_road_p3_tune_s1000',
   },
   {
-    id: 'SCENARIO_2_URBAN_INTERSECTION',
-    name: '2. Busy Unsignalized Urban Intersection',
-    description: 'Complex junction without traffic signals, featuring cross-cutting auto-rickshaws and swarming two-wheelers.',
-    environment: 'Multi-directional urban intersection without traffic lights or marked lane corridors.',
-    trafficChallenge: 'Cross-cutting auto-rickshaws and swarming two-wheelers merging unpredictably from multiple directions.',
-    evaluates: 'Multi-agent motion prediction, dynamic gap acceptance, and collision-free crossing without signal guidance.',
-    speed: '25 km/h (7.0 m/s)',
-    distance: '75 meters',
-    split: 'train',
-    roadWidth: '14.0 m intersection zone',
-    curvature: 'κ ≤ 0.05 m⁻¹',
-    agentMix: ['Auto-Rickshaws (Cross-cutting)', 'Swarming Two-Wheelers'],
-    defaultRunId: 'run_scenario_2_urban_intersection_p3_tune_s1000',
-  },
-  {
-    id: 'SCENARIO_3_HIGHWAY_MERGE',
-    name: '3. Highway Merge with Slow Vehicles',
-    description: 'Fast-moving arterial corridor with slow auto-rickshaws entering from unpaved ramps at acute angles.',
-    environment: 'High-speed dual-carriageway corridor with unpaved access ramps entering at acute angles.',
-    trafficChallenge: 'Severe speed differential between cruising traffic and slow vehicles entering without acceleration lanes.',
-    evaluates: 'Long-horizon trajectory forecasting, smooth speed adjustments, and proactive braking to prevent rear-end collisions.',
-    speed: '40 km/h (11.0 m/s)',
-    distance: '100 meters',
-    split: 'val',
-    roadWidth: '10.5 m dual carriageway',
-    curvature: 'κ ≤ 0.02 m⁻¹',
-    agentMix: ['Merging Auto-Rickshaw', 'High-Speed Traffic'],
-    defaultRunId: 'run_scenario_3_highway_merge_p3_tune_s1000',
-  },
-  {
-    id: 'SCENARIO_4_DENSE_MARKET',
-    name: '4. Dense Market with Occluded Emergence',
-    description: 'Vendor stalls and parked vehicles with sudden pedestrian stepping out from behind visual occlusion.',
-    environment: 'Constricted market street (5.5m – 6.0m width) with roadside vendor stalls and parked auto-rickshaws.',
-    trafficChallenge: 'Pedestrians and handcarts stepping out suddenly into the driveable path from blind spots.',
-    evaluates: 'Occlusion-aware crawling speed, safety margin maintenance, and immediate emergency safe stop (MRM).',
-    speed: '22 km/h (6.0 m/s)',
-    distance: '75 meters',
-    split: 'val',
-    roadWidth: '5.5 – 6.0 m (constricted)',
-    curvature: 'κ ≤ 0.03 m⁻¹',
-    agentMix: ['Pedestrians (Sudden emergence)', 'Handcarts', 'Stationary Stalls'],
-    defaultRunId: 'run_scenario_4_dense_market_p3_tune_s1000',
-  },
-  {
     id: 'SCENARIO_5_CATTLE_CROSSING',
-    name: '5. Sudden Cattle Crossing',
-    description: 'Livestock entering the roadway and halting mid-lane, requiring non-lane lateral avoidance or safe braking.',
-    environment: 'Rural transit roadway (8.0m width) with dirt shoulders and unstructured animal crossings.',
-    trafficChallenge: 'Cattle wandering onto the road and halting unpredictably across the vehicle travel corridor.',
-    evaluates: 'Uncertainty prediction envelopes, stationary obstacle persistence handling, and safe lateral detour navigation.',
+    name: 'Legacy: Sudden Cattle Crossing',
+    description: 'Livestock entering roadway and halting mid-lane, requiring lateral avoidance or safe braking.',
+    environment: 'Rural transit roadway (8.0m width) with dirt shoulders.',
+    trafficChallenge: 'Cattle wandering onto road and halting unpredictably across travel corridor.',
+    evaluates: 'Uncertainty prediction envelopes and safe lateral detour navigation.',
     speed: '27 km/h (7.5 m/s)',
     distance: '80 meters',
     split: 'test',
@@ -131,7 +210,7 @@ export const Scenarios: React.FC = () => {
   const { t } = useI18n();
   const navigate = useNavigate();
   const [splitFilter, setSplitFilter] = useState<'all' | 'train' | 'val' | 'test'>('all');
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string>('SCENARIO_1_VILLAGE_ROAD');
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string>('SCENARIO_02_PEDESTRIAN_CROSSING');
 
   // Load scenarios from API if available, falling back gracefully to authoritative catalog
   const { data: scenarios = BENCHMARK_SCENARIOS, isLoading, isError } = useQuery({

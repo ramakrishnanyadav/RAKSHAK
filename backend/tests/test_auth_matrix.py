@@ -38,9 +38,9 @@ class TestAuthorizationMatrix:
         assert res.status_code == 200
 
     # -------------------------------------------------------------
-    # 2. RUN LAUNCH PERMISSIONS
+    # 2. RUN LAUNCH PERMISSIONS (OPEN ACCESS - STAGE 4G.9)
     # -------------------------------------------------------------
-    def test_guest_cannot_launch_run(self, client, guest_headers):
+    def test_guest_can_launch_run(self, client, guest_headers):
         payload = {
             "scenario_id": "SCENARIO_5_CATTLE_CROSSING",
             "planner_id": "P3",
@@ -49,8 +49,8 @@ class TestAuthorizationMatrix:
             "engine_adapter": "python",
         }
         res = client.post("/api/runs", headers=guest_headers, json=payload)
-        assert res.status_code == 403
-        assert res.json()["code"] == "ROLE_PERMISSION_DENIED"
+        assert res.status_code == 200
+        assert res.json()["status"] == "queued"
 
     def test_researcher_can_launch_run(self, client, researcher_headers):
         payload = {
@@ -78,10 +78,10 @@ class TestAuthorizationMatrix:
     # -------------------------------------------------------------
     # 3. RUN CANCELLATION OWNERSHIP MATRIX
     # -------------------------------------------------------------
-    def test_guest_cannot_cancel_run(self, client, guest_headers):
+    def test_guest_cannot_cancel_other_user_run(self, client, guest_headers):
         res = client.post("/api/runs/run_private_sample/cancel", headers=guest_headers)
         assert res.status_code == 403
-        assert res.json()["code"] == "ROLE_PERMISSION_DENIED"
+        assert res.json()["code"] == "OWNERSHIP_DENIED"
 
     def test_other_researcher_cannot_cancel_run(self, client, other_researcher_headers):
         res = client.post("/api/runs/run_private_sample/cancel", headers=other_researcher_headers)

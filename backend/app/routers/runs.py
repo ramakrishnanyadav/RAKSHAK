@@ -58,7 +58,7 @@ async def launch_run(
         seed=req.seed,
         engine_adapter_name=req.engine_adapter,
         custom_params=req.custom_params,
-        owner_id=user.id if user.is_authenticated else None,
+        owner_id=user.id,
         idempotency_key=effective_idempotency_key,
         is_shipped=False,
         db_session=db,
@@ -98,7 +98,7 @@ async def launch_batch(
                     split=req.split,
                     seed=s,
                     engine_adapter_name=req.engine_adapter,
-                    owner_id=user.id if user.is_authenticated else None,
+                    owner_id=user.id,
                     is_shipped=False,
                     db_session=db,
                 )
@@ -125,11 +125,13 @@ def list_runs(
     """
     query = db.query(RunRecord)
 
-    # Enforce role scoping: guest users can ONLY see shipped runs
-    if user.role == Role.GUEST or shipped_only:
+    # Enforce role scoping: users see shipped runs plus their own session runs
+    if shipped_only:
         query = query.filter(RunRecord.is_shipped == True)
-    elif user.role != Role.ADMIN:
-        # Non-admin users see shipped runs plus their own runs
+    elif user.role == Role.ADMIN:
+        pass
+    else:
+        # Non-admin users and open-access guest sessions see shipped runs plus their own session runs
         query = query.filter((RunRecord.is_shipped == True) | (RunRecord.owner_id == user.id))
 
     if scenario_id:

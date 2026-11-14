@@ -56,6 +56,12 @@ export interface SceneModel {
   telemetry: SceneTelemetry;
 }
 
+// Cache static geometry per WorldMap instance to avoid allocating new arrays every frame
+const worldStaticCache = new WeakMap<
+  WorldMap,
+  { staticObstacles: StaticObstacle[]; roadBoundaries: RoadBoundary[] }
+>();
+
 /**
  * Transforms an apath-log/v1 Frame and WorldMap into a validated SceneModel.
  * Preserves logged values without extrapolation or synthetic additions.
@@ -101,21 +107,27 @@ export function extractSceneModel(
     conformal_envelope: agent.conformal_envelope || [],
   }));
 
-  // 3. Static geometry directly from WorldMap
-  const staticObstacles: StaticObstacle[] = (world.static_obstacles || []).map((obs) => ({
-    id: obs.id,
-    kind: obs.kind,
-    x: obs.x,
-    y: obs.y,
-    length: obs.length,
-    width: obs.width,
-    yaw: obs.yaw,
-  }));
-
-  const roadBoundaries: RoadBoundary[] = (world.road_boundaries || []).map((rb) => ({
-    side: rb.side,
-    points: rb.points.map((p) => [p[0], p[1]] as [number, number]),
-  }));
+  // 3. Static geometry directly from WorldMap (cached for identity stability)
+  let cachedStatic = worldStaticCache.get(world);
+  if (!cachedStatic) {
+    cachedStatic = {
+      staticObstacles: (world.static_obstacles || []).map((obs) => ({
+        id: obs.id,
+        kind: obs.kind,
+        x: obs.x,
+        y: obs.y,
+        length: obs.length,
+        width: obs.width,
+        yaw: obs.yaw,
+      })),
+      roadBoundaries: (world.road_boundaries || []).map((rb) => ({
+        side: rb.side,
+        points: rb.points.map((p) => [p[0], p[1]] as [number, number]),
+      })),
+    };
+    worldStaticCache.set(world, cachedStatic);
+  }
+  const { staticObstacles, roadBoundaries } = cachedStatic;
 
   // 4. Planned trajectory points directly from PlannerOutput
   const plannedTrajectory: PlannedPose[] =

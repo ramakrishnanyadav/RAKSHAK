@@ -81,10 +81,17 @@ GUEST_USER = AuthenticatedUser(
 # Base role-permission capabilities matrix
 ROLE_PERMISSIONS: Dict[Role, Set[Action]] = {
     Role.GUEST: {
-        Action.READ_RUN,  # Shipped runs only (enforced via ownership/shipped filter)
-        Action.READ_SCENARIO,
-        Action.READ_BENCHMARK,
-        Action.DOWNLOAD_LOG,  # Shipped runs only
+        Action.READ_RUN,        # Shipped runs + own session runs
+        Action.LAUNCH_RUN,      # Core simulation open access (Stage 4G.9)
+        Action.CANCEL_RUN,      # Own session runs only (enforced via check_ownership)
+        Action.RETRY_RUN,       # Own session runs only (enforced via check_ownership)
+        Action.STREAM_RUN,      # Live SSE simulation progress
+        Action.DOWNLOAD_LOG,    # Shipped runs + own session runs
+        Action.READ_SCENARIO,   # Scenario library
+        Action.READ_BENCHMARK,  # Benchmark comparisons
+        Action.READ_FAILURE,    # Failure analysis
+        Action.READ_REPORT,     # Validation reports
+        Action.READ_SETTINGS,   # View settings
     },
     Role.RESEARCHER: {
         Action.READ_RUN,
@@ -127,8 +134,8 @@ def get_current_user_optional(
     db: Session = Depends(get_db),
 ) -> AuthenticatedUser:
     """
-    Extract user from Bearer header or fallback to cookie or Guest.
-    Does not reject unauthenticated requests; returns GUEST_USER instead.
+    Extract user from Bearer header, cookie, or local anonymous session.
+    Provides secure open access with session-level data isolation.
     """
     token = None
     if credentials:
@@ -136,19 +143,52 @@ def get_current_user_optional(
     elif "access_token" in request.cookies:
         token = request.cookies.get("access_token")
 
+    # Extract or create persistent anonymous session identifier
+    anon_session_id = (
+        request.headers.get("X-Session-ID")
+        or request.cookies.get("anon_session_id")
+        or "default_guest"
+    )
+
     if not token:
-        return GUEST_USER
+        return AuthenticatedUser(
+            id=f"guest_{anon_session_id}",
+            email=f"guest_{anon_session_id}@adaptive-path.local",
+            role=Role.GUEST,
+            is_active=True,
+            is_verified=True,
+            session_id=anon_session_id,
+            is_authenticated=False,
+        )
 
     try:
         payload = decode_access_token(token)
         user_id = payload.get("sub")
-        session_id = payload.get("session_id")
+        role = payload.get("role", "guest")
+        session_id = payload.get("session_id") or anon_session_id
         if not user_id:
-            return GUEST_USER
+            return AuthenticatedUser(
+                id=f"guest_{anon_session_id}",
+                email=f"guest_{anon_session_id}@adaptive-path.local",
+                role=Role.GUEST,
+                is_active=True,
+                is_verified=True,
+                session_id=anon_session_id,
+                is_authenticated=False,
+            )
 
         user = db.query(UserRecord).filter(UserRecord.id == user_id).first()
         if not user:
-            return GUEST_USER
+            # Token valid but user record not in DB (e.g. test guest tokens)
+            return AuthenticatedUser(
+                id=user_id,
+                email=f"{user_id}@adaptive-path.local",
+                role=Role(role) if role in [r.value for r in Role] else Role.GUEST,
+                is_active=True,
+                is_verified=True,
+                session_id=session_id,
+                is_authenticated=False if role == "guest" else True,
+            )
 
         if not user.is_active:
             raise PermissionDeniedError("Account is inactive or disabled", code="ACCOUNT_INACTIVE")
@@ -169,9 +209,25 @@ def get_current_user_optional(
             is_authenticated=True,
         )
     except AuthenticationError:
-        return GUEST_USER
+        return AuthenticatedUser(
+            id=f"guest_{anon_session_id}",
+            email=f"guest_{anon_session_id}@adaptive-path.local",
+            role=Role.GUEST,
+            is_active=True,
+            is_verified=True,
+            session_id=anon_session_id,
+            is_authenticated=False,
+        )
     except Exception:
-        return GUEST_USER
+        return AuthenticatedUser(
+            id=f"guest_{anon_session_id}",
+            email=f"guest_{anon_session_id}@adaptive-path.local",
+            role=Role.GUEST,
+            is_active=True,
+            is_verified=True,
+            session_id=anon_session_id,
+            is_authenticated=False,
+        )
 
 
 def get_current_authenticated_user(
@@ -233,12 +289,14 @@ def check_ownership(user: AuthenticatedUser, resource_owner_id: Optional[str], i
         # Shipped runs can be read by anyone, but never mutated or deleted
         return
 
-    if resource_owner_id != user.id:
-        raise PermissionDeniedError(
-            message="You do not have permission to access or modify this resource.",
-            code="OWNERSHIP_DENIED",
-            details={"owner_id": resource_owner_id, "user_id": user.id},
-        )
+    if resource_owner_id and (resource_owner_id == user.id or (user.session_id and resource_owner_id == user.session_id)):
+        return
+
+    raise PermissionDeniedError(
+        message="You do not have permission to access or modify this resource.",
+        code="OWNERSHIP_DENIED",
+        details={"owner_id": resource_owner_id, "user_id": user.id},
+    )
 
 
 def log_audit_event(

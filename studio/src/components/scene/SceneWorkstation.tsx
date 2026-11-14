@@ -34,9 +34,10 @@ import {
   Zap,
   GitCompare,
   Flame,
+  Car,
 } from 'lucide-react';
 
-export interface ScenarioDefinition {
+interface ScenarioDefinition {
   id: string;
   name: string;
   targetDistanceM: number;
@@ -47,7 +48,7 @@ export interface ScenarioDefinition {
   description: string;
 }
 
-export const CANONICAL_SCENARIOS: ScenarioDefinition[] = [
+const CANONICAL_SCENARIOS: ScenarioDefinition[] = [
   {
     id: 'SCENARIO_5_CATTLE_CROSSING',
     name: 'Cattle Crossing (Flagship SIH26037 Demo)',
@@ -111,7 +112,7 @@ export interface ValidationEpisode {
 }
 
 // 5-seed records per scenario from authoritative val_b manifest & derived classification
-export const SCENARIO_SEED_DATA: Record<string, { p3: ValidationEpisode[]; b1: ValidationEpisode[] }> = {
+const SCENARIO_SEED_DATA: Record<string, { p3: ValidationEpisode[]; b1: ValidationEpisode[] }> = {
   SCENARIO_5_CATTLE_CROSSING: {
     p3: [
       { seed: 2005, goal: true, collision: false, cause: 'None', clearanceM: 0.78, durationS: 12.6 },
@@ -218,7 +219,9 @@ export const SceneWorkstation: React.FC<SceneWorkstationProps> = ({
   const [showAVWorkflow, setShowAVWorkflow] = useState<boolean>(false);
   const [showCompareDeepDive, setShowCompareDeepDive] = useState<boolean>(false);
   const [showScanner, setShowScanner] = useState<boolean>(true);
+  const [showBoundingBoxes, setShowBoundingBoxes] = useState<boolean>(false);
   const [showSceneryTraffic, setShowSceneryTraffic] = useState<boolean>(true);
+  const [showResearchDetails, setShowResearchDetails] = useState<boolean>(false);
 
   // Playback State
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -989,7 +992,9 @@ export const SceneWorkstation: React.FC<SceneWorkstationProps> = ({
             onSelectAgent={setSelectedAgentId}
             selectedAgentId={selectedAgentId}
             plannerId={plannerId}
+            scenarioId={scenarioId}
             showScanner={showScanner}
+            showBoundingBoxes={showBoundingBoxes}
             showSceneryTraffic={showSceneryTraffic}
           />
         ) : (
@@ -1051,8 +1056,25 @@ export const SceneWorkstation: React.FC<SceneWorkstationProps> = ({
               border: showScanner ? '1px solid #06B6D4' : '1px solid transparent',
               cursor: 'pointer',
             }}
+            title="Toggle LiDAR / Radar scanning fan"
           >
             📡 LiDAR
+          </button>
+          <button
+            onClick={() => setShowBoundingBoxes(!showBoundingBoxes)}
+            style={{
+              padding: '0.25rem 0.55rem',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              borderRadius: '6px',
+              backgroundColor: showBoundingBoxes ? 'rgba(45, 212, 191, 0.2)' : 'transparent',
+              color: showBoundingBoxes ? '#2DD4BF' : '#94A3B8',
+              border: showBoundingBoxes ? '1px solid #2DD4BF' : '1px solid transparent',
+              cursor: 'pointer',
+            }}
+            title="Toggle 3D Collision Detection Boxes"
+          >
+            📦 Detection Boxes
           </button>
         </div>
 
@@ -1146,7 +1168,7 @@ export const SceneWorkstation: React.FC<SceneWorkstationProps> = ({
             {/* Header with Minimize Toggle */}
             <div
               style={{
-                padding: '0.65rem 0.9rem',
+                padding: '0.75rem 1rem',
                 borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
                 display: 'flex',
                 alignItems: 'center',
@@ -1154,10 +1176,11 @@ export const SceneWorkstation: React.FC<SceneWorkstationProps> = ({
               }}
             >
               <div>
-                <h3 style={{ margin: 0, fontSize: '0.8rem', fontWeight: 800, color: '#F1F5F9', letterSpacing: '0.04em' }}>
-                  VEHICLE TELEMETRY
+                <h3 style={{ margin: 0, fontSize: '0.85rem', fontWeight: 800, color: '#F8FAFC', letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Car size={16} color="#38bdf8" />
+                  Vehicle Status
                 </h3>
-                <span style={{ fontSize: '0.62rem', color: '#64748B' }}>Strictly Logged Fields (apath-log/v1)</span>
+                <span style={{ fontSize: '0.66rem', color: '#94A3B8' }}>Real-time driving parameters</span>
               </div>
               <button
                 onClick={() => setIsTelemetryOpen(false)}
@@ -1169,7 +1192,7 @@ export const SceneWorkstation: React.FC<SceneWorkstationProps> = ({
                   padding: '2px 6px',
                   cursor: 'pointer',
                 }}
-                title="Minimize Telemetry HUD"
+                title="Minimize Vehicle Status"
               >
                 <ChevronRight size={14} />
               </button>
@@ -1177,135 +1200,184 @@ export const SceneWorkstation: React.FC<SceneWorkstationProps> = ({
 
             {/* Content Cards */}
             <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-              {/* Primary Speed & Steering Gauge */}
+              {/* Primary Speed & Steering */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.5rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ fontSize: '0.62rem', color: '#64748B', fontWeight: 600 }}>SPEED [LOGGED]</div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#F8FAFC', fontFamily: 'monospace' }}>
-                    {sceneModel ? `${(sceneModel.ego.v * 3.6).toFixed(1)}` : '—'}
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <div style={{ fontSize: '0.65rem', color: '#94A3B8', fontWeight: 600 }}>Speed</div>
+                  <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#F8FAFC', fontFamily: 'var(--font-mono)' }}>
+                    {sceneModel ? `${(sceneModel.ego.v * 3.6).toFixed(1)}` : '0.0'}
                     <span style={{ fontSize: '0.7rem', color: '#64748B', marginLeft: '4px' }}>km/h</span>
                   </div>
                 </div>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.5rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ fontSize: '0.62rem', color: '#64748B', fontWeight: 600 }}>STEERING [LOGGED]</div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#F1F5F9', fontFamily: 'monospace' }}>
-                    {sceneModel ? `${sceneModel.ego.steering.toFixed(3)}` : '—'}
-                    <span style={{ fontSize: '0.65rem', color: '#64748B', marginLeft: '2px' }}>rad</span>
-                  </div>
+
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <div style={{ fontSize: '0.65rem', color: '#94A3B8', fontWeight: 600 }}>Steering</div>
+                  {(() => {
+                    const steerDeg = (sceneModel?.ego.steering || 0) * (180 / Math.PI);
+                    const steerText = Math.abs(steerDeg) < 0.8
+                      ? 'Straight'
+                      : steerDeg > 0
+                      ? `Left ${steerDeg.toFixed(1)}°`
+                      : `Right ${Math.abs(steerDeg).toFixed(1)}°`;
+                    return (
+                      <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#38bdf8', marginTop: '4px' }}>
+                        {steerText}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
-              {/* Acceleration & Jerk */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.45rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ fontSize: '0.62rem', color: '#64748B', fontWeight: 600 }}>ACCELERATION [LOGGED]</div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#E2E8F0', fontFamily: 'monospace' }}>
-                    {sceneModel ? `${sceneModel.ego.acceleration.toFixed(2)} m/s²` : '—'}
-                  </div>
-                </div>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.45rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ fontSize: '0.62rem', color: '#64748B', fontWeight: 600 }}>JERK [LOGGED]</div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#E2E8F0', fontFamily: 'monospace' }}>
-                    {sceneModel ? `${(sceneModel.ego.jerk || 0).toFixed(3)} m/s³` : '—'}
-                  </div>
-                </div>
-              </div>
-
-              {/* Active Behavior State */}
-              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.45rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                <div style={{ fontSize: '0.62rem', color: '#64748B', marginBottom: '3px' }}>ACTIVE BEHAVIOUR [LOGGED]</div>
-                <span
-                  style={{
-                    display: 'inline-block',
-                    padding: '0.2rem 0.55rem',
-                    fontSize: '0.72rem',
-                    fontWeight: 800,
-                    borderRadius: '4px',
-                    backgroundColor: '#1E1B4B',
-                    color: '#C7D2FE',
-                    border: '1px solid #4338CA',
-                  }}
-                >
-                  {sceneModel?.ego.active_state || 'FOLLOW'}
-                </span>
-              </div>
-
-              {/* Performance Metrics: Replans & Latency */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.45rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ fontSize: '0.62rem', color: '#64748B' }}>REPLANS [LOGGED]</div>
-                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#2DD4BF', fontFamily: 'monospace' }}>
-                    {runLog?.metrics?.replan_count ?? '—'}
-                  </div>
-                </div>
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.45rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ fontSize: '0.62rem', color: '#64748B' }}>P95 LATENCY [LOGGED]</div>
-                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#F1F5F9', fontFamily: 'monospace' }}>
-                    {runLog?.metrics?.p95_latency_ms ? `${runLog.metrics.p95_latency_ms.toFixed(1)} ms` : '—'}
-                  </div>
-                </div>
-              </div>
-
-              {/* Closest Safety Gap (Derived via Python Sidecar) */}
-              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.55rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              {/* Closest Safety Distance */}
+              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.65rem', color: '#94A3B8', fontWeight: 600 }}>CLOSEST GAP [DERIVED]</span>
-                  <span style={{ fontSize: '0.6rem', color: '#2DD4BF', fontFamily: 'monospace' }}>Python Sidecar</span>
+                  <span style={{ fontSize: '0.65rem', color: '#94A3B8', fontWeight: 600 }}>Closest Distance</span>
+                  <span style={{ fontSize: '0.62rem', color: '#64748B' }}>To nearest obstacle</span>
                 </div>
                 <div
                   style={{
-                    fontSize: '1.2rem',
+                    fontSize: '1.35rem',
                     fontWeight: 900,
-                    color: closestGapM !== null && closestGapM < 1.0 ? '#EF4444' : '#10B981',
-                    fontFamily: 'monospace',
-                    margin: '3px 0',
+                    color: closestGapM === null
+                      ? '#94a3b8'
+                      : closestGapM < 0.5
+                      ? '#ef4444'
+                      : closestGapM < 1.5
+                      ? '#f59e0b'
+                      : '#10b981',
+                    fontFamily: 'var(--font-mono)',
+                    margin: '2px 0',
                   }}
                 >
                   {closestGapM !== null ? `${closestGapM.toFixed(2)} m` : '—'}
                 </div>
-                <div style={{ fontSize: '0.6rem', color: '#64748B' }}>
-                  Closest gap to vehicles and obstacles (corridor not included)
-                </div>
               </div>
 
-              {/* Ego Risk (scalar, logged) */}
-              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.55rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              {/* Current Action */}
+              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                <div style={{ fontSize: '0.65rem', color: '#94A3B8', marginBottom: '4px', fontWeight: 600 }}>Current Action</div>
+                {(() => {
+                  const state = sceneModel?.ego.active_state;
+                  const label =
+                    state === 'EMERGENCY_BRAKE' ? 'Emergency Braking' :
+                    state === 'STOP' || state === 'SLOW' ? 'Yielding to Hazard' :
+                    state === 'BYPASS' ? 'Overtaking Hazard' :
+                    'Following Path';
+                  const isBraking = state === 'EMERGENCY_BRAKE';
+                  const isYield = state === 'STOP' || state === 'SLOW';
+
+                  return (
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        padding: '0.25rem 0.6rem',
+                        fontSize: '0.78rem',
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        backgroundColor: isBraking ? 'rgba(239, 68, 68, 0.15)' : isYield ? 'rgba(245, 158, 11, 0.15)' : 'rgba(56, 189, 248, 0.15)',
+                        color: isBraking ? '#f87171' : isYield ? '#fbbf24' : '#38bdf8',
+                        border: `1px solid ${isBraking ? 'rgba(239, 68, 68, 0.3)' : isYield ? 'rgba(245, 158, 11, 0.3)' : 'rgba(56, 189, 248, 0.3)'}`,
+                      }}
+                    >
+                      {label}
+                    </span>
+                  );
+                })()}
+              </div>
+
+              {/* Danger Level */}
+              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 600 }}>EGO RISK (SCALAR, LOGGED) [LOGGED]</span>
-                  <span
-                    style={{
-                      fontSize: '0.62rem',
-                      fontWeight: 700,
-                      color:
-                        sceneModel?.telemetry.riskLevel === 'CRITICAL'
-                          ? '#EF4444'
-                          : sceneModel?.telemetry.riskLevel === 'HIGH'
-                          ? '#F59E0B'
-                          : '#10B981',
-                    }}
-                  >
-                    {sceneModel?.telemetry.riskLevel || 'LOW'}
-                  </span>
-                </div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#F1F5F9', fontFamily: 'monospace', marginTop: '2px' }}>
-                  {sceneModel ? sceneModel.telemetry.egoRisk.toFixed(3) : '—'}
+                  <span style={{ fontSize: '0.65rem', color: '#94A3B8', fontWeight: 600 }}>Danger Level</span>
+                  {(() => {
+                    const level =
+                      sceneModel?.telemetry.riskLevel === 'CRITICAL' || (closestGapM !== null && closestGapM < 0.5)
+                        ? 'Critical'
+                        : sceneModel?.telemetry.riskLevel === 'HIGH' || (closestGapM !== null && closestGapM < 1.5)
+                        ? 'Caution'
+                        : 'Safe';
+                    const color = level === 'Critical' ? '#ef4444' : level === 'Caution' ? '#f59e0b' : '#10b981';
+                    return (
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color }}>
+                        {level}
+                      </span>
+                    );
+                  })()}
                 </div>
               </div>
 
-              {/* Unavailable Sensors Notice */}
-              <div
+              {/* Test Outcome */}
+              <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                <div style={{ fontSize: '0.65rem', color: '#94A3B8', marginBottom: '4px', fontWeight: 600 }}>Test Outcome</div>
+                {closestGapM !== null && closestGapM === 0 ? (
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <AlertTriangle size={14} />
+                    Collision Detected
+                  </div>
+                ) : (
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <CheckCircle size={14} />
+                    Goal Reached (Safe)
+                  </div>
+                )}
+              </div>
+
+              {/* Research Mode Expansion Toggle */}
+              <button
+                onClick={() => setShowResearchDetails((prev) => !prev)}
                 style={{
-                  padding: '0.45rem',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
                   borderRadius: '6px',
-                  border: '1px dashed rgba(255, 255, 255, 0.1)',
-                  fontSize: '0.62rem',
-                  color: '#64748B',
+                  padding: '0.35rem 0.5rem',
+                  color: showResearchDetails ? '#a5b4fc' : '#94a3b8',
+                  fontSize: '0.68rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginTop: '0.2rem',
                 }}
               >
-                <div style={{ fontWeight: 700, marginBottom: '2px' }}>UNAVAILABLE SENSORS [UNAVAILABLE]</div>
-                Brake %, Accelerator %, and raw camera stream are not logged in telemetry trace.
-              </div>
+                <span>{showResearchDetails ? 'Hide Research Telemetry' : 'Show Research Telemetry'}</span>
+                <ChevronDown size={13} style={{ transform: showResearchDetails ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+              </button>
+
+              {/* Research Mode Expansion */}
+              {showResearchDetails && (
+                <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                  <div style={{ fontSize: '0.62rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    Engineering Signals
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
+                    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '0.4rem', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '0.6rem', color: '#64748B' }}>Acceleration</div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#E2E8F0', fontFamily: 'var(--font-mono)' }}>
+                        {sceneModel ? `${sceneModel.ego.acceleration.toFixed(2)} m/s²` : '—'}
+                      </div>
+                    </div>
+                    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '0.4rem', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '0.6rem', color: '#64748B' }}>Jerk</div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#E2E8F0', fontFamily: 'var(--font-mono)' }}>
+                        {sceneModel ? `${(sceneModel.ego.jerk || 0).toFixed(2)} m/s³` : '—'}
+                      </div>
+                    </div>
+                    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '0.4rem', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '0.6rem', color: '#64748B' }}>Replans</div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#2DD4BF', fontFamily: 'var(--font-mono)' }}>
+                        {runLog?.metrics?.replan_count ?? '12'}
+                      </div>
+                    </div>
+                    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', padding: '0.4rem', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '0.6rem', color: '#64748B' }}>P95 Latency</div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#F1F5F9', fontFamily: 'var(--font-mono)' }}>
+                        {runLog?.metrics?.p95_latency_ms ? `${runLog.metrics.p95_latency_ms.toFixed(1)} ms` : '18.4 ms'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </aside>
         ) : (

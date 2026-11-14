@@ -97,6 +97,31 @@ class TrafficAgent:
                 self.yaw = min(0.3, max(0.05, 0.3 - 0.05 * self.state_timer))
             else:
                 self.yaw = 0.0
+        elif self.intent == "cut_in":
+            # Motorcycle cuts sharply into ego lane from adjacent corridor
+            if self.state_timer > 1.0:
+                target_y = 0.3
+                dy = target_y - self.y
+                if abs(dy) > 0.15:
+                    self.yaw = -0.35 if dy < 0 else 0.35
+                else:
+                    self.yaw = 0.0
+                    self.y = target_y
+            else:
+                self.yaw = 0.0
+        elif self.intent == "sudden_brake":
+            # Leading vehicle hard braking
+            if self.state_timer > 1.4:
+                self.v = max(0.0, self.v - 4.2 * dt)
+                if self.v == 0.0:
+                    self.stopped = True
+            else:
+                self.yaw = 0.0
+        elif self.intent == "sudden_cross":
+            # Pedestrian stepping out rapidly from sidewalk/curb
+            if self.state_timer > 1.0:
+                self.yaw = -math.pi / 2.0  # crossing laterally across road
+                self.v = min(1.6, self.v + 0.9 * dt)
 
         # Update position
         self.x += self.v_x * dt

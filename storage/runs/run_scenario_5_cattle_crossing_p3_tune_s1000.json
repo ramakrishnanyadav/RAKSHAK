@@ -1,7 +1,7 @@
 {
   "schema_version": "apath-log/v1",
   "run_id": "run_scenario_5_cattle_crossing_p3_tune_s1000",
-  "timestamp_iso": "2026-11-04T23:38:16.627242+00:00",
+  "timestamp_iso": "2026-11-14T20:48:13.043970+00:00",
   "config_hash": "d800236f7eac9dbb59441fba3450f61628fd5606c1ba121e333164cbec89a7e4",
   "git_commit": "sih2026-sih26037-main",
   "engine": {
@@ -568,7 +568,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6282
         },
-        "latency_ms": 9.87,
+        "latency_ms": 91.19,
         "planned_trajectory": [
           {
             "x": 1.6,
@@ -1046,7 +1046,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1352
         },
-        "latency_ms": 0.38,
+        "latency_ms": 94.98,
         "planned_trajectory": [
           {
             "x": 1.6,
@@ -1524,7 +1524,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1294
         },
-        "latency_ms": 0.51,
+        "latency_ms": 56.23,
         "planned_trajectory": [
           {
             "x": 1.6,
@@ -2002,7 +2002,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1252
         },
-        "latency_ms": 0.76,
+        "latency_ms": 7.83,
         "planned_trajectory": [
           {
             "x": 3.2,
@@ -2475,7 +2475,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1225
         },
-        "latency_ms": 0.18,
+        "latency_ms": 17.85,
         "planned_trajectory": [
           {
             "x": 3.2,
@@ -2948,7 +2948,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1209
         },
-        "latency_ms": 0.14,
+        "latency_ms": 0.77,
         "planned_trajectory": [
           {
             "x": 4.800000000000001,
@@ -3416,7 +3416,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1201
         },
-        "latency_ms": 0.59,
+        "latency_ms": 4.84,
         "planned_trajectory": [
           {
             "x": 4.800000000000001,
@@ -3884,7 +3884,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.12
         },
-        "latency_ms": 0.67,
+        "latency_ms": 12.43,
         "planned_trajectory": [
           {
             "x": 6.4,
@@ -4347,7 +4347,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1205
         },
-        "latency_ms": 0.33,
+        "latency_ms": 56.62,
         "planned_trajectory": [
           {
             "x": 6.4,
@@ -4810,7 +4810,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1214
         },
-        "latency_ms": 0.2,
+        "latency_ms": 5.52,
         "planned_trajectory": [
           {
             "x": 6.4,
@@ -5273,7 +5273,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1227
         },
-        "latency_ms": 0.63,
+        "latency_ms": 7.06,
         "planned_trajectory": [
           {
             "x": 8.0,
@@ -5731,7 +5731,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1242
         },
-        "latency_ms": 0.37,
+        "latency_ms": 21.08,
         "planned_trajectory": [
           {
             "x": 8.0,
@@ -6189,7 +6189,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6916
         },
-        "latency_ms": 8.08,
+        "latency_ms": 180.97,
         "planned_trajectory": [
           {
             "x": 10.113214095648413,
@@ -6667,7 +6667,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1991
         },
-        "latency_ms": 2.85,
+        "latency_ms": 0.93,
         "planned_trajectory": [
           {
             "x": 10.113214095648413,
@@ -7145,7 +7145,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1853
         },
-        "latency_ms": 0.34,
+        "latency_ms": 4.56,
         "planned_trajectory": [
           {
             "x": 11.349122623342193,
@@ -7618,7 +7618,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1742
         },
-        "latency_ms": 1.21,
+        "latency_ms": 0.75,
         "planned_trajectory": [
           {
             "x": 11.349122623342193,
@@ -8091,7 +8091,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1642
         },
-        "latency_ms": 0.53,
+        "latency_ms": 51.17,
         "planned_trajectory": [
           {
             "x": 12.59155025852957,
@@ -8559,7 +8559,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1576
         },
-        "latency_ms": 0.68,
+        "latency_ms": 0.82,
         "planned_trajectory": [
           {
             "x": 12.59155025852957,
@@ -9027,7 +9027,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1505
         },
-        "latency_ms": 0.32,
+        "latency_ms": 125.4,
         "planned_trajectory": [
           {
             "x": 13.852611170419927,
@@ -9490,7 +9490,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1467
         },
-        "latency_ms": 0.25,
+        "latency_ms": 0.64,
         "planned_trajectory": [
           {
             "x": 13.852611170419927,
@@ -9953,7 +9953,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1421
         },
-        "latency_ms": 0.28,
+        "latency_ms": 11.5,
         "planned_trajectory": [
           {
             "x": 15.127809944791764,
@@ -10411,7 +10411,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1388
         },
-        "latency_ms": 0.33,
+        "latency_ms": 81.49,
         "planned_trajectory": [
           {
             "x": 16.40770999970218,
@@ -10864,7 +10864,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1377
         },
-        "latency_ms": 0.94,
+        "latency_ms": 64.62,
         "planned_trajectory": [
           {
             "x": 16.40770999970218,
@@ -11317,7 +11317,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1365
         },
-        "latency_ms": 0.43,
+        "latency_ms": 7.12,
         "planned_trajectory": [
           {
             "x": 17.686847467457827,
@@ -11765,7 +11765,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 1.3822
         },
-        "latency_ms": 7.62,
+        "latency_ms": 112.56,
         "planned_trajectory": [
           {
             "x": 17.78843621902558,
@@ -12243,7 +12243,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.8842
         },
-        "latency_ms": 1.12,
+        "latency_ms": 33.17,
         "planned_trajectory": [
           {
             "x": 18.17676506390216,
@@ -12716,7 +12716,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.8862
         },
-        "latency_ms": 0.18,
+        "latency_ms": 5.14,
         "planned_trajectory": [
           {
             "x": 18.56463472178105,
@@ -13184,7 +13184,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.8883
         },
-        "latency_ms": 0.14,
+        "latency_ms": 214.18,
         "planned_trajectory": [
           {
             "x": 19.34129706472663,
@@ -13642,7 +13642,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.8897
         },
-        "latency_ms": 0.13,
+        "latency_ms": 11.16,
         "planned_trajectory": [
           {
             "x": 19.730967905464503,
@@ -14095,7 +14095,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.7673
         },
-        "latency_ms": 0.19,
+        "latency_ms": 21.61,
         "planned_trajectory": [
           {
             "x": 20.514216859770077,
@@ -14538,7 +14538,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.6563
         },
-        "latency_ms": 0.14,
+        "latency_ms": 47.97,
         "planned_trajectory": [
           {
             "x": 20.907924824920155,
@@ -14976,7 +14976,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.5655
         },
-        "latency_ms": 1.47,
+        "latency_ms": 33.97,
         "planned_trajectory": [
           {
             "x": 21.3029518874221,
@@ -15409,7 +15409,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.4909
         },
-        "latency_ms": 0.34,
+        "latency_ms": 1.0,
         "planned_trajectory": [
           {
             "x": 21.699165170991645,
@@ -15837,7 +15837,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.4301
         },
-        "latency_ms": 0.45,
+        "latency_ms": 18.33,
         "planned_trajectory": [
           {
             "x": 22.09639661167657,
@@ -16260,7 +16260,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 1.1362
         },
-        "latency_ms": 9.86,
+        "latency_ms": 139.18,
         "planned_trajectory": [
           {
             "x": 22.72430318581477,
@@ -16738,7 +16738,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.6603
         },
-        "latency_ms": 1.74,
+        "latency_ms": 7.08,
         "planned_trajectory": [
           {
             "x": 22.88373839426731,
@@ -17211,7 +17211,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.5662
         },
-        "latency_ms": 0.85,
+        "latency_ms": 18.38,
         "planned_trajectory": [
           {
             "x": 23.202933346767455,
@@ -17674,7 +17674,7 @@
           "risk_field_cost": 0.0001,
           "total_cost": 0.4896
         },
-        "latency_ms": 0.38,
+        "latency_ms": 45.05,
         "planned_trajectory": [
           {
             "x": 23.522456773311806,
@@ -18127,7 +18127,7 @@
           "risk_field_cost": 0.0001,
           "total_cost": 0.4264
         },
-        "latency_ms": 0.72,
+        "latency_ms": 63.69,
         "planned_trajectory": [
           {
             "x": 23.842203926774115,
@@ -18570,7 +18570,7 @@
           "risk_field_cost": 0.0003,
           "total_cost": 0.3751
         },
-        "latency_ms": 0.45,
+        "latency_ms": 5.77,
         "planned_trajectory": [
           {
             "x": 24.16209183850116,
@@ -19003,7 +19003,7 @@
           "risk_field_cost": 0.0004,
           "total_cost": 0.3331
         },
-        "latency_ms": 0.6,
+        "latency_ms": 141.67,
         "planned_trajectory": [
           {
             "x": 24.3220680772274,
@@ -19431,7 +19431,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.8345
         },
-        "latency_ms": 6.54,
+        "latency_ms": 126.07,
         "planned_trajectory": [
           {
             "x": 24.82099710049008,
@@ -19909,7 +19909,7 @@
           "risk_field_cost": 0.001,
           "total_cost": 0.3534
         },
-        "latency_ms": 0.38,
+        "latency_ms": 34.66,
         "planned_trajectory": [
           {
             "x": 24.82099710049008,
@@ -20387,7 +20387,7 @@
           "risk_field_cost": 0.0017,
           "total_cost": 0.3159
         },
-        "latency_ms": 0.45,
+        "latency_ms": 14.74,
         "planned_trajectory": [
           {
             "x": 25.060977951112,
@@ -20850,7 +20850,7 @@
           "risk_field_cost": 0.0018,
           "total_cost": 0.2891
         },
-        "latency_ms": 0.67,
+        "latency_ms": 66.64,
         "planned_trajectory": [
           {
             "x": 25.220954416362357,
@@ -21303,7 +21303,7 @@
           "risk_field_cost": 0.0027,
           "total_cost": 0.2845
         },
-        "latency_ms": 0.25,
+        "latency_ms": 82.97,
         "planned_trajectory": [
           {
             "x": 25.380920998790668,
@@ -21746,7 +21746,7 @@
           "risk_field_cost": 0.004,
           "total_cost": 0.2684
         },
-        "latency_ms": 0.91,
+        "latency_ms": 50.21,
         "planned_trajectory": [
           {
             "x": 25.54087715297607,
@@ -22179,7 +22179,7 @@
           "risk_field_cost": 0.0039,
           "total_cost": 0.2411
         },
-        "latency_ms": 1.44,
+        "latency_ms": 1.52,
         "planned_trajectory": [
           {
             "x": 25.700822733716223,
@@ -22602,7 +22602,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.7355
         },
-        "latency_ms": 9.51,
+        "latency_ms": 120.69,
         "planned_trajectory": [
           {
             "x": 26.0,
@@ -23080,7 +23080,7 @@
           "risk_field_cost": 0.0079,
           "total_cost": 0.3423
         },
-        "latency_ms": 0.99,
+        "latency_ms": 17.63,
         "planned_trajectory": [
           {
             "x": 26.0,
@@ -23558,7 +23558,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.703
         },
-        "latency_ms": 6.34,
+        "latency_ms": 46.52,
         "planned_trajectory": [
           {
             "x": 26.254,
@@ -24036,7 +24036,7 @@
           "risk_field_cost": 0.01,
           "total_cost": 0.3095
         },
-        "latency_ms": 0.23,
+        "latency_ms": 6.56,
         "planned_trajectory": [
           {
             "x": 26.254,
@@ -24514,7 +24514,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6807
         },
-        "latency_ms": 6.37,
+        "latency_ms": 162.54,
         "planned_trajectory": [
           {
             "x": 26.463,
@@ -24992,7 +24992,7 @@
           "risk_field_cost": 0.0102,
           "total_cost": 0.286
         },
-        "latency_ms": 0.16,
+        "latency_ms": 35.24,
         "planned_trajectory": [
           {
             "x": 26.463,
@@ -25470,7 +25470,7 @@
           "risk_field_cost": 0.0096,
           "total_cost": 0.2713
         },
-        "latency_ms": 0.17,
+        "latency_ms": 0.82,
         "planned_trajectory": [
           {
             "x": 26.463,
@@ -25948,7 +25948,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6591
         },
-        "latency_ms": 6.01,
+        "latency_ms": 105.93,
         "planned_trajectory": [
           {
             "x": 26.711,
@@ -26426,7 +26426,7 @@
           "risk_field_cost": 0.0101,
           "total_cost": 0.2636
         },
-        "latency_ms": 0.61,
+        "latency_ms": 4.89,
         "planned_trajectory": [
           {
             "x": 26.711,
@@ -26904,7 +26904,7 @@
           "risk_field_cost": 0.0084,
           "total_cost": 0.2511
         },
-        "latency_ms": 0.88,
+        "latency_ms": 2.88,
         "planned_trajectory": [
           {
             "x": 26.711,
@@ -27382,7 +27382,7 @@
           "risk_field_cost": 0.008,
           "total_cost": 0.2539
         },
-        "latency_ms": 1.42,
+        "latency_ms": 33.09,
         "planned_trajectory": [
           {
             "x": 26.711,
@@ -27860,7 +27860,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6441
         },
-        "latency_ms": 7.29,
+        "latency_ms": 34.42,
         "planned_trajectory": [
           {
             "x": 26.948,
@@ -28338,7 +28338,7 @@
           "risk_field_cost": 0.0118,
           "total_cost": 0.2494
         },
-        "latency_ms": 0.37,
+        "latency_ms": 29.69,
         "planned_trajectory": [
           {
             "x": 26.948,
@@ -28816,7 +28816,7 @@
           "risk_field_cost": 0.0072,
           "total_cost": 0.2368
         },
-        "latency_ms": 0.28,
+        "latency_ms": 67.53,
         "planned_trajectory": [
           {
             "x": 26.948,
@@ -29294,7 +29294,7 @@
           "risk_field_cost": 0.0083,
           "total_cost": 0.2434
         },
-        "latency_ms": 0.26,
+        "latency_ms": 81.16,
         "planned_trajectory": [
           {
             "x": 26.948,
@@ -29772,7 +29772,7 @@
           "risk_field_cost": 0.0108,
           "total_cost": 0.2411
         },
-        "latency_ms": 0.32,
+        "latency_ms": 16.31,
         "planned_trajectory": [
           {
             "x": 26.948,
@@ -30250,7 +30250,7 @@
           "risk_field_cost": 0.0099,
           "total_cost": 0.2423
         },
-        "latency_ms": 0.37,
+        "latency_ms": 1.15,
         "planned_trajectory": [
           {
             "x": 26.948,
@@ -30728,7 +30728,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6351
         },
-        "latency_ms": 6.34,
+        "latency_ms": 48.94,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -31206,7 +31206,7 @@
           "risk_field_cost": 0.0127,
           "total_cost": 0.2402
         },
-        "latency_ms": 0.39,
+        "latency_ms": 11.91,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -31684,7 +31684,7 @@
           "risk_field_cost": 0.0114,
           "total_cost": 0.2327
         },
-        "latency_ms": 0.45,
+        "latency_ms": 1.71,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -32162,7 +32162,7 @@
           "risk_field_cost": 0.0109,
           "total_cost": 0.2391
         },
-        "latency_ms": 0.65,
+        "latency_ms": 15.26,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -32640,7 +32640,7 @@
           "risk_field_cost": 0.0123,
           "total_cost": 0.2369
         },
-        "latency_ms": 0.17,
+        "latency_ms": 29.05,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -33118,7 +33118,7 @@
           "risk_field_cost": 0.0122,
           "total_cost": 0.24
         },
-        "latency_ms": 0.16,
+        "latency_ms": 4.82,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -33596,7 +33596,7 @@
           "risk_field_cost": 0.0104,
           "total_cost": 0.236
         },
-        "latency_ms": 0.16,
+        "latency_ms": 1.58,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -33714,7 +33714,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2273
         },
-        "latency_ms": 0.12,
+        "latency_ms": 3.07,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -34192,7 +34192,7 @@
           "risk_field_cost": 0.014,
           "total_cost": 0.2394
         },
-        "latency_ms": 0.12,
+        "latency_ms": 2.73,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -34670,7 +34670,7 @@
           "risk_field_cost": 0.0136,
           "total_cost": 0.2404
         },
-        "latency_ms": 0.11,
+        "latency_ms": 5.31,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -35148,7 +35148,7 @@
           "risk_field_cost": 0.012,
           "total_cost": 0.2383
         },
-        "latency_ms": 0.24,
+        "latency_ms": 2.93,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -35626,7 +35626,7 @@
           "risk_field_cost": 0.0108,
           "total_cost": 0.2376
         },
-        "latency_ms": 0.62,
+        "latency_ms": 2.76,
         "planned_trajectory": [
           {
             "x": 27.166,
@@ -36104,7 +36104,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6312
         },
-        "latency_ms": 7.23,
+        "latency_ms": 32.37,
         "planned_trajectory": [
           {
             "x": 27.353,
@@ -36582,7 +36582,7 @@
           "risk_field_cost": 0.0153,
           "total_cost": 0.2363
         },
-        "latency_ms": 0.22,
+        "latency_ms": 0.62,
         "planned_trajectory": [
           {
             "x": 27.353,
@@ -37060,7 +37060,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6332
         },
-        "latency_ms": 6.74,
+        "latency_ms": 34.81,
         "planned_trajectory": [
           {
             "x": 27.44664455567757,
@@ -37538,7 +37538,7 @@
           "risk_field_cost": 0.0124,
           "total_cost": 0.1459
         },
-        "latency_ms": 1.61,
+        "latency_ms": 5.3,
         "planned_trajectory": [
           {
             "x": 27.44664455567757,
@@ -38016,7 +38016,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6313
         },
-        "latency_ms": 6.51,
+        "latency_ms": 34.74,
         "planned_trajectory": [
           {
             "x": 27.463645985939454,
@@ -38494,7 +38494,7 @@
           "risk_field_cost": 0.0118,
           "total_cost": 0.1433
         },
-        "latency_ms": 0.15,
+        "latency_ms": 0.71,
         "planned_trajectory": [
           {
             "x": 27.463645985939454,
@@ -38972,7 +38972,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6299
         },
-        "latency_ms": 6.74,
+        "latency_ms": 71.27,
         "planned_trajectory": [
           {
             "x": 27.490650259365818,
@@ -39450,7 +39450,7 @@
           "risk_field_cost": 0.013,
           "total_cost": 0.1431
         },
-        "latency_ms": 0.22,
+        "latency_ms": 22.31,
         "planned_trajectory": [
           {
             "x": 27.490650259365818,
@@ -39928,7 +39928,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6289
         },
-        "latency_ms": 6.27,
+        "latency_ms": 43.53,
         "planned_trajectory": [
           {
             "x": 27.52665450676065,
@@ -40406,7 +40406,7 @@
           "risk_field_cost": 0.0136,
           "total_cost": 0.1427
         },
-        "latency_ms": 0.38,
+        "latency_ms": 27.21,
         "planned_trajectory": [
           {
             "x": 27.52665450676065,
@@ -40884,7 +40884,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.7618
         },
-        "latency_ms": 7.2,
+        "latency_ms": 130.81,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -41362,7 +41362,7 @@
           "risk_field_cost": 0.0167,
           "total_cost": 0.2786
         },
-        "latency_ms": 0.42,
+        "latency_ms": 34.96,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -41840,7 +41840,7 @@
           "risk_field_cost": 0.0175,
           "total_cost": 0.2795
         },
-        "latency_ms": 0.17,
+        "latency_ms": 121.89,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -42318,7 +42318,7 @@
           "risk_field_cost": 0.0262,
           "total_cost": 0.2884
         },
-        "latency_ms": 0.34,
+        "latency_ms": 79.33,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -42796,7 +42796,7 @@
           "risk_field_cost": 0.0301,
           "total_cost": 0.2925
         },
-        "latency_ms": 0.29,
+        "latency_ms": 14.8,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -43274,7 +43274,7 @@
           "risk_field_cost": 0.0367,
           "total_cost": 0.2994
         },
-        "latency_ms": 0.25,
+        "latency_ms": 15.05,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -43752,7 +43752,7 @@
           "risk_field_cost": 0.0358,
           "total_cost": 0.2988
         },
-        "latency_ms": 1.17,
+        "latency_ms": 0.87,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -44230,7 +44230,7 @@
           "risk_field_cost": 0.0468,
           "total_cost": 0.3101
         },
-        "latency_ms": 0.25,
+        "latency_ms": 201.11,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -44708,7 +44708,7 @@
           "risk_field_cost": 0.0507,
           "total_cost": 0.3144
         },
-        "latency_ms": 0.17,
+        "latency_ms": 48.06,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -45186,7 +45186,7 @@
           "risk_field_cost": 0.0587,
           "total_cost": 0.3227
         },
-        "latency_ms": 0.36,
+        "latency_ms": 86.69,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -45664,7 +45664,7 @@
           "risk_field_cost": 0.0763,
           "total_cost": 0.3409
         },
-        "latency_ms": 0.61,
+        "latency_ms": 62.53,
         "planned_trajectory": [
           {
             "x": 28.286601294764314,
@@ -46142,7 +46142,7 @@
           "risk_field_cost": 0.0985,
           "total_cost": 0.3633
         },
-        "latency_ms": 0.34,
+        "latency_ms": 0.84,
         "planned_trajectory": [
           {
             "x": 29.083954242618788,
@@ -46615,7 +46615,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.7595
         },
-        "latency_ms": 9.18,
+        "latency_ms": 329.74,
         "planned_trajectory": [
           {
             "x": 29.565973152196303,
@@ -47093,7 +47093,7 @@
           "risk_field_cost": 0.1267,
           "total_cost": 0.3867
         },
-        "latency_ms": 0.69,
+        "latency_ms": 20.99,
         "planned_trajectory": [
           {
             "x": 29.565973152196303,
@@ -47211,7 +47211,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2607
         },
-        "latency_ms": 0.16,
+        "latency_ms": 12.39,
         "planned_trajectory": [
           {
             "x": 29.565973152196303,
@@ -47329,7 +47329,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2464
         },
-        "latency_ms": 0.11,
+        "latency_ms": 0.69,
         "planned_trajectory": [
           {
             "x": 29.565973152196303,
@@ -47447,7 +47447,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2191
         },
-        "latency_ms": 0.1,
+        "latency_ms": 22.47,
         "planned_trajectory": [
           {
             "x": 29.565973152196303,
@@ -47565,7 +47565,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1969
         },
-        "latency_ms": 0.08,
+        "latency_ms": 0.67,
         "planned_trajectory": [
           {
             "x": 30.364708954018305,
@@ -47678,7 +47678,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1791
         },
-        "latency_ms": 0.3,
+        "latency_ms": 0.7,
         "planned_trajectory": [
           {
             "x": 30.364708954018305,
@@ -47791,7 +47791,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1646
         },
-        "latency_ms": 0.43,
+        "latency_ms": 0.61,
         "planned_trajectory": [
           {
             "x": 30.364708954018305,
@@ -47904,7 +47904,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1526
         },
-        "latency_ms": 0.16,
+        "latency_ms": 8.9,
         "planned_trajectory": [
           {
             "x": 31.16405869596461,
@@ -48012,7 +48012,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1432
         },
-        "latency_ms": 0.18,
+        "latency_ms": 3.98,
         "planned_trajectory": [
           {
             "x": 31.16405869596461,
@@ -48120,7 +48120,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1353
         },
-        "latency_ms": 0.4,
+        "latency_ms": 0.59,
         "planned_trajectory": [
           {
             "x": 31.96380373131582,
@@ -48223,7 +48223,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1293
         },
-        "latency_ms": 0.31,
+        "latency_ms": 4.62,
         "planned_trajectory": [
           {
             "x": 31.96380373131582,
@@ -48326,7 +48326,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.7446
         },
-        "latency_ms": 3.04,
+        "latency_ms": 26.93,
         "planned_trajectory": [
           {
             "x": 33.616642321112955,
@@ -48444,7 +48444,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2455
         },
-        "latency_ms": 0.21,
+        "latency_ms": 4.9,
         "planned_trajectory": [
           {
             "x": 33.616642321112955,
@@ -48562,7 +48562,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2466
         },
-        "latency_ms": 1.29,
+        "latency_ms": 0.38,
         "planned_trajectory": [
           {
             "x": 33.616642321112955,
@@ -48680,7 +48680,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2477
         },
-        "latency_ms": 0.15,
+        "latency_ms": 0.45,
         "planned_trajectory": [
           {
             "x": 33.616642321112955,
@@ -48798,7 +48798,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2488
         },
-        "latency_ms": 0.1,
+        "latency_ms": 3.95,
         "planned_trajectory": [
           {
             "x": 33.616642321112955,
@@ -48916,7 +48916,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2503
         },
-        "latency_ms": 0.43,
+        "latency_ms": 0.56,
         "planned_trajectory": [
           {
             "x": 35.025780070229374,
@@ -49029,7 +49029,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2516
         },
-        "latency_ms": 0.32,
+        "latency_ms": 26.07,
         "planned_trajectory": [
           {
             "x": 35.025780070229374,
@@ -49142,7 +49142,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2529
         },
-        "latency_ms": 0.58,
+        "latency_ms": 0.75,
         "planned_trajectory": [
           {
             "x": 35.025780070229374,
@@ -49255,7 +49255,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2542
         },
-        "latency_ms": 0.48,
+        "latency_ms": 1.25,
         "planned_trajectory": [
           {
             "x": 35.025780070229374,
@@ -49368,7 +49368,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2513
         },
-        "latency_ms": 1.48,
+        "latency_ms": 4.68,
         "planned_trajectory": [
           {
             "x": 36.463807664993396,
@@ -49476,7 +49476,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2527
         },
-        "latency_ms": 0.81,
+        "latency_ms": 0.61,
         "planned_trajectory": [
           {
             "x": 36.463807664993396,
@@ -49584,7 +49584,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2542
         },
-        "latency_ms": 0.32,
+        "latency_ms": 0.63,
         "planned_trajectory": [
           {
             "x": 36.463807664993396,
@@ -49692,7 +49692,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.7271
         },
-        "latency_ms": 3.36,
+        "latency_ms": 17.33,
         "planned_trajectory": [
           {
             "x": 38.45543445327823,
@@ -49810,7 +49810,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2288
         },
-        "latency_ms": 0.37,
+        "latency_ms": 2.13,
         "planned_trajectory": [
           {
             "x": 38.45543445327823,
@@ -49928,7 +49928,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2305
         },
-        "latency_ms": 0.43,
+        "latency_ms": 0.56,
         "planned_trajectory": [
           {
             "x": 38.45543445327823,
@@ -50046,7 +50046,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2322
         },
-        "latency_ms": 0.87,
+        "latency_ms": 3.49,
         "planned_trajectory": [
           {
             "x": 38.45543445327823,
@@ -50164,7 +50164,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2312
         },
-        "latency_ms": 0.13,
+        "latency_ms": 2.72,
         "planned_trajectory": [
           {
             "x": 40.03219143059196,
@@ -50277,7 +50277,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2329
         },
-        "latency_ms": 0.09,
+        "latency_ms": 0.65,
         "planned_trajectory": [
           {
             "x": 40.03219143059196,
@@ -50390,7 +50390,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2347
         },
-        "latency_ms": 0.08,
+        "latency_ms": 0.58,
         "planned_trajectory": [
           {
             "x": 40.03219143059196,
@@ -50503,7 +50503,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2345
         },
-        "latency_ms": 0.07,
+        "latency_ms": 0.58,
         "planned_trajectory": [
           {
             "x": 41.63106671150333,
@@ -50611,7 +50611,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2363
         },
-        "latency_ms": 1.2,
+        "latency_ms": 3.47,
         "planned_trajectory": [
           {
             "x": 41.63106671150333,
@@ -50719,7 +50719,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.2136
         },
-        "latency_ms": 0.2,
+        "latency_ms": 0.5,
         "planned_trajectory": [
           {
             "x": 43.228505387968895,
@@ -50822,7 +50822,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1892
         },
-        "latency_ms": 1.27,
+        "latency_ms": 0.56,
         "planned_trajectory": [
           {
             "x": 43.228505387968895,
@@ -50925,7 +50925,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1698
         },
-        "latency_ms": 0.3,
+        "latency_ms": 3.95,
         "planned_trajectory": [
           {
             "x": 43.228505387968895,
@@ -51028,7 +51028,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.6106
         },
-        "latency_ms": 3.21,
+        "latency_ms": 18.27,
         "planned_trajectory": [
           {
             "x": 45.65343793427018,
@@ -51146,7 +51146,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1157
         },
-        "latency_ms": 0.41,
+        "latency_ms": 2.6,
         "planned_trajectory": [
           {
             "x": 45.65343793427018,
@@ -51264,7 +51264,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.1057
         },
-        "latency_ms": 0.37,
+        "latency_ms": 0.62,
         "planned_trajectory": [
           {
             "x": 45.65343793427018,
@@ -51382,7 +51382,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.098
         },
-        "latency_ms": 1.18,
+        "latency_ms": 100.33,
         "planned_trajectory": [
           {
             "x": 47.25128952025499,
@@ -51495,7 +51495,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.092
         },
-        "latency_ms": 0.21,
+        "latency_ms": 109.16,
         "planned_trajectory": [
           {
             "x": 47.25128952025499,
@@ -51608,7 +51608,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.087
         },
-        "latency_ms": 0.99,
+        "latency_ms": 81.17,
         "planned_trajectory": [
           {
             "x": 48.849458778908435,
@@ -51716,7 +51716,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0836
         },
-        "latency_ms": 0.24,
+        "latency_ms": 45.51,
         "planned_trajectory": [
           {
             "x": 48.849458778908435,
@@ -51824,7 +51824,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0806
         },
-        "latency_ms": 0.63,
+        "latency_ms": 0.75,
         "planned_trajectory": [
           {
             "x": 50.448853078860566,
@@ -51927,7 +51927,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.079
         },
-        "latency_ms": 0.39,
+        "latency_ms": 3.94,
         "planned_trajectory": [
           {
             "x": 50.448853078860566,
@@ -52030,7 +52030,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.078
         },
-        "latency_ms": 0.23,
+        "latency_ms": 0.76,
         "planned_trajectory": [
           {
             "x": 50.448853078860566,
@@ -52133,7 +52133,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0771
         },
-        "latency_ms": 0.79,
+        "latency_ms": 27.09,
         "planned_trajectory": [
           {
             "x": 52.04883423819771,
@@ -52231,7 +52231,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0771
         },
-        "latency_ms": 0.17,
+        "latency_ms": 30.02,
         "planned_trajectory": [
           {
             "x": 52.04883423819771,
@@ -52329,7 +52329,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.5486
         },
-        "latency_ms": 4.01,
+        "latency_ms": 35.49,
         "planned_trajectory": [
           {
             "x": 54.4469735990019,
@@ -52447,7 +52447,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.051
         },
-        "latency_ms": 0.23,
+        "latency_ms": 69.25,
         "planned_trajectory": [
           {
             "x": 54.4469735990019,
@@ -52565,7 +52565,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0519
         },
-        "latency_ms": 0.22,
+        "latency_ms": 55.3,
         "planned_trajectory": [
           {
             "x": 54.4469735990019,
@@ -52683,7 +52683,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.053
         },
-        "latency_ms": 0.67,
+        "latency_ms": 0.8,
         "planned_trajectory": [
           {
             "x": 56.0469605929992,
@@ -52796,7 +52796,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0543
         },
-        "latency_ms": 0.33,
+        "latency_ms": 102.49,
         "planned_trajectory": [
           {
             "x": 56.0469605929992,
@@ -52909,7 +52909,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0557
         },
-        "latency_ms": 0.12,
+        "latency_ms": 0.79,
         "planned_trajectory": [
           {
             "x": 57.64690315627301,
@@ -53017,7 +53017,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0572
         },
-        "latency_ms": 0.13,
+        "latency_ms": 29.51,
         "planned_trajectory": [
           {
             "x": 57.64690315627301,
@@ -53125,7 +53125,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0586
         },
-        "latency_ms": 0.11,
+        "latency_ms": 33.28,
         "planned_trajectory": [
           {
             "x": 59.24685188069155,
@@ -53228,7 +53228,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0602
         },
-        "latency_ms": 0.14,
+        "latency_ms": 0.72,
         "planned_trajectory": [
           {
             "x": 59.24685188069155,
@@ -53331,7 +53331,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0617
         },
-        "latency_ms": 0.21,
+        "latency_ms": 29.72,
         "planned_trajectory": [
           {
             "x": 60.84683401231549,
@@ -53429,7 +53429,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0633
         },
-        "latency_ms": 0.12,
+        "latency_ms": 9.68,
         "planned_trajectory": [
           {
             "x": 60.84683401231549,
@@ -53527,7 +53527,7 @@
           "risk_field_cost": 0.0,
           "total_cost": 0.0649
         },
-        "latency_ms": 0.96,
+        "latency_ms": 0.91,
         "planned_trajectory": [
           {
             "x": 62.446833272574146,
@@ -53620,7 +53620,7 @@
           "risk_field_cost": 0.3,
           "total_cost": 0.541
         },
-        "latency_ms": 3.35,
+        "latency_ms": 146.61,
         "planned_trajectory": [
           {
             "x": 63.80099120865343,
@@ -53712,7 +53712,8 @@
     "max_jerk_m_s3": 11.667,
     "mean_jerk_m_s3": 0.944,
     "replan_count": 23,
-    "p95_latency_ms": 7.2,
+    "p95_latency_ms": 131.23,
     "failure_tag": "PLANNING"
-  }
+  },
+  "events": []
 }

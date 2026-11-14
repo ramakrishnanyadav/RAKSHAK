@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Compass, Map, PlayCircle, BarChart3, AlertTriangle, ArrowLeft, Home } from 'lucide-react';
+import { Compass, Map, PlayCircle, BarChart3, AlertTriangle, ArrowLeft, Home, Cpu, Box, Columns } from 'lucide-react';
 import { useI18n } from '../context/I18nContext';
 
 export const NotFound: React.FC = () => {
@@ -14,8 +14,11 @@ export const NotFound: React.FC = () => {
 
   const directLinks = [
     { to: '/app', label: 'Studio Dashboard', desc: 'Overview of runs, research metrics, and active simulations', icon: <Home size={18} /> },
-    { to: '/app/scenarios', label: 'Benchmark Scenarios', desc: 'Browse 5 canonical Indian road scenarios', icon: <Map size={18} /> },
-    { to: '/app/runs', label: 'Replay Viewer', desc: '2D top-down canvas simulation with conformal cones', icon: <PlayCircle size={18} /> },
+    { to: '/app/matlab', label: 'MATLAB SIL Studio', desc: 'Real 3D vehicle engineering workstation & Simulink validation', icon: <Cpu size={18} /> },
+    { to: '/app/workstation', label: '3D Workstation', desc: 'Interactive Three.js multi-camera autonomous vehicle replay', icon: <Box size={18} /> },
+    { to: '/app/scenarios', label: 'Benchmark Scenarios', desc: 'Browse 8 canonical Indian road scenarios', icon: <Map size={18} /> },
+    { to: '/app/runs', label: 'Experiment Directory', desc: 'Filter, inspect, and replay recorded simulation runs', icon: <PlayCircle size={18} /> },
+    { to: '/app/compare', label: 'Comparative Replay', desc: 'Multi-planner head-to-head trajectory analysis', icon: <Columns size={18} /> },
     { to: '/app/benchmark', label: 'Ablation Benchmarks', desc: 'Statistical comparison with 95% bootstrap CIs', icon: <BarChart3 size={18} /> },
     { to: '/app/failures', label: 'Failure Explorer', desc: 'Attribution analysis across perception, prediction & replan', icon: <AlertTriangle size={18} /> },
   ];
@@ -25,7 +28,7 @@ export const NotFound: React.FC = () => {
       style={{
         minHeight: '80vh',
         padding: '3rem 1.5rem',
-        maxWidth: '760px',
+        maxWidth: '820px',
         margin: '0 auto',
         display: 'flex',
         flexDirection: 'column',
@@ -61,8 +64,8 @@ export const NotFound: React.FC = () => {
         {t('not_found_title')}
       </h1>
 
-      <p style={{ color: '#94a3b8', fontSize: '1rem', maxWidth: '520px', lineHeight: 1.6, marginBottom: '2rem' }}>
-        {t('not_found_desc')}
+      <p style={{ color: '#94a3b8', fontSize: '1rem', maxWidth: '560px', lineHeight: 1.6, marginBottom: '2rem' }}>
+        The requested studio route does not exist. Use the quick links below to jump to any active workstation or return to the dashboard.
       </p>
 
       {/* Directory of helpful routes */}
@@ -70,7 +73,7 @@ export const NotFound: React.FC = () => {
         style={{
           width: '100%',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
           gap: '1rem',
           textAlign: 'left',
           marginBottom: '2rem',
@@ -89,7 +92,20 @@ export const NotFound: React.FC = () => {
               gap: '0.75rem',
               alignItems: 'flex-start',
               border: '1px solid var(--border-default)',
-              transition: 'var(--transition-fast)',
+              transition: 'all 0.2s ease',
+              borderRadius: '8px',
+              backgroundColor: 'rgba(15, 23, 42, 0.65)',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.5)';
+              e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.85)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-default)';
+              e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.65)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
             <div style={{ color: 'var(--accent-primary)', marginTop: '2px' }}>{link.icon}</div>
@@ -105,21 +121,43 @@ export const NotFound: React.FC = () => {
         ))}
       </div>
 
-      <Link
-        to="/app"
-        className="btn-primary"
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          padding: '0.75rem 1.5rem',
-          textDecoration: 'none',
-          minHeight: 'var(--touch-target-size)',
-        }}
-      >
-        <ArrowLeft size={16} />
-        <span>Return to Dashboard</span>
-      </Link>
+      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <Link
+          to="/app"
+          className="btn-primary"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            textDecoration: 'none',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '8px',
+            fontWeight: 600,
+            background: 'linear-gradient(135deg, #0284c7, #38bdf8)',
+            color: '#04111d',
+            cursor: 'pointer',
+          }}
+        >
+          <ArrowLeft size={16} />
+          {t('return_home')}
+        </Link>
+
+        <button
+          onClick={() => { window.location.href = '/app'; }}
+          className="btn-secondary"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '8px',
+            fontWeight: 600,
+            cursor: 'pointer',
+          }}
+        >
+          Reload Dashboard Directly
+        </button>
+      </div>
     </div>
   );
 };

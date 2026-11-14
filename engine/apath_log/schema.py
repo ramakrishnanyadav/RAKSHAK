@@ -193,3 +193,4 @@ class RunLog(BaseModel):
     world: WorldMap
     frames: List[Frame]
     metrics: RunMetrics
+    events: List[Dict[str, Any]] = Field(default_factory=list)

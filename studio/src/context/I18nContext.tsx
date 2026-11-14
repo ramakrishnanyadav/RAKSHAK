@@ -41,10 +41,14 @@ const DICTIONARY: Translations = {
   nav_runs: { en: 'Replay Viewer', hi: 'रीप्ले दर्शक', te: 'రీప్లే వ్యూయర్' },
   nav_compare: { en: 'Compare', hi: 'तुलना करें', te: 'పోల్చండి' },
   nav_benchmark: { en: 'Strategy Benchmark', hi: 'बेंचमार्क मूल्यांकन', te: 'బెంచ్‌మార్క్' },
-  nav_failures: { en: 'Failure Analysis', hi: 'विफलता अन्वेषक', te: 'వైఫల్యాల విశ్లేషణ' },
-  nav_reports: { en: 'Research Reports', hi: 'अनुसंधान रिपोर्ट', te: 'పరిశోధన నివేదికలు' },
+  nav_failures: { en: 'What Went Wrong', hi: 'क्या गलत हुआ', te: 'ఏం తప్పు జరిగింది' },
+  nav_reports: { en: 'Validation Reports', hi: 'सत्यापन रिपोर्ट', te: 'ధృవీకరణ నివేదికలు' },
   nav_settings: { en: 'Settings', hi: 'सेटिंग्स', te: 'సెట్టింగ్‌లు' },
   nav_admin: { en: 'Administration', hi: 'प्रशासन', te: 'నిర్వాహణ' },
+  vehicle_status: { en: 'Vehicle Status', hi: 'वाहन की स्थिति', te: 'వాహన స్థితి' },
+  closest_distance: { en: 'Closest Distance', hi: 'निकटतम दूरी', te: 'సమీప దూరం' },
+  test_results: { en: 'Test Results', hi: 'परीक्षण परिणाम', te: 'పరీక్ష ఫలితాలు' },
+  test_history: { en: 'Test History', hi: 'परीक्षण इतिहास', te: 'పరీక్ష చరిత్ర' },
 
   // App Title & Tagline
   app_title: { en: 'ADAPTIVE-PATH Studio', hi: 'अडैप्टिव-पाथ स्टूडियो', te: 'అడాప్టివ్-పాత్ స్టూడియో' },
@@ -107,6 +111,11 @@ const DICTIONARY: Translations = {
     en: 'The requested studio route does not exist. Use the navigation links below.',
     hi: 'अनुरोधित पृष्ठ मौजूद नहीं है। नीचे दिए गए लिंक का उपयोग करें।',
     te: 'అభ్యర్థించిన పేజీ లేదు. దయచేసి క్రింది లింక్‌లను ఉపయోగించండి.',
+  },
+  return_home: {
+    en: 'Return to Dashboard',
+    hi: 'डैशबोर्ड पर लौटें',
+    te: 'డాష్‌బోర్డ్‌కు తిరిగి వెళ్లండి',
   },
 };
 

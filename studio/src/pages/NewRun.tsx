@@ -209,10 +209,23 @@ export const NewRun: React.FC = () => {
         navigate(`/app/runs/${resp.id}`);
       }, 700);
     } catch (err: any) {
-      const message = err?.message || 'Unable to connect to simulation engine. Verify backend is running.';
-      setErrorMsg(`Simulation Launch Failed: ${message}`);
+      const code = err?.code || '';
+      const msg = err?.message || '';
+      let failureReason = '';
+
+      if (code === 'ROLE_PERMISSION_DENIED' || code === 'OWNERSHIP_DENIED' || msg.includes('not permitted')) {
+        failureReason = 'Simulation launch is blocked by the current access policy.';
+      } else if (msg.includes('Failed to fetch') || msg.includes('Network') || code === 'HTTP_502' || code === 'HTTP_503') {
+        failureReason = 'Simulation service is currently unavailable. Verify backend is running.';
+      } else if (code === 'VALIDATION_ERROR' || msg.includes('Invalid') || msg.includes('validation')) {
+        failureReason = `Invalid configuration: ${msg}`;
+      } else {
+        failureReason = `Simulation Launch Failed: ${msg || 'Simulation service is currently unavailable.'}`;
+      }
+
+      setErrorMsg(failureReason);
       setStatusMessage(null);
-      announce(`Simulation launch failed: ${message}`, 'assertive');
+      announce(failureReason, 'assertive');
     } finally {
       setIsSubmitting(false);
     }
@@ -459,7 +472,7 @@ export const NewRun: React.FC = () => {
                 Step 1: Choose a Road Environment
               </h2>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                5 Canonical Indian Road Scenarios
+                8 Canonical Indian Road Scenarios
               </span>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>

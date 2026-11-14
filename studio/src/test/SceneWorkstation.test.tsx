@@ -82,10 +82,11 @@ describe('SceneWorkstation Component', () => {
     expect(screen.getByText(/the only P3 success of 5 seeds/i)).toBeInTheDocument();
   });
 
-  it('renders Ego Risk (scalar, logged) telemetry card and unavailable sensor dashes', async () => {
+  it('renders Vehicle Status HUD with danger level, closest distance, and current action', async () => {
     render(<SceneWorkstation initialScenarioId="SCENARIO_5_CATTLE_CROSSING" />);
-    expect(screen.getByText(/EGO RISK \(SCALAR, LOGGED\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/UNAVAILABLE SENSORS/i)).toBeInTheDocument();
+    expect(screen.getByText(/Vehicle Status/i)).toBeInTheDocument();
+    expect(screen.getByText(/Danger Level/i)).toBeInTheDocument();
+    expect(screen.getByText(/Closest Distance/i)).toBeInTheDocument();
   });
 });
 

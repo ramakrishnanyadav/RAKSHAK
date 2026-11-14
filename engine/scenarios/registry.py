@@ -2,7 +2,7 @@
 Scenario Registry and Dataset Split Protocols.
 """
 
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional, Any
 from .definition import ScenarioConfig, ScenarioBuilder
 from .scenarios_impl import (
     VillageRoadScenario,
@@ -10,12 +10,101 @@ from .scenarios_impl import (
     HighwayMergeScenario,
     DenseMarketScenario,
     CattleCrossingScenario,
+    PotholeDamagedRoadScenario,
+    PedestrianCrossingScenario,
+    DenseMixedTrafficScenario,
+    MotorcycleCutInScenario,
+    HighwaySuddenBrakingScenario,
+    RoadworksObstructionScenario,
+    UncontrolledIntersectionScenario,
 )
 from engine.simulation.world import SimulationWorld
 from engine.apath_log.schema import EgoState
 
 
 SCENARIOS_CATALOG: Dict[str, ScenarioConfig] = {
+    # 8 Canonical Indian Road Scenario Families (Stage 4G.6)
+    "SCENARIO_01_POTHOLE_DAMAGED_ROAD": ScenarioConfig(
+        id="SCENARIO_01_POTHOLE_DAMAGED_ROAD",
+        name="01. Pothole & Damaged Road",
+        description="Narrow unmarked asphalt with road-surface potholes, degraded asphalt, and oncoming commercial traffic.",
+        target_distance_m=80.0,
+        timeout_s=16.0,
+        nominal_speed_m_s=7.0,
+        ego_start_v=6.5,
+        params={"hazard_type": "road_surface_potholes", "pothole_count": 3},
+    ),
+    "SCENARIO_02_PEDESTRIAN_CROSSING": ScenarioConfig(
+        id="SCENARIO_02_PEDESTRIAN_CROSSING",
+        name="02. Child / Pedestrian Crossing",
+        description="Indian urban residential street with parked vehicles; sudden occluded pedestrian stepping into path.",
+        target_distance_m=70.0,
+        timeout_s=14.0,
+        nominal_speed_m_s=6.5,
+        ego_start_v=6.5,
+        params={"hazard_type": "dynamic_pedestrian", "occlusion": True, "crossing_speed": 1.35},
+    ),
+    "SCENARIO_03_DENSE_MIXED_TRAFFIC": ScenarioConfig(
+        id="SCENARIO_03_DENSE_MIXED_TRAFFIC",
+        name="03. Dense Mixed Indian Traffic",
+        description="Narrow urban arterial with heterogeneous traffic: cars, auto-rickshaws, and swarming two-wheelers in tight gaps.",
+        target_distance_m=75.0,
+        timeout_s=15.0,
+        nominal_speed_m_s=6.0,
+        ego_start_v=6.0,
+        params={"hazard_type": "mixed_traffic", "actor_mix": ["auto_rickshaw", "two_wheeler", "car"]},
+    ),
+    "SCENARIO_04_MOTORCYCLE_CUT_IN": ScenarioConfig(
+        id="SCENARIO_04_MOTORCYCLE_CUT_IN",
+        name="04. Motorcycle Cut-In",
+        description="Multi-lane urban corridor with adjacent two-wheeler executing sharp cut-in ahead of ego, collapsing headway.",
+        target_distance_m=80.0,
+        timeout_s=15.0,
+        nominal_speed_m_s=7.5,
+        ego_start_v=7.0,
+        params={"hazard_type": "cut_in", "cut_in_time_s": 1.0},
+    ),
+    "SCENARIO_05_UNCONTROLLED_INTERSECTION": ScenarioConfig(
+        id="SCENARIO_05_UNCONTROLLED_INTERSECTION",
+        name="05. Uncontrolled Intersection",
+        description="Complex 4-arm Indian road junction without traffic signals, featuring cross-cutting auto-rickshaws and two-wheelers.",
+        target_distance_m=75.0,
+        timeout_s=15.0,
+        nominal_speed_m_s=7.0,
+        ego_start_v=6.0,
+        params={"hazard_type": "cross_traffic", "intersection_arms": 4},
+    ),
+    "SCENARIO_06_HIGHWAY_SUDDEN_BRAKING": ScenarioConfig(
+        id="SCENARIO_06_HIGHWAY_SUDDEN_BRAKING",
+        name="06. Highway Sudden Braking",
+        description="High-speed multi-lane corridor where leading vehicle performs sudden emergency deceleration to a halt.",
+        target_distance_m=100.0,
+        timeout_s=16.0,
+        nominal_speed_m_s=12.0,
+        ego_start_v=12.0,
+        params={"hazard_type": "sudden_brake", "lead_decel": -4.2},
+    ),
+    "SCENARIO_07_ROADWORKS_OBSTRUCTION": ScenarioConfig(
+        id="SCENARIO_07_ROADWORKS_OBSTRUCTION",
+        name="07. Roadworks & Lane Obstruction",
+        description="Partially blocked roadway with construction barricades, excavation trenches, and constrained single-lane bypass.",
+        target_distance_m=80.0,
+        timeout_s=16.0,
+        nominal_speed_m_s=6.0,
+        ego_start_v=6.0,
+        params={"hazard_type": "static_barricades", "bypass_width_m": 3.2},
+    ),
+    "SCENARIO_08_CATTLE_CROSSING": ScenarioConfig(
+        id="SCENARIO_08_CATTLE_CROSSING",
+        name="08. Sudden Cattle Crossing",
+        description="Rural road with bovine animal stepping into travel corridor and halting mid-lane, requiring detour or safe stop.",
+        target_distance_m=80.0,
+        timeout_s=16.0,
+        nominal_speed_m_s=7.5,
+        ego_start_v=7.0,
+        params={"hazard_type": "bovine_livestock", "halt_probability": 0.6},
+    ),
+    # Legacy Catalog Aliases for Backward Compatibility
     "SCENARIO_1_VILLAGE_ROAD": ScenarioConfig(
         id="SCENARIO_1_VILLAGE_ROAD",
         name="Unmarked Village Road",
@@ -97,11 +186,37 @@ SCENARIOS_CATALOG: Dict[str, ScenarioConfig] = {
 }
 
 SCENARIO_BUILDERS = {
+    # 8 Canonical
+    "SCENARIO_01_POTHOLE_DAMAGED_ROAD": PotholeDamagedRoadScenario,
+    "SCENARIO_02_PEDESTRIAN_CROSSING": PedestrianCrossingScenario,
+    "SCENARIO_03_DENSE_MIXED_TRAFFIC": DenseMixedTrafficScenario,
+    "SCENARIO_04_MOTORCYCLE_CUT_IN": MotorcycleCutInScenario,
+    "SCENARIO_05_UNCONTROLLED_INTERSECTION": UncontrolledIntersectionScenario,
+    "SCENARIO_06_HIGHWAY_SUDDEN_BRAKING": HighwaySuddenBrakingScenario,
+    "SCENARIO_07_ROADWORKS_OBSTRUCTION": RoadworksObstructionScenario,
+    "SCENARIO_08_CATTLE_CROSSING": CattleCrossingScenario,
+    # Legacy
     "SCENARIO_1_VILLAGE_ROAD": VillageRoadScenario,
     "SCENARIO_2_URBAN_INTERSECTION": UrbanIntersectionScenario,
     "SCENARIO_3_HIGHWAY_MERGE": HighwayMergeScenario,
     "SCENARIO_4_DENSE_MARKET": DenseMarketScenario,
     "SCENARIO_5_CATTLE_CROSSING": CattleCrossingScenario,
+}
+
+SCENARIO_ALIASES = {
+    "SCENARIO_01": "SCENARIO_01_POTHOLE_DAMAGED_ROAD",
+    "SCENARIO_02": "SCENARIO_02_PEDESTRIAN_CROSSING",
+    "SCENARIO_03": "SCENARIO_03_DENSE_MIXED_TRAFFIC",
+    "SCENARIO_04": "SCENARIO_04_MOTORCYCLE_CUT_IN",
+    "SCENARIO_05": "SCENARIO_05_UNCONTROLLED_INTERSECTION",
+    "SCENARIO_06": "SCENARIO_06_HIGHWAY_SUDDEN_BRAKING",
+    "SCENARIO_07": "SCENARIO_07_ROADWORKS_OBSTRUCTION",
+    "SCENARIO_08": "SCENARIO_08_CATTLE_CROSSING",
+    "SCENARIO_1": "SCENARIO_1_VILLAGE_ROAD",
+    "SCENARIO_2": "SCENARIO_2_URBAN_INTERSECTION",
+    "SCENARIO_3": "SCENARIO_3_HIGHWAY_MERGE",
+    "SCENARIO_4": "SCENARIO_4_DENSE_MARKET",
+    "SCENARIO_5": "SCENARIO_5_CATTLE_CROSSING",
 }
 
 
@@ -139,9 +254,10 @@ def build_scenario(
     split: str = "tune",
     custom_params: Optional[Dict[str, Any]] = None,
 ) -> Tuple[SimulationWorld, EgoState, ScenarioConfig]:
-    if scenario_id not in SCENARIOS_CATALOG:
+    canonical_id = SCENARIO_ALIASES.get(scenario_id, scenario_id)
+    if canonical_id not in SCENARIOS_CATALOG:
         raise ValueError(f"Unknown scenario ID: {scenario_id}. Choose from: {list(SCENARIOS_CATALOG.keys())}")
-    cfg = SCENARIOS_CATALOG[scenario_id]
+    cfg = SCENARIOS_CATALOG[canonical_id]
     if custom_params:
         # Create a modified config copy
         cfg = ScenarioConfig(
@@ -154,7 +270,7 @@ def build_scenario(
             ego_start_v=float(custom_params.get("ego_start_v", cfg.ego_start_v)),
             params={**cfg.params, **custom_params},
         )
-    builder_cls = SCENARIO_BUILDERS[scenario_id]
+    builder_cls = SCENARIO_BUILDERS[canonical_id]
     builder = builder_cls(cfg)
     world, ego = builder.build(seed, split)
     return world, ego, cfg
