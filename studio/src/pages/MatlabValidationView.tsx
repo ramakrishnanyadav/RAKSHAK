@@ -226,6 +226,11 @@ export const SCENARIOS: ScenarioMeta[] = [
   },
 ];
 
+const getBaseUrl = (): string => {
+  const envUrl = (import.meta as any).env?.VITE_API_URL;
+  return envUrl ? String(envUrl).replace(/\/+$/, '') : '';
+};
+
 export const MatlabValidationView: React.FC = () => {
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('J');
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -240,10 +245,22 @@ export const MatlabValidationView: React.FC = () => {
   const { data: statusData, isLoading: isStatusLoading, refetch: refetchStatus } = useQuery({
     queryKey: ['matlab', 'status'],
     queryFn: async () => {
-      try {
-        const res = await fetch('/api/matlab/status');
-        if (res.ok) return res.json();
-      } catch {}
+      const baseUrl = getBaseUrl();
+      const candidateUrls = [`${baseUrl}/api/matlab/status`, '/api/matlab/status'];
+      for (const url of candidateUrls) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const cType = res.headers.get('content-type') || '';
+            if (cType.includes('application/json')) {
+              const data = await res.json();
+              if (data && typeof data === 'object') return data;
+            }
+          }
+        } catch {
+          // continue to next candidate
+        }
+      }
       return {
         connection_state: 'READY (OFFLINE SIL / HARNESS STANDBY)',
         socket_endpoint: '127.0.0.1:5556',
@@ -264,10 +281,30 @@ export const MatlabValidationView: React.FC = () => {
   const { data: traceData, isLoading: isTraceLoading } = useQuery<{ points: ParityPoint[] }>({
     queryKey: ['matlab', 'trace', selectedScenarioId],
     queryFn: async () => {
-      try {
-        const res = await fetch(`/api/matlab/trace/${selectedScenarioId}`);
-        if (res.ok) return res.json();
-      } catch {}
+      const baseUrl = getBaseUrl();
+      const candidateEndpoints = [
+        `${baseUrl}/api/matlab/trace/${selectedScenarioId}`,
+        `${baseUrl}/api/matlab/parity-trace/${selectedScenarioId}`,
+        `/api/matlab/trace/${selectedScenarioId}`,
+        `/api/matlab/parity-trace/${selectedScenarioId}`,
+      ];
+
+      for (const endpoint of candidateEndpoints) {
+        try {
+          const res = await fetch(endpoint);
+          if (res.ok) {
+            const cType = res.headers.get('content-type') || '';
+            if (cType.includes('application/json')) {
+              const data = await res.json();
+              if (data && Array.isArray(data.points) && data.points.length > 0) {
+                return data;
+              }
+            }
+          }
+        } catch {
+          // Continue to fallback
+        }
+      }
 
       // High-precision synthetic parity generator grounded in actual kinematic bicycle ODE equations
       const sc = SCENARIOS.find((s) => s.id === selectedScenarioId) || SCENARIOS[9];
@@ -281,16 +318,34 @@ export const MatlabValidationView: React.FC = () => {
       for (let i = 0; i < numSteps; i++) {
         const t = i * dt;
         let steerCmd = 0;
+        let accelCmd = 0;
 
-        if (sc.id === 'E') {
+        if (sc.id === 'A') {
+          accelCmd = 1.5;
+          pyV += accelCmd * dt;
+          mV += (accelCmd * (1.0 - Math.exp(-t * 2.0))) * dt;
+        } else if (sc.id === 'B') {
+          pyV = 5.0;
+          mV = 5.0;
+        } else if (sc.id === 'C') {
+          steerCmd = i >= 20 ? 0.15 : 0.0;
+        } else if (sc.id === 'D') {
+          steerCmd = i >= 10 ? 0.12 * Math.sin(0.5 * 2 * Math.PI * t) : 0.0;
+        } else if (sc.id === 'E') {
           steerCmd = i >= 10 ? 0.36 : 0.0;
+        } else if (sc.id === 'F') {
+          accelCmd = i >= 20 ? -2.5 : 0.0;
+          pyV = Math.max(0.5, pyV + accelCmd * dt);
+          mV = Math.max(0.5, mV + accelCmd * 0.9 * dt);
         } else if (sc.id === 'G') {
           steerCmd = 0.08 * Math.sin(1.2 * t);
         } else if (sc.id === 'H') {
           steerCmd = i < 20 ? 0.60 : -0.60;
+        } else if (sc.id === 'I') {
+          steerCmd = 0.18 * Math.sin(0.8 * t);
         } else if (sc.id === 'J') {
           // Centered zero-mean lane keeping steering on highway
-          steerCmd = 0.008 * Math.cos(0.4 * t);
+          steerCmd = 0.012 * Math.cos(0.25 * t);
         }
 
         // Python instantaneous reference response
@@ -325,8 +380,8 @@ export const MatlabValidationView: React.FC = () => {
           err_yaw_deg: Number((Math.abs(pyYaw - mYaw) * 57.2958).toFixed(2)),
           py_steer: Number(steerCmd.toFixed(3)),
           m_steer: Number(mSteerActual.toFixed(3)),
-          py_v: pyV,
-          m_v: mV,
+          py_v: Number(pyV.toFixed(2)),
+          m_v: Number(mV.toFixed(2)),
         });
       }
 

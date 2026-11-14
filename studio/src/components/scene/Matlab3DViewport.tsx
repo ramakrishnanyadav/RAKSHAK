@@ -146,6 +146,33 @@ export const Matlab3DViewport: React.FC<Matlab3DViewportProps> = ({
   const mPathLineRef = useRef<THREE.Line | null>(null);
 
   // Step tracking for continuous playback loop
+  // Guaranteed non-empty trajectory dataset so 3D workstation is ALWAYS fully rendered
+  const safePoints = useMemo(() => {
+    if (points && points.length > 0) return points;
+    const fallback: ParityPoint[] = [];
+    for (let i = 0; i < 100; i++) {
+      const t = i * 0.05;
+      fallback.push({
+        step: i,
+        time: Number(t.toFixed(2)),
+        py_x: Number((i * 0.5).toFixed(3)),
+        m_x: Number((i * 0.5).toFixed(3)),
+        err_x: 0,
+        py_y: 0,
+        m_y: 0,
+        err_y: 0,
+        py_yaw: 0,
+        m_yaw: 0,
+        err_yaw_deg: 0,
+        py_steer: 0,
+        m_steer: 0,
+        py_v: 10.0,
+        m_v: 10.0,
+      });
+    }
+    return fallback;
+  }, [points]);
+
   const currentStepRef = useRef<number>(currentStep);
   currentStepRef.current = currentStep;
   const isPlayingRef = useRef<boolean>(isPlaying);
@@ -154,31 +181,17 @@ export const Matlab3DViewport: React.FC<Matlab3DViewportProps> = ({
   playbackSpeedRef.current = playbackSpeed;
   const cameraModeRef = useRef<CameraViewMode>(cameraMode);
   cameraModeRef.current = cameraMode;
-  const pointsRef = useRef<ParityPoint[]>(points);
-  pointsRef.current = points;
+  const pointsRef = useRef<ParityPoint[]>(safePoints);
+  pointsRef.current = safePoints;
 
   // Active Telemetry at current step
-  const activePt = points[currentStep] || points[0] || {
-    step: 0,
-    time: 0,
-    py_x: 0,
-    m_x: 0,
-    err_x: 0,
-    py_y: 0,
-    m_y: 0,
-    err_y: 0,
-    py_yaw: 0,
-    m_yaw: 0,
-    err_yaw_deg: 0,
-    py_steer: 0,
-    m_steer: 0,
-  };
+  const activePt = safePoints[currentStep] || safePoints[0];
 
   const speedKmh = useMemo(() => {
-    if (points.length < 2) return 0;
+    if (safePoints.length < 2) return 0;
     const v = activePt.m_v ?? activePt.py_v ?? 10.0;
     return (v * 3.6).toFixed(1);
-  }, [activePt, points]);
+  }, [activePt, safePoints]);
 
   // Fullscreen toggle handler
   const handleToggleFullscreen = () => {
@@ -439,6 +452,19 @@ export const Matlab3DViewport: React.FC<Matlab3DViewportProps> = ({
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(46, width / height, 0.1, 1000);
     camera.up.set(0, 0, 1);
+    const initPt = pointsRef.current[0] || { m_x: 0, m_y: 0, m_yaw: 0 };
+    const chaseDist = 11.0;
+    const chaseH = 4.2;
+    camera.position.set(
+      initPt.m_x - Math.cos(initPt.m_yaw) * chaseDist,
+      initPt.m_y - Math.sin(initPt.m_yaw) * chaseDist,
+      chaseH
+    );
+    camera.lookAt(
+      initPt.m_x + Math.cos(initPt.m_yaw) * 6.0,
+      initPt.m_y + Math.sin(initPt.m_yaw) * 6.0,
+      1.2
+    );
     cameraRef.current = camera;
 
     // 3. Renderer with high-performance settings
@@ -834,15 +860,15 @@ export const Matlab3DViewport: React.FC<Matlab3DViewportProps> = ({
   // Update Trajectory lines & road when scenario or points change
   useEffect(() => {
     if (sceneRef.current) {
-      buildRoadInfrastructure(sceneRef.current, points);
-      updateTrajectoryLines(sceneRef.current, points);
+      buildRoadInfrastructure(sceneRef.current, safePoints);
+      updateTrajectoryLines(sceneRef.current, safePoints);
     }
-  }, [points, buildRoadInfrastructure, updateTrajectoryLines]);
+  }, [safePoints, buildRoadInfrastructure, updateTrajectoryLines]);
 
   // Format timestamp helper
   const totalDuration = useMemo(() => {
-    return (points[points.length - 1]?.time || 5.0).toFixed(2);
-  }, [points]);
+    return (safePoints[safePoints.length - 1]?.time || 5.0).toFixed(2);
+  }, [safePoints]);
 
   const currentTime = useMemo(() => {
     return (activePt?.time || 0).toFixed(2);

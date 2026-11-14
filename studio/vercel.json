@@ -2,9 +2,12 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://rakshak-yovp.onrender.com/api/:path*"
+    },
+    {
       "source": "/((?!assets/|sample_runs/).*)",
       "destination": "/index.html"
     }
   ]
 }
-
